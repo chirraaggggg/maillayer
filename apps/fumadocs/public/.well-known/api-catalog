@@ -1,0 +1,22 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://maillayer.dev/",
+      "service-desc": [
+        { "href": "https://maillayer.dev/llms.txt", "type": "text/plain" },
+        { "href": "https://maillayer.dev/llms-full.txt", "type": "text/plain" }
+      ],
+      "service-doc": [
+        { "href": "https://maillayer.dev/docs", "type": "text/html" },
+        { "href": "https://maillayer.dev/docs/llms.txt", "type": "text/plain" },
+        { "href": "https://maillayer.dev/agents.md", "type": "text/markdown" }
+      ],
+      "service-meta": [
+        { "href": "https://maillayer.dev/.well-known/agent.json", "type": "application/json" },
+        { "href": "https://maillayer.dev/.well-known/agent-skills", "type": "application/json" },
+        { "href": "https://maillayer.dev/auth.md", "type": "text/markdown" },
+        { "href": "https://maillayer.dev/feeds/docs.jsonl", "type": "application/x-ndjson" }
+      ]
+    }
+  ]
+}

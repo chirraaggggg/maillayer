@@ -1,0 +1,85 @@
+---
+title: Install
+description: Add @maillayer/core to your project and run the maillayer CLI.
+icon: Package
+---
+
+MailLayer is published on npm as `@maillayer/core`. It runs server-side on Node 20+ and Bun 1.1+.
+
+<PackageInstallTabs />
+
+Import the client from the package root and each adapter from its own entry point:
+
+```ts
+import { createEmailClient } from "@maillayer/core";
+import { resend } from "@maillayer/core/resend";
+```
+
+<Callout type="warn" title="Package name vs. command name">
+  The package is `@maillayer/core`; the installed binary is `maillayer`. The unscoped
+  `maillayer` package on npm is an unrelated project, so don't `npm install maillayer`.
+</Callout>
+
+## Run the CLI
+
+<Tabs items={["Installed project", "No install (Bun)", "Homebrew (global)"]}>
+  <Tab value="Installed project">
+    Once `@maillayer/core` is in your project, the `maillayer` binary is on your path:
+
+    ```bash
+    npx maillayer adapters
+    ```
+
+    `bunx maillayer`, `pnpm exec maillayer`, and `yarn maillayer` work the same way.
+
+  </Tab>
+  <Tab value="No install (Bun)">
+    For a one-off check without touching a project, point `bunx` at the scoped package:
+
+    ```bash
+    bunx --bun --package @maillayer/core maillayer adapters
+    ```
+
+    There is no safe no-install form for plain `npx`, because the unscoped `maillayer` package
+    is unrelated. npm users should install first.
+
+  </Tab>
+  <Tab value="Homebrew (global)">
+    To put `maillayer` on your path system-wide, without adding it to any project, install the
+    formula that ships in the repository:
+
+    ```bash
+    brew install --formula https://raw.githubusercontent.com/opencoredev/maillayer/main/Formula/maillayer.rb
+    maillayer adapters
+    ```
+
+    The formula installs the published npm tarball, uses [Bun](https://bun.sh) as its runtime,
+    and links the CLI as `maillayer`. Each release opens an automated pull request that bumps
+    the formula's version and checksum, so the copy on `main` tracks the latest published
+    package.
+
+    Homebrew does not track formulas installed from a URL, so `brew upgrade` won't pick up new
+    versions; re-run the install command to update. A global install covers `adapters`, `doctor`,
+    and CLI sends. To `import` the SDK in application code, install the npm package as above.
+
+  </Tab>
+</Tabs>
+
+## Verify
+
+```bash
+npx maillayer version
+npx maillayer adapters
+```
+
+`adapters` lists every supported provider with the environment variables it needs. To check that one provider is configured:
+
+```bash
+RESEND_API_KEY="re_..." npx maillayer doctor --adapter resend
+```
+
+## Keep credentials server-side
+
+Provider API keys belong in environment variables, or CLI flags for one-off commands. They have no business in browser bundles or client-side code; the SDK is a server library by design.
+
+Ready to send? Continue with the [quickstart](/docs/getting-started/quickstart).

@@ -1,0 +1,17 @@
+{
+  "name": "maillayer-launch-smoke",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@maillayer/convex-email": "file:../packages/convex-email",
+    "@maillayer/core": "file:../packages/email-sdk"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.4",
+    "typescript": "^6"
+  }
+}

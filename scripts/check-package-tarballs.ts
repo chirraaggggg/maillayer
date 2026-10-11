@@ -1,0 +1,335 @@
+import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { basename, join, resolve } from "node:path";
+import { z } from "zod";
+
+const packReportSchema = z.object({
+  filename: z.string(),
+  files: z.array(z.object({ path: z.string(), mode: z.number() })),
+});
+
+type PackReport = z.infer<typeof packReportSchema>;
+
+const root = resolve(import.meta.dir, "..");
+
+const scratchBase = process.env.JCODE_SCRATCH_DIR ?? tmpdir();
+
+await mkdir(scratchBase, { recursive: true });
+
+const scratch = await mkdtemp(join(scratchBase, "maillayer-pack-check-"));
+
+try {
+  const packed = join(scratch, "packed");
+  await mkdir(packed);
+
+  console.log("Packing public packages and Convex component...");
+  const core = await pack(join(root, "packages/email-sdk"), packed);
+  await pack(join(root, "packages/convex-email"), packed);
+
+  assertCoreTarball(core);
+
+  const coreTarball = join(packed, core.filename);
+  const install = join(scratch, "install");
+  await mkdir(install);
+  await writeFile(
+    join(install, "package.json"),
+    `${JSON.stringify({ private: true, type: "module" }, null, 2)}\n`,
+  );
+
+  console.log("Installing packed public packages in a clean project...");
+  await run(
+    [
+      "npm",
+      "install",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      coreTarball,
+      "ai@^7.0.0",
+      "@react-email/render@^2.1.0",
+      "react@^19.0.0",
+      "react-dom@^19.0.0",
+      "typescript-min@npm:typescript@5.8.3",
+      "typescript@6.0.3",
+      "@types/node@^20.0.0",
+      "@types/react@^19.0.0",
+    ],
+    install,
+  );
+
+  const smoke = join(install, "smoke.mjs");
+  await writeFile(smoke, smokeProgram());
+  const commonJsSmoke = join(install, "smoke.cjs");
+  await writeFile(commonJsSmoke, commonJsSmokeProgram());
+
+  const commonJsTypes = join(install, "consumer.cts");
+  await writeFile(commonJsTypes, commonJsTypeProgram());
+  // Module augmentation is global to a compilation, so the metadata consumer compiles alone.
+  const metadataTypes = join(install, "metadata-register.mts");
+  await writeFile(metadataTypes, metadataRegisterTypeProgram());
+  console.log("Compiling installed-package typed consumers...");
+
+  for (const [compiler, module] of [
+    ["typescript-min", "nodenext"],
+    ["typescript", "nodenext"],
+    ["typescript", "node20"],
+  ]) {
+    await run(
+      [
+        "node",
+        join(install, "node_modules", compiler, "bin/tsc"),
+        "--noEmit",
+        "--strict",
+        "--skipLibCheck",
+        "--target",
+        "es2022",
+        "--module",
+        module,
+        commonJsTypes,
+      ],
+      install,
+    );
+    await run(
+      [
+        "node",
+        join(install, "node_modules", compiler, "bin/tsc"),
+        "--noEmit",
+        "--strict",
+        "--skipLibCheck",
+        "--target",
+        "es2022",
+        "--module",
+        module,
+        metadataTypes,
+      ],
+      install,
+    );
+  }
+
+  console.log("Running installed-package smoke tests under Node...");
+  await run(["node", smoke], install);
+  await run(["node", commonJsSmoke], install);
+  console.log("Running installed-package smoke tests under Bun...");
+  await run(["bun", smoke], install);
+  await run(["bun", commonJsSmoke], install);
+  console.log("Installed package smoke tests passed.");
+} finally {
+  await rm(scratch, { recursive: true, force: true });
+}
+
+async function pack(packageDir: string, destination: string): Promise<PackReport> {
+  const output = await run(
+    ["npm", "pack", "--json", "--silent", "--pack-destination", destination],
+    packageDir,
+  );
+
+  const jsonStart = output.lastIndexOf("\n[");
+
+  const report = z
+    .array(packReportSchema)
+    .parse(JSON.parse(output.slice(jsonStart >= 0 ? jsonStart + 1 : output.indexOf("["))));
+
+  if (report.length !== 1) {
+    throw new Error(`npm pack did not return one package for ${basename(packageDir)}.`);
+  }
+
+  return report[0];
+}
+
+function assertCoreTarball(report: PackReport) {
+  const paths = new Set(report.files.map((file) => file.path));
+
+  for (const required of [
+    "README.md",
+    "package.json",
+    "dist/cli.js",
+    "dist/react.d.ts",
+    "dist/react.js",
+    "dist/react-shadcn.d.ts",
+    "dist/react-shadcn.js",
+    "src/index.ts",
+    "src/react.ts",
+    "src/react-shadcn.tsx",
+  ]) {
+    if (!paths.has(required)) {
+      throw new Error(`MailLayer tarball is missing ${required}.`);
+    }
+  }
+
+  if ([...paths].some((path) => path.endsWith(".test.ts") || path.startsWith("type-tests/"))) {
+    throw new Error("MailLayer tarball contains test-only source files.");
+  }
+
+  if (report.files.find((file) => file.path === "dist/cli.js")?.mode !== 0o755) {
+    throw new Error("MailLayer CLI is not executable in the tarball.");
+  }
+}
+
+async function run(command: string[], cwd: string): Promise<string> {
+  const child = Bun.spawn(command, {
+    cwd,
+    env: process.env,
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+
+  const [stdout, stderr, exitCode] = await Promise.all([
+    new Response(child.stdout).text(),
+    new Response(child.stderr).text(),
+    child.exited,
+  ]);
+
+  if (exitCode !== 0) {
+    throw new Error(
+      `${command.join(" ")} failed in ${cwd}.\n${stdout}${stderr}`.trimEnd(),
+    );
+  }
+
+  return stdout;
+}
+
+function smokeProgram(): string {
+  return String.raw`
+import { access, readFile, readdir } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
+
+const root = dirname(fileURLToPath(import.meta.url));
+const coreDir = join(root, "node_modules/@maillayer/core");
+
+await importAllExports(coreDir, "@maillayer/core");
+
+const core = await import("@maillayer/core");
+const resend = await import("@maillayer/core/resend");
+const react = await import("@maillayer/core/react");
+
+if (
+  typeof core.createEmailClient !== "function" ||
+  typeof resend.resend !== "function" ||
+  typeof react.renderEmail !== "function" ||
+  typeof react.ShadcnEmail !== "function" ||
+  typeof react.EmailButton !== "function"
+) {
+  throw new Error("Installed MailLayer exports are incomplete.");
+}
+
+await verifyDeclarationMaps(coreDir);
+
+const coreCli = join(coreDir, "dist/cli.js");
+const coreManifest = JSON.parse(await readFile(join(coreDir, "package.json"), "utf8"));
+const coreVersion = spawnSync(process.execPath, [coreCli, "version"], {
+  encoding: "utf8",
+  env: { ...process.env, MAILLAYER_TELEMETRY: "0" },
+});
+if (
+  coreVersion.status !== 0 ||
+  !coreVersion.stdout.includes("@maillayer/core") ||
+  !coreVersion.stdout.includes(coreManifest.version)
+) {
+  throw new Error("Installed MailLayer CLI smoke test failed.");
+}
+
+async function verifyDeclarationMaps(packageDir) {
+  for (const mapPath of await declarationMaps(join(packageDir, "dist"))) {
+    const map = JSON.parse(await readFile(mapPath, "utf8"));
+    for (const source of map.sources ?? []) {
+      await access(resolve(dirname(mapPath), source));
+    }
+  }
+}
+
+async function importAllExports(packageDir, packageName) {
+  const manifest = JSON.parse(await readFile(join(packageDir, "package.json"), "utf8"));
+  for (const subpath of Object.keys(manifest.exports ?? {})) {
+    await import(subpath === "." ? packageName : packageName + subpath.slice(1));
+  }
+}
+
+async function declarationMaps(directory) {
+  const paths = [];
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) paths.push(...(await declarationMaps(path)));
+    else if (!entry.name.startsWith("._") && entry.name.endsWith(".d.ts.map")) paths.push(path);
+  }
+  return paths;
+}
+`;
+}
+
+function commonJsTypeProgram(): string {
+  return String.raw`
+import sdk = require("@maillayer/core");
+import { resend } from "@maillayer/core/resend";
+
+const email: sdk.EmailClient = sdk.createEmailClient({
+  adapters: [resend({ apiKey: "compile-only" })],
+  telemetry: false,
+});
+
+void email.send({
+  from: "sender@example.com",
+  to: "recipient@example.com",
+  subject: "Compile only",
+  text: "This fixture is never executed.",
+});
+
+// @ts-expect-error Adapter options must remain typed.
+resend({ apiKey: 123 });
+// @ts-expect-error Client options must remain typed.
+sdk.createEmailClient({ adapters: "invalid" });
+`;
+}
+
+function metadataRegisterTypeProgram(): string {
+  return String.raw`
+import { createEmailClient, type EmailSendMetadata } from "@maillayer/core";
+import { resend } from "@maillayer/core/resend";
+
+declare module "@maillayer/core" {
+  interface EmailMetadataRegister {
+    metadata: { tenantId: string };
+  }
+}
+
+const email = createEmailClient({
+  adapters: [resend({ apiKey: "compile-only" })],
+  telemetry: false,
+  hooks: {
+    beforeSend(event) {
+      const tenantId: string | undefined = event.metadata?.tenantId;
+      void tenantId;
+    },
+  },
+});
+
+const message = {
+  from: "sender@example.com",
+  to: "recipient@example.com",
+  subject: "Compile only",
+  text: "This fixture is never executed.",
+};
+
+void email.send(message, { metadata: { tenantId: "t_1" } });
+// @ts-expect-error Registered metadata must keep its declared shape.
+void email.send(message, { metadata: { tenantId: 1 } });
+
+const registered: EmailSendMetadata = { tenantId: "t_2" };
+void registered;
+`;
+}
+
+function commonJsSmokeProgram(): string {
+  return String.raw`
+const { readFileSync } = require("node:fs");
+const { join } = require("node:path");
+
+const coreDir = join(__dirname, "node_modules/@maillayer/core");
+const manifest = JSON.parse(readFileSync(join(coreDir, "package.json"), "utf8"));
+
+for (const subpath of Object.keys(manifest.exports ?? {})) {
+  require(subpath === "." ? manifest.name : manifest.name + subpath.slice(1));
+}
+`;
+}

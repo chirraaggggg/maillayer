@@ -1,0 +1,69 @@
+export { createEmailClient } from "./core.js";
+
+export { SUPPORTED_MESSAGE_FIELDS } from "./utils.js";
+
+export { disableTelemetry, getTelemetryStatus } from "./telemetry.js";
+
+export type { TelemetryStatus } from "./telemetry.js";
+
+export type { MessageFieldSupport } from "./utils.js";
+
+export {
+  EmailAbortError,
+  EmailAdapterError,
+  EmailAdapterNotFoundError,
+  EmailAllRecipientsFailedError,
+  EmailMiddlewareError,
+  EmailRouteError,
+  EmailSdkError,
+  EmailValidationError,
+  isRetryableEmailError,
+} from "./errors.js";
+
+export type { EmailErrorCode } from "./errors.js";
+
+export type {
+  AdapterForName,
+  EmailAddress,
+  EmailMetadataRecord,
+  EmailMetadataRegister,
+  EmailMetadataValue,
+  EmailSendMetadata,
+  EmailAdapter,
+  EmailAdapterCapabilities,
+  EmailAdapterContext,
+  EmailAdapterValidationContext,
+  EmailAfterSendEvent,
+  EmailAttachment,
+  EmailBeforeSendEvent,
+  EmailBeforeSendResult,
+  EmailClient,
+  EmailClientOptions,
+  EmailEnvelope,
+  EmailErrorEvent,
+  EmailFallbackConfig,
+  EmailHeader,
+  EmailHookEvent,
+  EmailHooks,
+  EmailMessage,
+  EmailPersonalizedInput,
+  EmailPersonalizedRecipient,
+  EmailPersonalizedResult,
+  EmailPlugin,
+  EmailPluginClientExtension,
+  EmailPluginClientExtensions,
+  EmailPluginContext,
+  EmailRetryConfig,
+  EmailSendItem,
+  EmailSendMiddleware,
+  EmailSendOptions,
+  EmailSendResult,
+  EmailSendSettledResult,
+  EmailTag,
+  EmailValidationResult,
+  EmailValidationWarning,
+  MaybePromise,
+  OneOrMany,
+  Rfc3339Timestamp,
+  RouteName,
+} from "./types.js";

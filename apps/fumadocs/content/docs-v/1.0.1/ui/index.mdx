@@ -1,0 +1,34 @@
+---
+title: Email UI
+description: Browse complete, email-safe templates by the job they need to do.
+icon: MailAtSign
+---
+
+Start with a real email, see the rendered result, then copy the TSX into `src/ui/email`. Every example uses the same small set of MailLayer React components and works with any adapter after rendering.
+
+<EmailExampleGallery />
+
+## Add a template
+
+Open any template above and run its registry command. The command adds the email component to `src/ui/email` and installs MailLayer, React Email, and React dependencies when they are missing.
+
+```bash
+bunx shadcn@latest add https://maillayer.dev/r/verification-code.json
+```
+
+Then render the installed component with `renderEmail` and pass the returned `html` and `text` through your normal MailLayer client.
+
+```tsx
+import { renderEmail } from "@maillayer/core/react";
+
+const content = await renderEmail(<WelcomeEmail name="Ada" />);
+
+await email.send({
+  from: "Acme <hello@acme.com>",
+  to: "ada@example.com",
+  subject: "Welcome to Acme",
+  ...content,
+});
+```
+
+Routing, retries, fallback, scheduling, hooks, and telemetry still use the normal send pipeline.

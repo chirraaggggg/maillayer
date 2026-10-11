@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0",
+  "name": "MailLayer",
+  "description": "Open-source TypeScript SDK that sends transactional email through 26 provider API adapters plus SMTP (Resend, SMTP, Postmark, SendGrid, Mailgun, Cloudflare Email Sending, Unosend, AWS SES, and more) behind one typed send() call, with retries and compatible fallbacks. It is a library you install into an app, not a hosted API.",
+  "productType": "sdk",
+  "homepage": "https://maillayer.dev",
+  "documentation": "https://maillayer.dev/docs",
+  "guide": "https://maillayer.dev/agents.md",
+  "instructions": "MailLayer is a TypeScript/JavaScript library, not a hosted service. There is no API to call and no credentials to obtain from us — install the npm package and bring the provider keys the app already has. Use it to send transactional email behind one typed client. Read /agents.md for when-to-use guidance and /auth.md for the authentication model. Gate any agent-initiated send behind explicit human approval and run `maillayer doctor` and `send --dry-run` before live sends.",
+  "machineResources": {
+    "llmsTxt": "https://maillayer.dev/llms.txt",
+    "llmsFullTxt": "https://maillayer.dev/llms-full.txt",
+    "markdownHome": "https://maillayer.dev/index.md",
+    "authModel": "https://maillayer.dev/auth.md",
+    "apiCatalog": "https://maillayer.dev/.well-known/api-catalog",
+    "schemaFeed": "https://maillayer.dev/feeds/docs.jsonl"
+  },
+  "authentication": {
+    "type": "none",
+    "description": "MailLayer exposes no hosted API and issues no credentials. You provide each email provider's API key (or SMTP credentials) through environment variables in your own application."
+  },
+  "distribution": {
+    "npm": "@maillayer/core",
+    "repository": "https://github.com/chirraaggggg/maillayer",
+    "cli": "maillayer"
+  },
+  "capabilities": [
+    "Send transactional email through one typed client across 27 adapters",
+    "Retry transient failures and fall back across compatible adapters",
+    "Expose a guarded send_email tool to LLM agents",
+    "Run local configuration checks and dry-run sends via the maillayer CLI"
+  ],
+  "skills": [
+    {
+      "name": "maillayer",
+      "description": "Use when adding, reviewing, or documenting MailLayer integrations in TypeScript/Bun apps. Covers adapter selection, fallbacks, CLI smoke tests, hooks, and secret-safe observability.",
+      "install": "npx skills add opencoredev/maillayer --skill maillayer",
+      "source": "https://github.com/chirraaggggg/maillayer/blob/main/skills/maillayer/SKILL.md"
+    }
+  ],
+  "tools": [
+    {
+      "name": "send_email",
+      "description": "Send a transactional email through the app's configured MailLayer client. Requires from, to, and subject; optional html, text, adapter, and provider. Runs the full validate/retry/fallback pipeline.",
+      "package": "@maillayer/core/agent-tools",
+      "factory": "createEmailAgentTools",
+      "documentation": "https://maillayer.dev/docs/getting-started/agent-skill",
+      "requiresApproval": true
+    }
+  ],
+  "contact": {
+    "type": "technical support",
+    "url": "https://github.com/chirraaggggg/maillayer/issues"
+  }
+}

@@ -1,0 +1,60 @@
+---
+title: Install
+description: Install the SDK package and run the maillayer CLI.
+icon: Package
+---
+
+MailLayer is published on npm as `@maillayer/core`.
+
+The command-line binary is named `maillayer`. That means the package name and the command name are different on purpose:
+
+| What you want                  | Use this                                |
+| ------------------------------ | --------------------------------------- |
+| Install the package            | `bun add @maillayer/core`        |
+| Run the installed CLI          | `bun maillayer ...`                     |
+| Run the CLI without installing | `bunx --yes @maillayer/core ...` |
+
+Do not install the unscoped `maillayer` package from npm. It is a different package.
+
+## Install in your app
+
+```bash
+bun add @maillayer/core
+```
+
+Then import the client and adapters from the scoped package:
+
+```ts
+import { createEmailClient } from "@maillayer/core";
+import { resend } from "@maillayer/core/resend";
+```
+
+## Run the CLI once
+
+Use `bunx` when you want a quick adapter check without adding the package to a project.
+
+```bash
+bunx --yes @maillayer/core adapters
+```
+
+Check a provider configuration:
+
+```bash
+RESEND_API_KEY="re_..." bunx --yes @maillayer/core doctor --adapter resend
+```
+
+## Run the CLI from an installed project
+
+After `bun add @maillayer/core`, Bun can run the installed binary:
+
+```bash
+bun maillayer adapters
+```
+
+The command is still `maillayer`; the package you installed is still `@maillayer/core`. Avoid `bunx maillayer` outside an installed project because the unscoped npm package is unrelated.
+
+## Prerequisites
+
+- Bun is required for the CLI because the binary runs with `#!/usr/bin/env bun`.
+- Node 20 or newer is supported for SDK usage.
+- Provider credentials must be set in environment variables or passed with CLI flags.

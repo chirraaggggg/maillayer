@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">MailLayer</title>
+  <desc id="desc">A layered envelope mark for MailLayer</desc>
+  <rect width="512" height="512" rx="112" fill="#111827"/>
+  <path d="M112 174 256 288 400 174v164a30 30 0 0 1-30 30H142a30 30 0 0 1-30-30V174Z" fill="#38bdf8"/>
+  <path d="m112 174 144 114 144-114-144-76-144 76Z" fill="#a7f3d0"/>
+  <path d="m112 338 108-92m180 92-108-92" fill="none" stroke="#111827" stroke-linecap="round" stroke-width="18"/>
+</svg>

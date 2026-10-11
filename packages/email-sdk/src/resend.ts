@@ -1,0 +1,99 @@
+import { EmailAdapterError } from "./errors.js";
+import { jsonString, responseJson } from "./internal/decode.js";
+import { sendAtIso } from "./payloads.js";
+import type { EmailAttachment, EmailMessage, EmailAdapter } from "./types.js";
+import {
+  builtInAdapterDefinition,
+  attachmentToBase64,
+  formatAddress,
+  formatAddresses,
+  headersToObject,
+  httpErrorMessage,
+  isRetryableStatus,
+  readErrorBody,
+  assertSupportedMessageFields,
+  SUPPORTED_MESSAGE_FIELDS,
+} from "./utils.js";
+
+export type ResendAdapterOptions = {
+  apiKey: string;
+  baseUrl?: string;
+  fetch?: typeof fetch;
+  headers?: Record<string, string>;
+};
+
+export function resend(
+  options: ResendAdapterOptions,
+): EmailAdapter<"resend", { baseUrl: string }> {
+  const baseUrl = options.baseUrl ?? "https://api.resend.com";
+  const fetcher = options.fetch ?? fetch;
+
+  return {
+    name: "resend",
+    ...builtInAdapterDefinition("resend"),
+    raw: { baseUrl },
+    async send(message, context) {
+      const headers = new Headers({
+        Authorization: `Bearer ${options.apiKey}`,
+        "Content-Type": "application/json",
+        ...options.headers,
+      });
+
+      if (context.idempotencyKey) {
+        headers.set("Idempotency-Key", context.idempotencyKey);
+      }
+
+      const response = await fetcher(`${baseUrl}/emails`, {
+        method: "POST",
+        signal: context.signal,
+        headers,
+        body: JSON.stringify(await toResendPayload(message)),
+      });
+
+      if (!response.ok) {
+        const body = await readErrorBody(response);
+        throw new EmailAdapterError(httpErrorMessage("Resend", response.status, body), {
+          adapter: "resend",
+          status: response.status,
+          retryable: isRetryableStatus(response.status),
+        });
+      }
+
+      const body = await responseJson(response);
+
+      return {
+        adapter: "resend",
+        id: jsonString(body, "id"),
+        raw: body,
+      };
+    },
+  };
+}
+
+async function toResendPayload(message: EmailMessage) {
+  assertSupportedMessageFields("resend", message, SUPPORTED_MESSAGE_FIELDS.resend);
+
+  return {
+    from: formatAddress(message.from),
+    to: formatAddresses(message.to),
+    subject: message.subject,
+    html: message.html,
+    text: message.text,
+    cc: formatAddresses(message.cc),
+    bcc: formatAddresses(message.bcc),
+    reply_to: formatAddresses(message.replyTo),
+    headers: headersToObject(message.headers),
+    attachments: await Promise.all((message.attachments ?? []).map(toResendAttachment)),
+    tags: message.tags,
+    scheduled_at: sendAtIso(message),
+  };
+}
+
+async function toResendAttachment(attachment: EmailAttachment) {
+  return {
+    filename: attachment.filename,
+    content: await attachmentToBase64(attachment),
+    content_type: attachment.contentType,
+    content_id: attachment.contentId,
+  };
+}

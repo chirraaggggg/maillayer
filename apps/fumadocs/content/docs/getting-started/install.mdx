@@ -1,0 +1,73 @@
+---
+title: Install
+description: Install MailLayer for Node.js or Bun using ESM imports or CommonJS require.
+---
+
+<Steps>
+
+<Step>
+
+### Install the package
+
+<PackageInstallTabs />
+
+The public package is `@maillayer/core`. The unscoped `maillayer` package is unrelated.
+
+</Step>
+
+<Step>
+
+### Confirm your runtime
+
+Use Node.js 20+ or Bun 1.1+. Every public entry point ships as both ESM and CommonJS, so `import` and `require()` work across the supported Node.js range.
+
+```js title="email.cjs"
+const { createEmailClient } = require("@maillayer/core");
+const { resend } = require("@maillayer/core/resend");
+```
+
+For typed CommonJS, use `module: nodenext`. Use a `.cts` file with typed imports rather than an untyped bare `require()`:
+
+```ts title="email.cts"
+import sdk = require("@maillayer/core");
+import { resend } from "@maillayer/core/resend";
+
+const email = sdk.createEmailClient({
+  adapters: [resend({ apiKey: process.env.RESEND_API_KEY! })],
+});
+```
+
+</Step>
+
+<Step>
+
+### Import one adapter
+
+Adapters use separate package entry points, so your application imports only the integrations it uses.
+
+```ts title="email.ts"
+import { createEmailClient } from "@maillayer/core";
+import { resend } from "@maillayer/core/resend";
+```
+
+</Step>
+
+<Step>
+
+### Verify the CLI
+
+A project install exposes the `maillayer` binary. The built CLI uses a Node shebang and also runs under Bun.
+
+```bash
+npx --package @maillayer/core maillayer version
+npx --package @maillayer/core maillayer adapters
+```
+
+For a global Homebrew install, use `brew install opencoredev/tap/maillayer` after the formula points at a published release.
+
+</Step>
+
+</Steps>
+
+<Card title="Quickstart" href="/docs/getting-started/quickstart" description="Create a client and send a validated message." />
+<Card title="Provider credentials" href="/docs/getting-started/credentials" description="Set the environment variables required by your adapter." />

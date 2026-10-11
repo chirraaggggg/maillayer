@@ -1,0 +1,28 @@
+{
+  "name": "MailLayer",
+  "description": "TypeScript SDK that sends transactional email through 26 provider API adapters plus SMTP (Resend, SMTP, Postmark, SendGrid, Mailgun, AWS SES, and more) behind one typed send() call, with retries and compatible fallbacks.",
+  "homepage": "https://maillayer.dev",
+  "guide": "https://maillayer.dev/agents.md",
+  "docs": "https://maillayer.dev/docs",
+  "llmsTxt": "https://maillayer.dev/llms.txt",
+  "repository": "https://github.com/chirraaggggg/maillayer",
+  "package": "@maillayer/core",
+  "skills": [
+    {
+      "name": "maillayer",
+      "description": "Use when adding, reviewing, or documenting MailLayer integrations in TypeScript/Bun apps. Covers adapter selection, fallbacks, CLI smoke tests, hooks, and secret-safe observability.",
+      "install": "npx skills add opencoredev/maillayer --skill maillayer",
+      "source": "https://github.com/chirraaggggg/maillayer/blob/main/skills/maillayer/SKILL.md"
+    }
+  ],
+  "tools": [
+    {
+      "name": "send_email",
+      "description": "Send a transactional email through the app's configured MailLayer client. Requires from, to, and subject; optional html, text, adapter, and provider. Runs the full validate/retry/fallback pipeline.",
+      "package": "@maillayer/core/agent-tools",
+      "factory": "createEmailAgentTools",
+      "docs": "https://maillayer.dev/docs/getting-started/agent-skill",
+      "requiresApproval": true
+    }
+  ]
+}

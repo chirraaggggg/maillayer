@@ -1,0 +1,3 @@
+{
+  "extends": "@maillayer/config/tsconfig.base.json"
+}

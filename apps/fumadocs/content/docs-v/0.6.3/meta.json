@@ -1,0 +1,14 @@
+{
+  "title": "MailLayer",
+  "pages": [
+    "index",
+    "getting-started",
+    "concepts",
+    "adapters",
+    "plugins",
+    "components",
+    "guides",
+    "reference",
+    "agents"
+  ]
+}
