@@ -1,14 +1,11 @@
 import verification from "../../../../adapter-verification.json";
 
-import { ExternalLink, Heart } from "@/components/icon";
+import { ExternalLink } from "@/components/icon";
 import { DocsVersionLink } from "@/components/docs-version-link";
 import { useSelectedDocsVersion } from "@/lib/docs-version-state";
 import { providers, type Provider } from "@/lib/providers";
-import { sponsors } from "@/lib/sponsors";
 
 type LiveCheckProvider = keyof typeof verification.liveChecks;
-
-const sponsorNames = new Set(sponsors.map((sponsor) => sponsor.name));
 
 export function ProviderGrid() {
   const selectedVersion = useSelectedDocsVersion();
@@ -21,10 +18,6 @@ export function ProviderGrid() {
   return (
     <div className="not-prose border-y border-fd-border">
       <div className="flex items-center gap-5 border-b border-fd-border py-3 text-xs text-fd-muted-foreground">
-        <span className="inline-flex items-center gap-1.5">
-          <Heart aria-hidden="true" className="size-4 fill-rose-500 text-rose-500" />
-          Sponsor
-        </span>
         <span className="inline-flex items-center gap-1.5">
           <ExternalLink
             aria-hidden="true"
@@ -111,30 +104,22 @@ function ProviderRow({ provider }: { provider: Provider }) {
 }
 
 function ProviderStatus({ provider }: { provider: Provider }) {
-  const sponsored = sponsorNames.has(provider.name);
   const liveCheckAvailable = hasLiveCheck(provider.key);
 
-  if (!sponsored && !liveCheckAvailable) {
+  if (!liveCheckAvailable) {
     return null;
   }
 
   return (
     <span className="inline-flex items-center gap-1.5">
-      {sponsored ? (
-        <span aria-label="Sponsor" className="inline-flex" role="img" title="Sponsor">
-          <Heart aria-hidden="true" className="size-4 fill-rose-500 text-rose-500" />
-        </span>
-      ) : null}
-      {liveCheckAvailable ? (
-        <a href="/docs/adapters/verification" aria-label="Live check available — view current evidence" className="inline-flex items-center gap-1 text-xs text-fd-muted-foreground" title="A configured non-sending probe, not a published passing run">
-          <ExternalLink
-            aria-hidden="true"
-            className="size-3.5 text-fd-muted-foreground"
-            strokeWidth={2.25}
-          />
-          Live check available
-        </a>
-      ) : null}
+      <a href="/docs/adapters/verification" aria-label="Live check available — view current evidence" className="inline-flex items-center gap-1 text-xs text-fd-muted-foreground" title="A configured non-sending probe, not a published passing run">
+        <ExternalLink
+          aria-hidden="true"
+          className="size-3.5 text-fd-muted-foreground"
+          strokeWidth={2.25}
+        />
+        Live check available
+      </a>
     </span>
   );
 }
@@ -144,15 +129,11 @@ function compareProviders(left: Provider, right: Provider) {
 }
 
 function providerPriority(provider: Provider) {
-  if (sponsorNames.has(provider.name)) {
+  if (hasLiveCheck(provider.key)) {
     return 0;
   }
 
-  if (hasLiveCheck(provider.key)) {
-    return 1;
-  }
-
-  return 2;
+  return 1;
 }
 
 function hasLiveCheck(key: string): key is LiveCheckProvider {

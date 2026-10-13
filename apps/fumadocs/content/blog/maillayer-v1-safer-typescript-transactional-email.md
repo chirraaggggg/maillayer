@@ -277,6 +277,6 @@ Start with the [quickstart](https://maillayer.dev/docs/getting-started/quickstar
 
 MailLayer is open source under MIT. The source, issues, and contribution guides are available on [GitHub](https://github.com/chirraaggggg/maillayer). Companies that want an official adapter can open an issue or contact the project.
 
-This release was made possible by the project's sponsors: [Resend](https://go.resend.com/maillayer), [Sequenzy](https://www.sequenzy.com/?ref=emailsdk), [JetEmail](https://jetemail.com), [Primitive](https://www.primitive.dev), [Lettermint](https://lettermint.co/?ref=emailsdk), [Instatus](https://instatus.com/?ref=emailsdk), and [Notra](https://usenotra.com).
+This release focuses on safer, more predictable transactional email for TypeScript applications.
 
 The goal for v1 is simple: make a transactional email pipeline easier to change **without hiding the decisions that determine whether it is safe**.

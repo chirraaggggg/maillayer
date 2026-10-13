@@ -66,7 +66,7 @@ export function contractTestFilesFor(id: string): readonly string[] {
 }
 
 const CI_RUN_URL =
-  /^https:\/\/github\.com\/opencoredev\/maillayer\/actions\/runs\/[1-9]\d*(?:\/job\/[1-9]\d*)?$/;
+  /^https:\/\/github\.com\/chirraaggggg\/maillayer\/actions\/runs\/[1-9]\d*(?:\/job\/[1-9]\d*)?$/;
 
 const MAINTAINER = /^maintainer:[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 

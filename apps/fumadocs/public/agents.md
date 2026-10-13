@@ -76,7 +76,7 @@ https://github.com/chirraaggggg/maillayer/blob/main/skills/maillayer/SKILL.md.
 Install it with:
 
 ```bash
-npx skills add opencoredev/maillayer --skill maillayer
+npx skills add chirraaggggg/maillayer --skill maillayer
 ```
 
 ## Machine-readable endpoints

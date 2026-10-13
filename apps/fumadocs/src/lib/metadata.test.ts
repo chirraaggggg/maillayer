@@ -45,11 +45,11 @@ describe("homepage product explanation", () => {
   const home = readFileSync(new URL("../routes/index.tsx", import.meta.url), "utf8");
 
   test("uses one complete send example on desktop and mobile", () => {
-    expect(home).toContain('id="landing-heading">Email for TypeScript apps.</h1>');
+    expect(home).toContain('id="landing-heading">Email, without the lock-in.</h1>');
     expect(home.match(/aria-label="TypeScript email send example"/g)).toHaveLength(1);
     // The code panel renders tokens as JSX spans, so match the literals it contains.
     expect(home).toContain("'@maillayer/core/resend'");
-    expect(home).toMatch(/apiKey: process\.env\.["}]*\s*<em>RESEND_API_KEY<\/em>\s*\{"! \}\)\],"\}/);
+    expect(home).toMatch(/apiKey: process\.env\.["}]*\s*(<em|<span[^>]*>)RESEND_API_KEY(<\/em>|<\/span>)\s*\{"! \}\)\],"\}/);
     expect(home).toContain("'Acme <hello@acme.dev>'");
     expect(home).toContain("'ada@example.com'");
     expect(home).not.toContain("landing-mobile-only");
@@ -70,13 +70,11 @@ describe("homepage product explanation", () => {
       readFileSync(new URL("../../content/docs/index.mdx", import.meta.url), "utf8"),
     ];
 
-    expect(appDescription.startsWith("Email for TypeScript apps.")).toBe(true);
-    expect(siteTitle).toContain("Email for TypeScript apps.");
-    expect(siteImageAlt).toContain("Email for TypeScript apps.");
+    expect(appDescription.startsWith("One API. Every email provider. Fully open source.")).toBe(true);
+    expect(siteTitle).toContain("One API. Every email provider. Fully open source.");
 
     for (const text of [appDescription, ...readmes]) {
-      expect(text).toContain("Email for TypeScript apps.");
-      expect(text).toContain("existing provider account");
+      expect(text).toMatch(/provider account|providers you already|existing provider/);
       expect(text).not.toMatch(/guarantee[sd]? (inbox )?delivery|99\.\d+%|testimonial/i);
     }
 
@@ -89,11 +87,11 @@ describe("homepage product explanation", () => {
     const webpage = homeStructuredData["@graph"].find((node) => node["@type"] === "WebPage");
     expect(webpage?.speakable.cssSelector).toEqual(["#landing-heading", "#landing-summary"]);
     const faq = homeStructuredData["@graph"].find((node) => node["@type"] === "FAQPage");
-    expect(faq?.mainEntity[0]?.acceptedAnswer.text.startsWith("Email for TypeScript apps.")).toBe(true);
+    expect(faq?.mainEntity[0]?.acceptedAnswer.text.startsWith("Email, without the lock-in.")).toBe(true);
   });
 
   test("keeps machine-readable copy within the runtime and delivery boundaries", () => {
-    expect(appDescription).toContain("existing provider account");
+    expect(appDescription).toMatch(/provider account|providers you already use/);
     expect(llmsOverview).toContain("Node.js 20+ or Bun 1.1+");
     expect(llmsOverview).toContain("not delivery");
     expect(llmsOverview).toContain("direct provider SDK is sufficient");

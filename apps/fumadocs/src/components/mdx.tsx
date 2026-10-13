@@ -13,7 +13,6 @@ import { CommunityPluginRegistry } from "./community-plugin-registry";
 import { EmailExample, EmailExampleGallery } from "./email-examples";
 import { PackageInstallTabs } from "./package-install-tabs";
 import { ProviderBadge, ProviderGrid } from "./provider-catalog";
-import { SponsorSpotlight } from "./sponsors";
 
 type MdxComponentOptions = {
   docsBasePath?: string;
@@ -59,7 +58,6 @@ export function getMDXComponents(components?: MDXComponents, options: MdxCompone
     PackageInstallTabs,
     ProviderBadge,
     ProviderGrid,
-    SponsorSpotlight,
     Step,
     Steps,
     Tab,

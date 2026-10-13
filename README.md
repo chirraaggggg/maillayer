@@ -3,7 +3,7 @@
 **One API. Every email provider. Fully open source.**
 
 MailLayer is an open-source TypeScript email SDK for transactional email. Use
-one typed API with the provider accounts you already own, while keeping
+one typed API with the providers you already use, while keeping
 provider-specific configuration, retries, fallbacks, validation, and
 observability in one place.
 
@@ -47,6 +47,7 @@ developer's responsibility.
 
 ## Features
 
+- 26 provider API adapters plus SMTP, 27 adapters total
 - Normalized messages with HTML, plain text, recipients, headers, and attachments
 - Retry policies and fallback routes across providers
 - Batch and personalized sending

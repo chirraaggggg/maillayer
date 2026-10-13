@@ -1,7 +1,9 @@
 export const appName = "MailLayer";
 
+export const productTagline = "One API. Every email provider. Fully open source.";
+
 export const appDescription =
-  "Email for TypeScript apps. Send transactional email with your existing provider account, validate messages, test without sending, and inspect failures in a server-side SDK.";
+  `${productTagline} Send transactional email with the providers you already use.`;
 
 export const docsRoute = "/docs";
 
@@ -50,7 +52,7 @@ export const siteOgImageUrl = `${siteUrl}${siteOgImagePath}?v=${encodeURICompone
 
 // fill this with your actual GitHub info, for example:
 export const gitConfig = {
-  user: "opencoredev",
+  user: "chirraaggggg",
   repo: "maillayer",
   branch: "main",
 };

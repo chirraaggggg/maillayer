@@ -1,7 +1,7 @@
 import type { MetaDescriptor } from "@tanstack/react-router";
 
 import { providers } from "@/lib/providers";
-import { appDescription, appName, siteOgImageUrl, siteUrl } from "@/lib/shared";
+import { appDescription, appName, productTagline, siteOgImageUrl, siteUrl } from "@/lib/shared";
 
 // Both the FAQ answer and the ItemList below used to spell the adapters out by
 // hand, so each new adapter left the structured data one provider short of the
@@ -13,10 +13,10 @@ const supportedProviderSentence = new Intl.ListFormat("en", {
   type: "conjunction",
 }).format(supportedProviderNames);
 
-export const siteTitle = `${appName} - Email for TypeScript apps.`;
+export const siteTitle = `${appName} - ${productTagline}`;
 
 export const siteImageAlt =
-  "MailLayer: Email for TypeScript apps. Alpine background with an illustrative send example.";
+  "MailLayer: One API. Every email provider. Fully open source. Email without the lock-in.";
 
 export const siteKeywords =
   "email SDK, TypeScript email SDK, transactional email SDK, unified email API, Resend SDK, SendGrid SDK, Postmark SDK, Mailgun SDK, Unosend SDK, AWS SES SDK, Cloudflare Email Sending SDK, SMTP TypeScript";
@@ -215,11 +215,10 @@ export const homeStructuredData = {
       "@type": "Organization",
       "@id": `${siteUrl}/#organization`,
       name: "MailLayer",
-      url: "https://opencore.dev",
+      url: "https://github.com/chirraaggggg/maillayer",
       logo: `${siteUrl}/logo.png`,
       // sameAs links let agents disambiguate the brand against real, verifiable profiles.
       sameAs: [
-        "https://github.com/opencoredev",
         "https://github.com/chirraaggggg/maillayer",
         "https://www.npmjs.com/package/@maillayer/core",
       ],
@@ -311,7 +310,7 @@ export const homeStructuredData = {
           name: "What is MailLayer?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Email for TypeScript apps. MailLayer is an open-source, server-side TypeScript library for sending transactional email with your existing provider account. It adds message validation, no-network test adapters, and common error types. Your provider still handles credentials, billing, and delivery.",
+            text: "Email, without the lock-in. MailLayer is an open-source, server-side TypeScript library for sending transactional email through the providers you already use. It adds message validation, no-network test adapters, and common error types. Your provider still handles credentials, billing, and delivery.",
           },
         },
         {

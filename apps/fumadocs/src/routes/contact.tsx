@@ -13,7 +13,7 @@ export const Route = createFileRoute("/contact")({
     meta: buildPageMeta({
       title: `Contact - ${appName}`,
       description:
-        "Contact the MailLayer project: report bugs, ask questions, disclose security issues, or sponsor development through GitHub.",
+        "Contact the MailLayer project: report bugs, ask questions, or disclose security issues through GitHub.",
       url: `${siteUrl}/contact`,
     }),
     links: [{ rel: "canonical", href: `${siteUrl}/contact` }],
@@ -77,19 +77,6 @@ function Contact() {
                 GitHub security advisories
               </a>{" "}
               so a fix can ship before disclosure.
-            </ContactSection>
-
-            <ContactSection title="Sponsorship">
-              If MailLayer saves your team time, you can support ongoing maintenance through{" "}
-              <a
-                className="text-fd-primary underline-offset-4 hover:underline"
-                href={`https://github.com/sponsors/${gitConfig.user}`}
-                rel="noreferrer"
-                target="_blank"
-              >
-                GitHub Sponsors
-              </a>
-              .
             </ContactSection>
 
             <ContactSection title="More about the project">

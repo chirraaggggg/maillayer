@@ -5,8 +5,8 @@
     "": {
       "name": "email-sdk-launch-smoke",
       "dependencies": {
-        "@opencoredev/convex-email": "file:../packages/convex-email",
-        "@opencoredev/email-sdk": "file:../packages/email-sdk",
+        "@maillayer/convex-email": "file:../packages/convex-email",
+        "@maillayer/core": "file:../packages/email-sdk",
       },
       "devDependencies": {
         "@types/bun": "^1.3.4",
@@ -67,9 +67,9 @@
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.0", "", { "os": "win32", "cpu": "x64" }, "sha512-aIitBcjQeyOhMTImhLZmtxfdOcuNRpwlPNmlFKPcHQYPhEssw75Cl1TSXJXpMkzaua9FUetx/4OQKq7eJul5Cg=="],
 
-    "@opencoredev/convex-email": ["@opencoredev/convex-email@file:../packages/convex-email", { "devDependencies": { "@types/bun": "^1.3.4", "convex": "^1.36.1", "convex-test": "0.0.53" }, "peerDependencies": { "@opencoredev/email-sdk": "^0.6.0", "convex": "^1.36.1" } }],
+    "@maillayer/convex-email": ["@maillayer/convex-email@file:../packages/convex-email", { "devDependencies": { "@types/bun": "^1.3.4", "convex": "^1.36.1", "convex-test": "0.0.53" }, "peerDependencies": { "@maillayer/core": "^0.6.0", "convex": "^1.36.1" } }],
 
-    "@opencoredev/email-sdk": ["@opencoredev/email-sdk@file:../packages/email-sdk", { "devDependencies": { "@types/bun": "^1.3.4", "@types/node": "^25.9.1" }, "bin": { "email-sdk": "dist/cli.js" } }],
+    "@maillayer/core": ["@maillayer/core@file:../packages/email-sdk", { "devDependencies": { "@types/bun": "^1.3.4", "@types/node": "^25.9.1" }, "bin": { "email-sdk": "dist/cli.js" } }],
 
     "@types/bun": ["@types/bun@1.3.14", "", { "dependencies": { "bun-types": "1.3.14" } }, "sha512-h1hFqFVcvAvD9j9K7ZW7vd82aSA+rTdznZa+5bwvCwqSB1jmmfLcbIWhOLx1/+boy/xmjgCs/OMUL8hRJSmnPw=="],
 

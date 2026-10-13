@@ -22,7 +22,6 @@ import { EVIDENCE_KINDS, evidenceState, verificationRows } from "./adapter-verif
 import { emailExampleCategories, emailExamples, isEmailExampleId } from "./email-example-data";
 import { providers } from "./providers";
 import { siteUrl } from "./shared";
-import { sponsors } from "./sponsors";
 
 // The docs pages render rich JSX components (adapter data tables, provider
 // grids, install tabs, callouts). fumadocs' processed markdown leaves them as
@@ -171,7 +170,6 @@ function transformProseLine(line: string, currentVersion: boolean, state: LineSt
     [/<AdapterVerification\b[^>]*\/>/g, "/docs/adapters/verification", renderVerification],
     [/<CommunityPluginRegistry\b[^>]*\/>/g, "/docs/plugins/community", renderCommunityRegistry],
     [/<EmailExampleGallery\b[^>]*\/>/g, "/docs/ui", renderEmailGallery],
-    [/<SponsorSpotlight\b[^>]*\/>/g, "/docs/adapters", renderSponsorSpotlight],
   ];
 
   for (const [pattern, docsPath, render] of dataComponents) {
@@ -489,8 +487,6 @@ function capabilityValue(capabilities: AdapterSupportCapabilities, key: keyof Ad
   return value === "native" ? "Native" : "Expanded";
 }
 
-const sponsorNames = new Set(sponsors.map((sponsor) => sponsor.name));
-
 const liveCheckIds = new Set(verificationRows().filter((row) => row.check).map((row) => row.id));
 
 function renderProviderBadge(attrs: Attrs) {
@@ -499,7 +495,6 @@ function renderProviderBadge(attrs: Attrs) {
   if (!provider) return "";
 
   const notes = [
-    sponsorNames.has(provider.name) ? "Sponsor" : undefined,
     liveCheckIds.has(provider.key) ? "[live check](/docs/adapters/verification)" : undefined,
   ].filter(Boolean);
 
@@ -509,7 +504,7 @@ function renderProviderBadge(attrs: Attrs) {
 function renderProviderGrid() {
   const items = providers.map(
     (provider) =>
-      `- [${provider.name}](${provider.docs}) (\`${provider.importPath}\`, [provider site](${provider.website}))${sponsorNames.has(provider.name) ? " — sponsor" : ""}${liveCheckIds.has(provider.key) ? " — [live check](/docs/adapters/verification)" : ""}: ${provider.summary}`,
+      `- [${provider.name}](${provider.docs}) (\`${provider.importPath}\`, [provider site](${provider.website}))${liveCheckIds.has(provider.key) ? " — [live check](/docs/adapters/verification)" : ""}: ${provider.summary}`,
   );
 
   return `\n\n${items.join("\n")}\n\n`;
@@ -636,12 +631,6 @@ function renderCard(attrs: Attrs) {
   if (!title || !href) return "";
 
   return `- [${title}](${href})${description ? `: ${description}` : ""}`;
-}
-
-function renderSponsorSpotlight() {
-  const list = sponsors.map((sponsor) => `[${sponsor.name}](${sponsor.href})`).join(", ");
-
-  return `\n\nSponsored by ${list}.\n\n`;
 }
 
 function renderEmailExample(attrs: Attrs, currentVersion: boolean) {

@@ -1,6 +1,8 @@
 # MailLayer
 
-Email for TypeScript apps. A server-side SDK for transactional email with your existing provider account. You get one typed client, literal adapter routes, field-support validation before providers drop data, delivery-aware retries and fallback, and plugins for defaults, observability, capture, or custom adapters.
+One API. Every email provider. Fully open source.
+
+Email, without the lock-in. A server-side SDK for transactional email through the providers you already use. You get one typed client, literal adapter routes, field-support validation before providers drop data, delivery-aware retries and fallback, and plugins for defaults, observability, capture, or custom adapters.
 
 Docs: https://maillayer.dev/docs
 
