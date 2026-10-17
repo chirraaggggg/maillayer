@@ -15,12 +15,12 @@ The blog combines source-controlled launch/editorial posts with [Notra](https://
 content. Notra API calls and credentials stay server-side, while local Markdown ships with
 the site build:
 
-| Path | Surface | Source | When it updates |
-| --- | --- | --- | --- |
-| **Source-controlled post** | `/blog`, `/blog/$slug`, OG, sitemap, feeds | `content/blog/*.md` + `src/lib/local-blog-posts.ts` | On deploy |
-| **On-demand SSR** | `/blog`, `/blog/$slug` | Live fetch from Notra at request time | Within the edge-cache window (~60s), no rebuild |
-| **On-demand SSR (OG images)** | `/og/blog/*` | Live fetch from Notra, rendered to SVG | No rebuild, but cached up to ~1 day (`max-age=86400`) |
-| **Build-time snapshot** | `sitemap.xml`, `rss.xml`, `feed.json` | `src/lib/notra-posts.generated.ts`, written at build | On the next deploy |
+| Path                          | Surface                                    | Source                                               | When it updates                                       |
+| ----------------------------- | ------------------------------------------ | ---------------------------------------------------- | ----------------------------------------------------- |
+| **Source-controlled post**    | `/blog`, `/blog/$slug`, OG, sitemap, feeds | `content/blog/*.md` + `src/lib/local-blog-posts.ts`  | On deploy                                             |
+| **On-demand SSR**             | `/blog`, `/blog/$slug`                     | Live fetch from Notra at request time                | Within the edge-cache window (~60s), no rebuild       |
+| **On-demand SSR (OG images)** | `/og/blog/*`                               | Live fetch from Notra, rendered to SVG               | No rebuild, but cached up to ~1 day (`max-age=86400`) |
+| **Build-time snapshot**       | `sitemap.xml`, `rss.xml`, `feed.json`      | `src/lib/notra-posts.generated.ts`, written at build | On the next deploy                                    |
 
 Notra SSR picks up new posts without a rebuild, but its OG image SVGs cache far
 longer than the blog pages (up to a day vs. ~60s), so a changed post title or
@@ -57,7 +57,7 @@ static HTML at build time.
 
 - **`src/routes/og/blog/$.ts`** — the SSR OG image route. It also loads from the
   runtime fetch, but the SVG response sets `Cache-Control: max-age=86400,
-  stale-while-revalidate=604800`, so a regenerated image can take up to a day to
+stale-while-revalidate=604800`, so a regenerated image can take up to a day to
   replace a cached one.
 
 - **`scripts/notra-content.ts`** — `mapNotraPost`, shared by both paths, maps a
@@ -75,16 +75,16 @@ into the `BlogPost` shape (`src/lib/blog-types.ts`) plus a sanitized HTML body.
 Both rendering paths share this mapping, so the rules below are the authoring
 contract — what to expect when you write in Notra:
 
-| Field | Source | Notes |
-| --- | --- | --- |
-| `slug` | always re-slugified | Even an explicit Notra slug is normalized (lowercased, ASCII, `-`-joined, max 80 chars). A value like `release/notes` would otherwise break the single-segment `/blog/$slug` route and the OG image path, so it is never used verbatim. Collisions get a `-2`, `-3`, … suffix. |
-| `title` | post title (trimmed) | Required. A post with no usable title is skipped. |
-| `description` | first paragraph of the body | ~155 chars, truncated at a word boundary. Falls back to `"<title> — notes from the MailLayer blog."` when no prose paragraph is found. |
-| `publishedAt` | `createdAt` (date only) | `YYYY-MM-DD`, UTC. Drives ordering and feed visibility. |
-| `updatedAt` | `updatedAt` (date only) | `YYYY-MM-DD`, UTC. |
-| `readTime` | body word count | `N min read` at 200 wpm, minimum 1. |
-| `image` / `imageAlt` | derived | `/og/blog/<slug>.svg` (generated OG image route) and `"<title> — MailLayer blog"`. |
-| `tags` | — | Always empty; Notra tags are not carried over today. |
+| Field                | Source                      | Notes                                                                                                                                                                                                                                                                          |
+| -------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `slug`               | always re-slugified         | Even an explicit Notra slug is normalized (lowercased, ASCII, `-`-joined, max 80 chars). A value like `release/notes` would otherwise break the single-segment `/blog/$slug` route and the OG image path, so it is never used verbatim. Collisions get a `-2`, `-3`, … suffix. |
+| `title`              | post title (trimmed)        | Required. A post with no usable title is skipped.                                                                                                                                                                                                                              |
+| `description`        | first paragraph of the body | ~155 chars, truncated at a word boundary. Falls back to `"<title> — notes from the MailLayer blog."` when no prose paragraph is found.                                                                                                                                         |
+| `publishedAt`        | `createdAt` (date only)     | `YYYY-MM-DD`, UTC. Drives ordering and feed visibility.                                                                                                                                                                                                                        |
+| `updatedAt`          | `updatedAt` (date only)     | `YYYY-MM-DD`, UTC.                                                                                                                                                                                                                                                             |
+| `readTime`           | body word count             | `N min read` at 200 wpm, minimum 1.                                                                                                                                                                                                                                            |
+| `image` / `imageAlt` | derived                     | `/og/blog/<slug>.svg` (generated OG image route) and `"<title> — MailLayer blog"`.                                                                                                                                                                                             |
+| `tags`               | —                           | Always empty; Notra tags are not carried over today.                                                                                                                                                                                                                           |
 
 The body Markdown is rendered (GFM) and sanitized server-side — at request time
 for the blog pages, at build time for the feed snapshot — so sanitized HTML is

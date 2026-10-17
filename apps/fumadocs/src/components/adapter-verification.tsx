@@ -28,8 +28,8 @@ export function AdapterVerification({ evidence, now }: { evidence?: JsonValue; n
     <div className="not-prose my-6 min-w-0 space-y-4">
       <p className="text-sm text-fd-muted-foreground">
         {rows.length} adapters · {configured} configured auth probes · {published} published run
-        records. A configured test or probe is configuration, not a passing result. Published records
-        older than 30 days are marked stale.
+        records. A configured test or probe is configuration, not a passing result. Published
+        records older than 30 days are marked stale.
       </p>
       <div
         aria-label="Adapter verification evidence"

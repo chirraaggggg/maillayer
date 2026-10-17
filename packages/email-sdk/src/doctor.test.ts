@@ -424,11 +424,14 @@ describe("doctor safe probes", () => {
       insufficient_permissions: await run({}, { fetch: async () => json({}, 403) }),
       inconclusive: await run({}, { fetch: async () => json({}, 400) }),
       rate_limited: await run({}, { fetch: async () => json({}, 429) }),
-      network_failure: await run({}, {
-        fetch: async () => {
-          throw new Error(credential);
+      network_failure: await run(
+        {},
+        {
+          fetch: async () => {
+            throw new Error(credential);
+          },
         },
-      }),
+      ),
       timeout: await run({}, { timeoutMs: 5, fetch: () => new Promise(() => {}) }),
       unsupported: await run({}, { adapter: "smtp" }),
     };

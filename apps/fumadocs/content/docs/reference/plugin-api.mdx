@@ -36,11 +36,13 @@ type EmailHooks = {
   beforeSend?(event: EmailHookEvent): MaybePromise<void>;
   afterSend?(event: EmailAfterSendEvent): MaybePromise<void>;
   onError?(event: EmailErrorEvent): MaybePromise<void>;
-  onRetry?(event: EmailHookEvent & {
-    error: EmailSdkError;
-    nextAttempt: number;
-    delayMs: number;
-  }): MaybePromise<void>;
+  onRetry?(
+    event: EmailHookEvent & {
+      error: EmailSdkError;
+      nextAttempt: number;
+      delayMs: number;
+    },
+  ): MaybePromise<void>;
 };
 ```
 
@@ -66,4 +68,8 @@ Multiple `beforeSend` middleware entries run in order. Replacement options shall
 
 Reserved-key collisions throw `EmailValidationError` during construction.
 
-<Card title="Create a plugin" href="/docs/guides/authoring/create-first-plugin" description="Build a typed middleware and extension example." />
+<Card
+  title="Create a plugin"
+  href="/docs/guides/authoring/create-first-plugin"
+  description="Build a typed middleware and extension example."
+/>

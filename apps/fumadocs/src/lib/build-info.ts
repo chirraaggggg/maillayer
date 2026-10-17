@@ -9,6 +9,9 @@ export const currentBuildInfo = {
 
 export type BuildInfo = typeof currentBuildInfo;
 
-export function isOutdatedBuild(currentBuildId: string, deployedBuildId: string | null | undefined) {
+export function isOutdatedBuild(
+  currentBuildId: string,
+  deployedBuildId: string | null | undefined,
+) {
   return Boolean(deployedBuildId && deployedBuildId !== currentBuildId);
 }

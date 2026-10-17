@@ -10,12 +10,12 @@ This document records the implementation contract for MailLayer v1. It supersede
 
 The contract synthesizes exactly five read-only discovery artifacts recovered in `/Users/leo/.jcode/scratch/maillayer-v1-discovery-artifacts.md`:
 
-| Artifact | Worker | Contract decisions derived from it |
-|---|---|---|
-| Public API audit | `monkey` | Preserve `createEmailClient` and adapter subpaths; use adapter-only vocabulary; typed routes; safe unknown-delivery fallback; no silent field loss; separate independent and personalized sends; closed errors; abortable retries |
-| Chat SDK integration | `gorilla` | Add the optional `@maillayer/core/ai` subpath; expose one bound `sendEmail` tool; use AI SDK 7 top-level approval with AI SDK 6 fallback; keep Chat SDK as a composition target rather than a package dependency |
-| Documentation IA | `orangutan` | Preserve stable URLs where possible; organize around Get Started, Concepts, Adapters, Plugins, Integrations, Guides, Reference; compile examples; maintain machine-readable surfaces and permanent redirects |
-| Compatibility and release audit | `elephant` | Archive v0.6.5 before versioning; fix Homebrew runtime, CLI dry-run, and idempotency precedence; freeze telemetry, ESM, date, personalized-send, and alias policies; add major migration notes and stronger package/release tests |
+| Artifact                        | Worker      | Contract decisions derived from it                                                                                                                                                                                                |
+| ------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public API audit                | `monkey`    | Preserve `createEmailClient` and adapter subpaths; use adapter-only vocabulary; typed routes; safe unknown-delivery fallback; no silent field loss; separate independent and personalized sends; closed errors; abortable retries |
+| Chat SDK integration            | `gorilla`   | Add the optional `@maillayer/core/ai` subpath; expose one bound `sendEmail` tool; use AI SDK 7 top-level approval with AI SDK 6 fallback; keep Chat SDK as a composition target rather than a package dependency                  |
+| Documentation IA                | `orangutan` | Preserve stable URLs where possible; organize around Get Started, Concepts, Adapters, Plugins, Integrations, Guides, Reference; compile examples; maintain machine-readable surfaces and permanent redirects                      |
+| Compatibility and release audit | `elephant`  | Archive v0.6.5 before versioning; fix Homebrew runtime, CLI dry-run, and idempotency precedence; freeze telemetry, ESM, date, personalized-send, and alias policies; add major migration notes and stronger package/release tests |
 
 Resolved cross-artifact choices:
 
@@ -97,19 +97,12 @@ type EmailAdapterContext = EmailAdapterValidationContext & {
   metadata?: Readonly<Record<string, unknown>>;
 };
 
-type EmailAdapter<
-  Name extends string = string,
-  RawClient = unknown,
-  RawResult = unknown,
-> = {
+type EmailAdapter<Name extends string = string, RawClient = unknown, RawResult = unknown> = {
   readonly name: Name;
   readonly capabilities: EmailAdapterCapabilities;
   readonly raw?: RawClient;
 
-  validate?(
-    message: EmailMessage,
-    context: EmailAdapterValidationContext,
-  ): MaybePromise<void>;
+  validate?(message: EmailMessage, context: EmailAdapterValidationContext): MaybePromise<void>;
 
   send(
     message: EmailMessage,
@@ -383,24 +376,24 @@ Export:
 
 ## 4. Explicit breaking changes and migration contract
 
-| v0.x surface or behavior | v1 surface or behavior | Migration |
-|---|---|---|
-| `providers`, `defaultProvider`, `provider`, `fallbackProviders`, `client.providers`, `client.provider()`, `withProvider()` | Adapter-only vocabulary | Rename to the corresponding adapter form. Use `/compat` temporarily if migration cannot be atomic. |
-| `EmailProvider`, `EmailProviderContext`, `EmailProviderResponse`, `EmailProviderError`, `EmailProviderNotFoundError` | `EmailAdapter`, `EmailAdapterContext`, `EmailSendResult`, `EmailAdapterError`, `EmailAdapterNotFoundError` | Rename imports and field access. |
-| Result `provider` and `messageId` | Result `adapter` and `id` | Replace reads. `/compat` may expose deprecated non-enumerable getters. |
-| `sendBatch` and `SendBatchItem` | `sendMany` and `EmailSendItem` | Wrap each message in `{message, options?}` and read `result` instead of `response`. |
-| `EmailMessage.recipientVariables` | `sendPersonalized({message, recipients})` | Convert the address-keyed map into an explicit recipient array. |
-| `EmailProvider.sendBulk` | `EmailAdapter.sendPersonalized` plus declared personalized capability | Update custom adapters to the v1 adapter contract. |
-| `EmailMessage.idempotencyKey` | `EmailSendOptions.idempotencyKey` | Move the field to the second argument. |
-| Per-send `fallbackAdapters` | `fallback: { adapters, onUnknownDelivery? }` | Wrap fallback routes in the explicit policy object. |
-| `retry.retries` and per-send `retries` | `retry.maxAttempts` and per-send `retry.maxAttempts` | Convert `retries: n` to `maxAttempts: n + 1`. |
-| `headers` object or array | Lossless `EmailHeader[]` | Convert `{"X-A":"1"}` to `[{name:"X-A", value:"1"}]`. Duplicate names are validated by adapter capability. |
-| Attachment may contain both `content` and `path` | Exactly one attachment source | Split or remove one source before upgrading. |
-| String adapter routes and `adapter<T>(name)` assertions | Inferred literal route union | Remove unsafe generic assertions and use a registered literal name. |
-| Fallback continues after any terminal error | Unknown delivery stops by default | Opt into `onUnknownDelivery: "continue"` only after accepting duplicate-delivery risk. |
-| Arbitrary plugin errors may escape | `EmailMiddlewareError` | Match on the typed error code/class. |
-| Implementation-dependent `sendAt` strings | `Date` or RFC 3339 with zone | Add `Z` or an explicit numeric offset. |
-| CommonJS expectation | ESM-only is explicit | Migrate consumers to ESM or dynamic `import()`. No CJS build is planned. |
+| v0.x surface or behavior                                                                                                   | v1 surface or behavior                                                                                     | Migration                                                                                                  |
+| -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `providers`, `defaultProvider`, `provider`, `fallbackProviders`, `client.providers`, `client.provider()`, `withProvider()` | Adapter-only vocabulary                                                                                    | Rename to the corresponding adapter form. Use `/compat` temporarily if migration cannot be atomic.         |
+| `EmailProvider`, `EmailProviderContext`, `EmailProviderResponse`, `EmailProviderError`, `EmailProviderNotFoundError`       | `EmailAdapter`, `EmailAdapterContext`, `EmailSendResult`, `EmailAdapterError`, `EmailAdapterNotFoundError` | Rename imports and field access.                                                                           |
+| Result `provider` and `messageId`                                                                                          | Result `adapter` and `id`                                                                                  | Replace reads. `/compat` may expose deprecated non-enumerable getters.                                     |
+| `sendBatch` and `SendBatchItem`                                                                                            | `sendMany` and `EmailSendItem`                                                                             | Wrap each message in `{message, options?}` and read `result` instead of `response`.                        |
+| `EmailMessage.recipientVariables`                                                                                          | `sendPersonalized({message, recipients})`                                                                  | Convert the address-keyed map into an explicit recipient array.                                            |
+| `EmailProvider.sendBulk`                                                                                                   | `EmailAdapter.sendPersonalized` plus declared personalized capability                                      | Update custom adapters to the v1 adapter contract.                                                         |
+| `EmailMessage.idempotencyKey`                                                                                              | `EmailSendOptions.idempotencyKey`                                                                          | Move the field to the second argument.                                                                     |
+| Per-send `fallbackAdapters`                                                                                                | `fallback: { adapters, onUnknownDelivery? }`                                                               | Wrap fallback routes in the explicit policy object.                                                        |
+| `retry.retries` and per-send `retries`                                                                                     | `retry.maxAttempts` and per-send `retry.maxAttempts`                                                       | Convert `retries: n` to `maxAttempts: n + 1`.                                                              |
+| `headers` object or array                                                                                                  | Lossless `EmailHeader[]`                                                                                   | Convert `{"X-A":"1"}` to `[{name:"X-A", value:"1"}]`. Duplicate names are validated by adapter capability. |
+| Attachment may contain both `content` and `path`                                                                           | Exactly one attachment source                                                                              | Split or remove one source before upgrading.                                                               |
+| String adapter routes and `adapter<T>(name)` assertions                                                                    | Inferred literal route union                                                                               | Remove unsafe generic assertions and use a registered literal name.                                        |
+| Fallback continues after any terminal error                                                                                | Unknown delivery stops by default                                                                          | Opt into `onUnknownDelivery: "continue"` only after accepting duplicate-delivery risk.                     |
+| Arbitrary plugin errors may escape                                                                                         | `EmailMiddlewareError`                                                                                     | Match on the typed error code/class.                                                                       |
+| Implementation-dependent `sendAt` strings                                                                                  | `Date` or RFC 3339 with zone                                                                               | Add `Z` or an explicit numeric offset.                                                                     |
+| CommonJS expectation                                                                                                       | ESM-only is explicit                                                                                       | Migrate consumers to ESM or dynamic `import()`. No CJS build is planned.                                   |
 
 Compatibility policy:
 
@@ -476,13 +469,13 @@ AI SDK 7 examples must use top-level `toolApproval`, because it is the current p
 
 ## 6. Package map
 
-| Workspace/package | Publish status | v1 responsibility | Dependency direction | Primary owner |
-|---|---|---|---|---|
-| `packages/email-sdk` / `@maillayer/core` | Public `1.0.0` | Core API, adapters, CLI, plugins, testing, `/ai`, `/compat`, deprecated `/agent-tools` | No runtime deps in root; optional `ai` peer only for `/ai` | Core SDK owner |
-| `packages/convex-email` / `@maillayer/convex-email` | Public Convex Component package | Durable queue integration and compatibility with the v1 core API | Dev and peer dependency on core; no core dependency on Convex | Convex component owner |
-| `packages/config` / `@maillayer/config` | Private | Shared TypeScript/workspace configuration | No product responsibility | Build owner |
-| `apps/fumadocs` | Private application | Human docs, version archives, redirects, search, raw Markdown, llms/schema/agent surfaces | Reads package metadata and source-derived manifests | Docs owner |
-| `Formula/maillayer.rb` | Published through repository/Homebrew flow | Install the npm CLI with Node, matching its shebang and engine | Updated only after npm publish | Release owner |
+| Workspace/package                                   | Publish status                             | v1 responsibility                                                                         | Dependency direction                                          | Primary owner          |
+| --------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ---------------------- |
+| `packages/email-sdk` / `@maillayer/core`            | Public `1.0.0`                             | Core API, adapters, CLI, plugins, testing, `/ai`, `/compat`, deprecated `/agent-tools`    | No runtime deps in root; optional `ai` peer only for `/ai`    | Core SDK owner         |
+| `packages/convex-email` / `@maillayer/convex-email` | Public Convex Component package            | Durable queue integration and compatibility with the v1 core API                          | Dev and peer dependency on core; no core dependency on Convex | Convex component owner |
+| `packages/config` / `@maillayer/config`             | Private                                    | Shared TypeScript/workspace configuration                                                 | No product responsibility                                     | Build owner            |
+| `apps/fumadocs`                                     | Private application                        | Human docs, version archives, redirects, search, raw Markdown, llms/schema/agent surfaces | Reads package metadata and source-derived manifests           | Docs owner             |
+| `Formula/maillayer.rb`                              | Published through repository/Homebrew flow | Install the npm CLI with Node, matching its shebang and engine                            | Updated only after npm publish                                | Release owner          |
 
 The core package tarball includes the TypeScript source files referenced by declaration maps, excluding tests and local-only files. Every exported subpath must resolve from an installed tarball under Node and Bun.
 
@@ -667,14 +660,14 @@ No GA publish occurs with an unresolved P0/P1 contract failure, missing v0.6.5 a
 
 Ownership is path-exclusive unless the owners coordinate a handoff. Review ownership is separate from implementation ownership.
 
-| Workstream | Implementation ownership | Depends on | Independent validation owner |
-|---|---|---|---|
-| Core types and semantics | `packages/email-sdk/src/types.ts`, `core.ts`, `errors.ts`, `utils.ts`, `payloads.ts`, `smtp.ts`, adapter capability metadata and core tests | This contract | Core API validator |
-| CLI and release blockers | `cli.ts`, shared validation adoption, Homebrew formula/runtime, pack/install scripts, idempotency precedence fixes | Public validation API may be landed in coordination with core | Release validator |
-| Chat/AI integration | New `/ai` source, export, peer/dev dependencies, AI tests and examples; deprecation treatment for `/agent-tools` | Stable v1 client/result/error types | Chat/AI validator |
-| Convex compatibility | `packages/convex-email/**` and peer range | Stable v1 root types and methods | Convex validator |
-| Docs and archive | `apps/fumadocs/**`, redirects, v0.6.5 snapshot, machine surfaces, migration guide | Frozen API names and package exports | Docs validator |
-| Release orchestration | Changesets prerelease, final `release:ci`, npm/OIDC, post-publish Homebrew update | Every implementation and validation lane | Coordinator/release gate |
+| Workstream               | Implementation ownership                                                                                                                    | Depends on                                                    | Independent validation owner |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------- |
+| Core types and semantics | `packages/email-sdk/src/types.ts`, `core.ts`, `errors.ts`, `utils.ts`, `payloads.ts`, `smtp.ts`, adapter capability metadata and core tests | This contract                                                 | Core API validator           |
+| CLI and release blockers | `cli.ts`, shared validation adoption, Homebrew formula/runtime, pack/install scripts, idempotency precedence fixes                          | Public validation API may be landed in coordination with core | Release validator            |
+| Chat/AI integration      | New `/ai` source, export, peer/dev dependencies, AI tests and examples; deprecation treatment for `/agent-tools`                            | Stable v1 client/result/error types                           | Chat/AI validator            |
+| Convex compatibility     | `packages/convex-email/**` and peer range                                                                                                   | Stable v1 root types and methods                              | Convex validator             |
+| Docs and archive         | `apps/fumadocs/**`, redirects, v0.6.5 snapshot, machine surfaces, migration guide                                                           | Frozen API names and package exports                          | Docs validator               |
+| Release orchestration    | Changesets prerelease, final `release:ci`, npm/OIDC, post-publish Homebrew update                                                           | Every implementation and validation lane                      | Coordinator/release gate     |
 
 Required sequence:
 

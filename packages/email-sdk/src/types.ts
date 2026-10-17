@@ -31,7 +31,9 @@ export type EmailMetadataRecord = { readonly [key: string]: EmailMetadataValue }
 export interface EmailMetadataRegister {}
 
 /** Send-option metadata: the registered shape, or `EmailMetadataRecord` when none is registered. */
-export type EmailSendMetadata = EmailMetadataRegister extends { metadata: infer Metadata extends object }
+export type EmailSendMetadata = EmailMetadataRegister extends {
+  metadata: infer Metadata extends object;
+}
   ? Metadata
   : EmailMetadataRecord;
 

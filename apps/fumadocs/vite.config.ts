@@ -94,7 +94,15 @@ export default defineConfig(({ mode }) => {
           // renders on-demand so its npm/GitHub numbers stay fresh; everything
           // else stays prerendered to static HTML.
           filter: ({ path }: { path: string }) =>
-            !path.startsWith("/blog") && !path.startsWith("/og/blog") && path !== "/stats",
+            !path.startsWith("/blog") &&
+            !path.startsWith("/og/blog") &&
+            path !== "/stats" &&
+            // /docs/providers itself is the Provider Explorer page and stays
+            // static; /docs/providers/<slug> 308-redirects to the adapter guide
+            // at request time, so the crawler must not snapshot redirect
+            // targets under the old URLs. Same for /docs/api, which 308s to
+            // the client reference.
+            !path.startsWith("/docs/providers/") && path !== "/docs/api",
         },
 
         pages: [

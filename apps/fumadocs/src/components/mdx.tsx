@@ -13,6 +13,7 @@ import { CommunityPluginRegistry } from "./community-plugin-registry";
 import { EmailExample, EmailExampleGallery } from "./email-examples";
 import { PackageInstallTabs } from "./package-install-tabs";
 import { ProviderBadge, ProviderGrid } from "./provider-catalog";
+import { ProviderExplorer } from "./provider-explorer";
 
 type MdxComponentOptions = {
   docsBasePath?: string;
@@ -33,9 +34,15 @@ export function getMDXComponents(components?: MDXComponents, options: MdxCompone
 
   return {
     ...defaultMdxComponents,
-    a: (props) => (
-      <defaultMdxComponents.a {...props} href={versionDocsHref(props.href, docsBasePath)} />
-    ),
+    a: (props) => {
+      const href = versionDocsHref(props.href, docsBasePath);
+
+      return href ? (
+        <defaultMdxComponents.a {...props} href={href} />
+      ) : (
+        <defaultMdxComponents.a {...props} />
+      );
+    },
     Card: (props) => (
       <defaultMdxComponents.Card
         {...props}
@@ -57,6 +64,7 @@ export function getMDXComponents(components?: MDXComponents, options: MdxCompone
     Folder,
     PackageInstallTabs,
     ProviderBadge,
+    ProviderExplorer,
     ProviderGrid,
     Step,
     Steps,

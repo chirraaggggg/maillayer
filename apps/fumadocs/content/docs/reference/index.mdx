@@ -1,0 +1,66 @@
+---
+title: Reference
+description: Complete API reference for the MailLayer v1 client, message types, adapter contract, error codes, plugin API, CLI, and webhooks.
+---
+
+The reference documents every public type, method, and contract in MailLayer v1. Each page covers exact signatures, option tables, and return shapes.
+
+## API reference
+
+<Cards>
+  <Card
+    title="Client reference"
+    href="/docs/reference/client"
+    description="createEmailClient options, send, sendMany, sendPersonalized, validate, adapter, withAdapter, and flush."
+  />
+  <Card
+    title="Message reference"
+    href="/docs/reference/message"
+    description="Every normalized message field: address types, envelope, body, headers, attachments, metadata, tags, and scheduling."
+  />
+  <Card
+    title="Adapter contract"
+    href="/docs/reference/adapter-contract"
+    description="Implement validation, capabilities, send, and optional native personalized delivery."
+  />
+  <Card
+    title="Error reference"
+    href="/docs/reference/errors"
+    description="The closed v1 error union: codes, classes, retryability, and delivery certainty."
+  />
+</Cards>
+
+## Extended reference
+
+<Cards>
+  <Card
+    title="Plugin API"
+    href="/docs/reference/plugin-api"
+    description="Plugin context, hooks, middleware, adapter registration, and typed client extension contracts."
+  />
+  <Card
+    title="Webhooks"
+    href="/docs/reference/webhooks"
+    description="Verify Resend and Mailgun webhook requests and normalize delivery events."
+  />
+  <Card
+    title="CLI reference"
+    href="/docs/reference/cli"
+    description="Commands, runtime, aliases, adapter detection, and exit behavior for the maillayer binary."
+  />
+  <Card
+    title="Community registry"
+    href="/docs/reference/community-registry"
+    description="Schema, trust labels, and validation for third-party adapters and plugins."
+  />
+  <Card
+    title="Telemetry"
+    href="/docs/reference/telemetry"
+    description="Anonymous SDK analytics, opt-out mechanisms, redacted error reporting, and privacy behavior."
+  />
+  <Card
+    title="Compatibility"
+    href="/docs/reference/compatibility"
+    description="Temporary v0 source compatibility available only during the v1 major."
+  />
+</Cards>

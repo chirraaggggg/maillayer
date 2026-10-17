@@ -27,36 +27,98 @@ export const PROBE_BACKED_KINDS = new Set<EvidenceKind>([
 // Which packages/email-sdk/src/*.test.ts files import each adapter module.
 // scripts/check-adapter-verification.ts fails release:ci if this drifts from disk.
 export const CONTRACT_TEST_FILES = {
-  brevo: ["adapters.field-support.test.ts", "adapters.json-providers.test.ts", "adapters.scheduling.test.ts"],
-  cloudflare: ["adapters.cloudflare.test.ts", "adapters.field-support.test.ts", "adapters.json-providers.test.ts"],
+  brevo: [
+    "adapters.field-support.test.ts",
+    "adapters.json-providers.test.ts",
+    "adapters.scheduling.test.ts",
+  ],
+  cloudflare: [
+    "adapters.cloudflare.test.ts",
+    "adapters.field-support.test.ts",
+    "adapters.json-providers.test.ts",
+  ],
   iterable: ["adapters.field-support.test.ts", "adapters.sequenzy-iterable-zeptomail.test.ts"],
-  jetemail: ["adapters.field-support.test.ts", "adapters.jetemail-primitive-lettermint-lettr.test.ts"],
-  lettermint: ["adapters.field-support.test.ts", "adapters.jetemail-primitive-lettermint-lettr.test.ts", "adapters.json-providers.test.ts"],
-  lettr: ["adapters.field-support.test.ts", "adapters.jetemail-primitive-lettermint-lettr.test.ts", "adapters.json-providers.test.ts", "adapters.scheduling.test.ts"],
+  jetemail: [
+    "adapters.field-support.test.ts",
+    "adapters.jetemail-primitive-lettermint-lettr.test.ts",
+  ],
+  lettermint: [
+    "adapters.field-support.test.ts",
+    "adapters.jetemail-primitive-lettermint-lettr.test.ts",
+    "adapters.json-providers.test.ts",
+  ],
+  lettr: [
+    "adapters.field-support.test.ts",
+    "adapters.jetemail-primitive-lettermint-lettr.test.ts",
+    "adapters.json-providers.test.ts",
+    "adapters.scheduling.test.ts",
+  ],
   loops: ["adapters.field-support.test.ts", "adapters.json-providers.test.ts"],
-  mailchimp: ["adapters.field-support.test.ts", "adapters.json-providers.test.ts", "adapters.scheduling.test.ts"],
-  mailersend: ["adapters.field-support.test.ts", "adapters.json-providers.test.ts", "adapters.scheduling.test.ts"],
+  mailchimp: [
+    "adapters.field-support.test.ts",
+    "adapters.json-providers.test.ts",
+    "adapters.scheduling.test.ts",
+  ],
+  mailersend: [
+    "adapters.field-support.test.ts",
+    "adapters.json-providers.test.ts",
+    "adapters.scheduling.test.ts",
+  ],
   mailgun: ["adapters.scheduling.test.ts", "adapters.unosend-ses-mailgun.test.ts"],
   mailpace: ["adapters.field-support.test.ts", "adapters.json-providers.test.ts"],
-  mailtrap: ["adapters.field-support.test.ts", "adapters.json-providers.test.ts", "adapters.scheduling.test.ts"],
+  mailtrap: [
+    "adapters.field-support.test.ts",
+    "adapters.json-providers.test.ts",
+    "adapters.scheduling.test.ts",
+  ],
   plunk: ["adapters.field-support.test.ts", "adapters.json-providers.test.ts"],
-  postmark: ["adapters.field-support.test.ts", "adapters.resend-postmark-sendgrid.test.ts", "adapters.scheduling.test.ts"],
-  primitive: ["adapters.field-support.test.ts", "adapters.jetemail-primitive-lettermint-lettr.test.ts"],
-  resend: ["adapters.field-support.test.ts", "adapters.resend-postmark-sendgrid.test.ts", "adapters.scheduling.test.ts", "core.telemetry-volume.test.ts"],
+  postmark: [
+    "adapters.field-support.test.ts",
+    "adapters.resend-postmark-sendgrid.test.ts",
+    "adapters.scheduling.test.ts",
+  ],
+  primitive: [
+    "adapters.field-support.test.ts",
+    "adapters.jetemail-primitive-lettermint-lettr.test.ts",
+  ],
+  resend: [
+    "adapters.field-support.test.ts",
+    "adapters.resend-postmark-sendgrid.test.ts",
+    "adapters.scheduling.test.ts",
+    "core.telemetry-volume.test.ts",
+  ],
   scaleway: ["adapters.field-support.test.ts", "adapters.json-providers.test.ts"],
-  sendgrid: ["adapters.json-providers.test.ts", "adapters.resend-postmark-sendgrid.test.ts", "adapters.scheduling.test.ts"],
+  sendgrid: [
+    "adapters.json-providers.test.ts",
+    "adapters.resend-postmark-sendgrid.test.ts",
+    "adapters.scheduling.test.ts",
+  ],
   sendheron: ["adapters.sendheron.test.ts"],
   helo: ["adapters.helo.test.ts"],
+  mailjet: ["adapters.json-providers.test.ts"],
+  smtp2go: ["adapters.json-providers.test.ts"],
+  elasticemail: ["adapters.json-providers.test.ts"],
+  socketlabs: ["adapters.json-providers.test.ts"],
   sequenzy: ["adapters.field-support.test.ts", "adapters.sequenzy-iterable-zeptomail.test.ts"],
-  ses: ["adapters.field-support.test.ts", "adapters.scheduling.test.ts", "adapters.unosend-ses-mailgun.test.ts"],
+  ses: [
+    "adapters.field-support.test.ts",
+    "adapters.scheduling.test.ts",
+    "adapters.unosend-ses-mailgun.test.ts",
+  ],
   smtp: ["smtp.test.ts"],
   graph: ["graph.test.ts"],
   sparkpost: ["adapters.field-support.test.ts", "adapters.scheduling.test.ts"],
-  unosend: ["adapters.field-support.test.ts", "adapters.json-providers.test.ts", "adapters.unosend-ses-mailgun.test.ts"],
+  unosend: [
+    "adapters.field-support.test.ts",
+    "adapters.json-providers.test.ts",
+    "adapters.unosend-ses-mailgun.test.ts",
+  ],
   zeptomail: ["adapters.json-providers.test.ts", "adapters.sequenzy-iterable-zeptomail.test.ts"],
 } as const satisfies Record<AdapterSupportId, readonly string[]>;
 
-const contractTestFilesById = new Map<string, readonly string[]>(Object.entries(CONTRACT_TEST_FILES));
+const contractTestFilesById = new Map<string, readonly string[]>(
+  Object.entries(CONTRACT_TEST_FILES),
+);
 
 const liveChecksById = new Map(Object.entries(registry.liveChecks));
 
@@ -85,10 +147,12 @@ const UNSANITIZED = [
   /"[a-z_]+"\s*:/i,
 ];
 
-export const evidenceSource = z.string().refine(
-  (value) => CI_RUN_URL.test(value) || MAINTAINER.test(value),
-  "Use maintainer:<github-handle> or a public repository Actions run/job URL without credentials, query, or fragment.",
-);
+export const evidenceSource = z
+  .string()
+  .refine(
+    (value) => CI_RUN_URL.test(value) || MAINTAINER.test(value),
+    "Use maintainer:<github-handle> or a public repository Actions run/job URL without credentials, query, or fragment.",
+  );
 
 export const evidenceSummary = z
   .string()
@@ -96,7 +160,8 @@ export const evidenceSummary = z
   .min(8)
   .max(240)
   .refine((value) => !UNSANITIZED.some((pattern) => pattern.test(value)), {
-    message: "Summary must be a sanitized sentence: no raw provider responses, credentials, URLs, or addresses.",
+    message:
+      "Summary must be a sanitized sentence: no raw provider responses, credentials, URLs, or addresses.",
   });
 
 export const evidenceRecordSchema = z.strictObject({
@@ -144,14 +209,17 @@ export function parseEvidence(
     if (!known.has(record.adapter)) throw new Error(`Unknown evidence adapter: ${record.adapter}`);
 
     if (PROBE_BACKED_KINDS.has(record.kind) && !liveIds.includes(record.adapter)) {
-      throw new Error(`${record.kind} evidence requires a registered live check: ${record.adapter}`);
+      throw new Error(
+        `${record.kind} evidence requires a registered live check: ${record.adapter}`,
+      );
     }
 
     if (record.kind === "contract-test" && !contractTestFilesById.has(record.adapter)) {
       throw new Error(`contract-test evidence requires a checked-in test file: ${record.adapter}`);
     }
 
-    if (Date.parse(record.timestamp) > now.getTime()) throw new Error("Evidence cannot be future-dated.");
+    if (Date.parse(record.timestamp) > now.getTime())
+      throw new Error("Evidence cannot be future-dated.");
     const key = `${record.adapter}:${record.kind}:${record.timestamp}`;
 
     if (seen.has(key)) throw new Error(`Duplicate evidence: ${key}`);

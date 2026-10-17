@@ -80,35 +80,35 @@ const email = createEmailClient({
 
 Available adapter entry points:
 
-| Entry point | Adapter |
-| --- | --- |
-| `@maillayer/core/resend` | Resend |
-| `@maillayer/core/postmark` | Postmark |
-| `@maillayer/core/sendgrid` | SendGrid |
-| `@maillayer/core/cloudflare` | Cloudflare Email Sending |
-| `@maillayer/core/unosend` | Unosend |
-| `@maillayer/core/ses` | AWS SES |
-| `@maillayer/core/mailgun` | Mailgun |
-| `@maillayer/core/mailersend` | MailerSend |
-| `@maillayer/core/brevo` | Brevo |
-| `@maillayer/core/mailchimp` | Mailchimp Transactional |
-| `@maillayer/core/sparkpost` | SparkPost |
-| `@maillayer/core/iterable` | Iterable |
-| `@maillayer/core/loops` | Loops |
-| `@maillayer/core/sequenzy` | Sequenzy |
-| `@maillayer/core/jetemail` | JetEmail |
-| `@maillayer/core/lettermint` | Lettermint |
-| `@maillayer/core/lettr` | Lettr |
-| `@maillayer/core/sendheron` | SendHeron |
-| `@maillayer/core/helo` | Helo |
-| `@maillayer/core/primitive` | Primitive |
-| `@maillayer/core/plunk` | Plunk |
-| `@maillayer/core/mailtrap` | Mailtrap |
-| `@maillayer/core/scaleway` | Scaleway |
-| `@maillayer/core/zeptomail` | ZeptoMail |
-| `@maillayer/core/mailpace` | MailPace |
-| `@maillayer/core/smtp` | SMTP |
-| `@maillayer/core/testing` | Memory and failing test adapters |
+| Entry point                  | Adapter                          |
+| ---------------------------- | -------------------------------- |
+| `@maillayer/core/resend`     | Resend                           |
+| `@maillayer/core/postmark`   | Postmark                         |
+| `@maillayer/core/sendgrid`   | SendGrid                         |
+| `@maillayer/core/cloudflare` | Cloudflare Email Sending         |
+| `@maillayer/core/unosend`    | Unosend                          |
+| `@maillayer/core/ses`        | AWS SES                          |
+| `@maillayer/core/mailgun`    | Mailgun                          |
+| `@maillayer/core/mailersend` | MailerSend                       |
+| `@maillayer/core/brevo`      | Brevo                            |
+| `@maillayer/core/mailchimp`  | Mailchimp Transactional          |
+| `@maillayer/core/sparkpost`  | SparkPost                        |
+| `@maillayer/core/iterable`   | Iterable                         |
+| `@maillayer/core/loops`      | Loops                            |
+| `@maillayer/core/sequenzy`   | Sequenzy                         |
+| `@maillayer/core/jetemail`   | JetEmail                         |
+| `@maillayer/core/lettermint` | Lettermint                       |
+| `@maillayer/core/lettr`      | Lettr                            |
+| `@maillayer/core/sendheron`  | SendHeron                        |
+| `@maillayer/core/helo`       | Helo                             |
+| `@maillayer/core/primitive`  | Primitive                        |
+| `@maillayer/core/plunk`      | Plunk                            |
+| `@maillayer/core/mailtrap`   | Mailtrap                         |
+| `@maillayer/core/scaleway`   | Scaleway                         |
+| `@maillayer/core/zeptomail`  | ZeptoMail                        |
+| `@maillayer/core/mailpace`   | MailPace                         |
+| `@maillayer/core/smtp`       | SMTP                             |
+| `@maillayer/core/testing`    | Memory and failing test adapters |
 
 ## Message shape
 
@@ -229,13 +229,13 @@ const email = createEmailClient({
 
 Built-in plugin entry points:
 
-| Entry point | Use it for |
-| --- | --- |
-| `@maillayer/core/plugins/defaults` | Default headers, tags, metadata, reply-to, and idempotency keys |
-| `@maillayer/core/plugins/routing` | Dynamic primary-adapter selection from the prepared message and send metadata |
-| `@maillayer/core/plugins/timeout` | A whole-logical-send timeout composed with caller cancellation |
-| `@maillayer/core/plugins/observability` | Redacted logs, metrics, and traces from lifecycle events |
-| `@maillayer/core/plugins/capture` | In-memory event capture for tests |
+| Entry point                             | Use it for                                                                    |
+| --------------------------------------- | ----------------------------------------------------------------------------- |
+| `@maillayer/core/plugins/defaults`      | Default headers, tags, metadata, reply-to, and idempotency keys               |
+| `@maillayer/core/plugins/routing`       | Dynamic primary-adapter selection from the prepared message and send metadata |
+| `@maillayer/core/plugins/timeout`       | A whole-logical-send timeout composed with caller cancellation                |
+| `@maillayer/core/plugins/observability` | Redacted logs, metrics, and traces from lifecycle events                      |
+| `@maillayer/core/plugins/capture`       | In-memory event capture for tests                                             |
 
 ## CLI
 

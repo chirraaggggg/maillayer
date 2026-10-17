@@ -3,6 +3,7 @@
   "pages": [
     "index",
     "getting-started",
+    "providers",
     "adapters",
     "concepts",
     "plugins",

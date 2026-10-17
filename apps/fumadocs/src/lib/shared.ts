@@ -2,8 +2,7 @@ export const appName = "MailLayer";
 
 export const productTagline = "One API. Every email provider. Fully open source.";
 
-export const appDescription =
-  `${productTagline} Send transactional email with the providers you already use.`;
+export const appDescription = `${productTagline} Send transactional email with the providers you already use.`;
 
 export const docsRoute = "/docs";
 
@@ -16,7 +15,7 @@ export const siteUrl = (import.meta.env.VITE_SITE_URL ?? "https://maillayer.dev"
 // machine indexes lead with what the project is and the rules for using it safely.
 export const llmsOverview = `> ${appDescription}
 
-MailLayer is an open-source, server-side TypeScript library (npm: \`@maillayer/core\`) for transactional email. Send with your existing provider account, validate message fields, test with no-network adapters, and inspect common error types. It ships 26 provider API adapters plus SMTP, 27 adapters total, so changing providers later is optional. It is a library installed in your app, not a hosted API or a service you sign up for. Your provider still handles credentials, billing, and delivery.
+MailLayer is an open-source, server-side TypeScript library (npm: \`@maillayer/core\`) for transactional email. Send with your existing provider account, validate message fields, test with no-network adapters, and inspect common error types. It ships 30 provider API adapters plus SMTP, 31 adapters total, so changing providers later is optional. It is a library installed in your app, not a hosted API or a service you sign up for. Your provider still handles credentials, billing, and delivery.
 
 ## When to use MailLayer
 

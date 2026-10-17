@@ -22,9 +22,7 @@ export type ResendAdapterOptions = {
   headers?: Record<string, string>;
 };
 
-export function resend(
-  options: ResendAdapterOptions,
-): EmailAdapter<"resend", { baseUrl: string }> {
+export function resend(options: ResendAdapterOptions): EmailAdapter<"resend", { baseUrl: string }> {
   const baseUrl = options.baseUrl ?? "https://api.resend.com";
   const fetcher = options.fetch ?? fetch;
 

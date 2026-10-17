@@ -24,7 +24,10 @@ const liveCheckSchema = z.strictObject({
 
 // Derive which test files import each adapter module; the docs table must match disk.
 export function contractTestFilesOnDisk(ids: readonly string[], dir = sdkSrc) {
-  const tests = readdirSync(dir).filter((file) => file.endsWith(".test.ts")).sort();
+  const tests = readdirSync(dir)
+    .filter((file) => file.endsWith(".test.ts"))
+    .sort();
+
   const sources = tests.map((file) => [file, readFileSync(join(dir, file), "utf8")] as const);
 
   return new Map(
@@ -43,7 +46,10 @@ export function validateAdapterVerification(
   const docsIds = ADAPTER_SUPPORT_ENTRIES.map(({ id }) => id).sort();
   const catalogIds = providers.map(({ key }) => key).sort();
 
-  if (JSON.stringify(sdkIds) !== JSON.stringify(docsIds) || JSON.stringify(sdkIds) !== JSON.stringify(catalogIds)) {
+  if (
+    JSON.stringify(sdkIds) !== JSON.stringify(docsIds) ||
+    JSON.stringify(sdkIds) !== JSON.stringify(catalogIds)
+  ) {
     throw new Error("Verification adapter membership must match the SDK.");
   }
 
@@ -74,7 +80,9 @@ export function validateAdapterVerification(
 
   for (const id of sdkIds) {
     if (JSON.stringify(onDisk.get(id)) !== JSON.stringify(contractTestFilesFor(id))) {
-      throw new Error(`CONTRACT_TEST_FILES drifted from disk for ${id}: ${JSON.stringify(onDisk.get(id))}`);
+      throw new Error(
+        `CONTRACT_TEST_FILES drifted from disk for ${id}: ${JSON.stringify(onDisk.get(id))}`,
+      );
     }
   }
 
@@ -84,7 +92,9 @@ export function validateAdapterVerification(
 if (import.meta.main) {
   try {
     const result = validateAdapterVerification();
-    console.log(`Adapter verification evidence valid: ${result.records.length} published records. Validation does not execute live checks.`);
+    console.log(
+      `Adapter verification evidence valid: ${result.records.length} published records. Validation does not execute live checks.`,
+    );
   } catch (error) {
     console.error(error instanceof Error ? error.message : "Invalid verification evidence.");
     process.exitCode = 1;

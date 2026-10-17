@@ -1,5 +1,6 @@
 import {
   getFieldSupport,
+  isProviderKey,
   messageFieldLabels,
   messageFields,
   type ProviderKey,
@@ -50,6 +51,10 @@ export function CompareTable({ columns }: { columns: { key: ProviderKey; name: s
 }
 
 export function FullCompareTable({ providers: allProviders }: { providers: readonly Provider[] }) {
+  const supportedProviders = allProviders.filter(
+    (provider): provider is Provider & { key: ProviderKey } => isProviderKey(provider.key),
+  );
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-sm">
@@ -64,7 +69,7 @@ export function FullCompareTable({ providers: allProviders }: { providers: reado
           </tr>
         </thead>
         <tbody>
-          {allProviders.map((provider) => {
+          {supportedProviders.map((provider) => {
             const support = getFieldSupport(provider.key);
 
             return (

@@ -1,0 +1,82 @@
+---
+title: Mailjet
+description: Send through the Mailjet email API with the transactional API v3.1 or the SMTP relay.
+icon: mailjet
+---
+
+## Capabilities
+
+| Repeated headers | Idempotency | Scheduling | Personalized |
+| --- | --- | --- | --- |
+| No | `none` | No | `expanded` |
+
+These values come from the adapter's exported `capabilities` declaration. The [field support matrix](/docs/adapters/field-support) covers normalized message fields.
+
+Mailjet offers two send paths through MailLayer: the transactional API v3.1 (`/v3.1/send`) and the SMTP relay. This adapter uses the API v3.1 with plain `fetch`, so your bundle does not need the official Mailjet SDK. It maps the normalized `EmailMessage` onto Mailjet's `_messages` payload: `cc`, `bcc`, `replyTo`, `headers`, `attachments`, and `tags` become `extras` so nothing is dropped. `metadata` is not a Mailjet concept, so the adapter rejects it before any request is made.
+
+<ProviderBadge adapter="mailjet" />
+
+## Configure
+
+Create a Mailjet API key with the `mail jet:content:Send` permission and verify the sender address in your Mailjet account.
+
+```ts title="lib/email.ts"
+import { createEmailClient } from "@maillayer/core";
+import { mailjet } from "@maillayer/core/mailjet";
+
+export const email = createEmailClient({
+  adapters: [mailjet({ apiKey: process.env.MAILJET_API_KEY! })],
+});
+```
+
+<TypeTable
+  type={{
+    apiKey: {
+      description: "Mailjet API key with the content:Send permission.",
+      type: "string",
+      required: true,
+    },
+    baseUrl: {
+      description: "Override the API origin, e.g. for a proxy.",
+      type: "string",
+      default: '"https://api.mailjet.com"',
+    },
+    fetch: {
+      description: "Custom fetch implementation for tests or special runtimes.",
+      type: "typeof fetch",
+    },
+  }}
+/>
+
+## Send
+
+```ts
+const result = await email.send({
+  from: "Acme <alerts@acme.com>",
+  to: "user@example.com",
+  cc: "team@acme.com",
+  subject: "Your invoice is ready",
+  html: "<p>Your March invoice is attached.</p>",
+  tags: [{ name: "type", value: "invoice" }],
+});
+
+console.log(result.id); // Mailjet MessageID
+```
+
+## Verify from the CLI
+
+```bash
+MAILJET_API_KEY="..." npx --package @maillayer/core maillayer doctor --adapter mailjet
+```
+
+```bash
+npx --package @maillayer/core maillayer send \
+  --adapter mailjet \
+  --from "Acme <alerts@acme.com>" \
+  --to user@example.com \
+  --subject "Mailjet smoke test" \
+  --text "It works" \
+  --dry-run
+```
+
+Drop `--dry-run` to send for real. The adapter fails fast with an `EmailValidationError` if the message carries `metadata`, `cc` without a Mailjet-compatible `extras` mapping, or both `html` and `text` (Mailjet only uses the first non-empty body).

@@ -84,13 +84,11 @@ describe("adapter pricing", () => {
   });
 
   test("searches by provider name and filters selected-volume status", () => {
+    expect(getAdapterPricingRows({ query: "SeQuEnZy" }).map((row) => row.provider.key)).toEqual([
+      "sequenzy",
+    ]);
     expect(
-      getAdapterPricingRows({ query: "SeQuEnZy" }).map((row) => row.provider.key),
-    ).toEqual(["sequenzy"]);
-    expect(
-      getAdapterPricingRows({ status: "variable", volume: 1_000 }).map(
-        (row) => row.provider.key,
-      ),
+      getAdapterPricingRows({ status: "variable", volume: 1_000 }).map((row) => row.provider.key),
     ).toEqual(["iterable", "graph", "smtp"]);
   });
 });

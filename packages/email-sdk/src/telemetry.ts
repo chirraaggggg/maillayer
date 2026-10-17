@@ -336,7 +336,8 @@ export function getTelemetryStatus(
 
   if (stored === "unreadable") return { enabled: false, reason: "config-unreadable", configPath };
 
-  if (stored !== "missing" && stored.disabled) return { enabled: false, reason: "config", configPath };
+  if (stored !== "missing" && stored.disabled)
+    return { enabled: false, reason: "config", configPath };
 
   return { enabled: true, reason: "default", configPath };
 }

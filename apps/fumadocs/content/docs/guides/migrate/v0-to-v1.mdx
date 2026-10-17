@@ -8,27 +8,28 @@ v1 keeps `createEmailClient` and adapter subpath imports, but removes legacy ali
 <Callout title="Ask your coding agent to migrate the app">
   Install the dynamic migration skill with `npx skills add chirraaggggg/maillayer --skill maillayer-migrate`, then ask the agent to audit before editing:
 
-  ```text
-  Use the maillayer-migrate skill. Inspect the installed MailLayer version,
-  run the bundled migration audit, migrate this app to v1, preserve delivery
-  semantics, run focused tests and typechecks, and do not send live email.
-  ```
+```text
+Use the maillayer-migrate skill. Inspect the installed MailLayer version,
+run the bundled migration audit, migrate this app to v1, preserve delivery
+semantics, run focused tests and typechecks, and do not send live email.
+```
 
-  The skill reads the installed declarations and current migration docs instead of relying on a frozen codemod.
+The skill reads the installed declarations and current migration docs instead of relying on a frozen codemod.
+
 </Callout>
 
 ## Migration map
 
-| Area | v0 | v1 | Risk |
-| --- | --- | --- | --- |
-| Routing | providers, fallback arrays | adapters, explicit fallback policy | Medium |
-| Retry | retries after the first call | total `maxAttempts` | High |
-| Batches | `sendBatch` | ordered settled `sendMany` | Medium |
-| Personalization | message `recipientVariables` | `sendPersonalized` recipients | High |
-| Idempotency | message field | send option | High |
-| Results | provider aliases | normalized adapter result | Medium |
-| Errors | open provider failures | closed SDK error union | High |
-| Headers and dates | permissive shapes | lossless headers and zoned timestamps | Medium |
+| Area              | v0                           | v1                                    | Risk   |
+| ----------------- | ---------------------------- | ------------------------------------- | ------ |
+| Routing           | providers, fallback arrays   | adapters, explicit fallback policy    | Medium |
+| Retry             | retries after the first call | total `maxAttempts`                   | High   |
+| Batches           | `sendBatch`                  | ordered settled `sendMany`            | Medium |
+| Personalization   | message `recipientVariables` | `sendPersonalized` recipients         | High   |
+| Idempotency       | message field                | send option                           | High   |
+| Results           | provider aliases             | normalized adapter result             | Medium |
+| Errors            | open provider failures       | closed SDK error union                | High   |
+| Headers and dates | permissive shapes            | lossless headers and zoned timestamps | Medium |
 
 Start with the high-risk rows because they can change whether an email is retried, duplicated, delayed, or considered successful.
 
@@ -73,16 +74,16 @@ Adapter option types follow the same rule. For example, `ResendProviderOptions` 
 
 The same rename applies to client inspection, bound clients, hooks, and middleware:
 
-| v0 | v1 |
-| --- | --- |
-| `client.providers` | `client.adapters` |
-| `client.defaultProvider` | `client.defaultAdapter` |
-| `client.provider(name)` | `client.adapter(name)` |
+| v0                          | v1                         |
+| --------------------------- | -------------------------- |
+| `client.providers`          | `client.adapters`          |
+| `client.defaultProvider`    | `client.defaultAdapter`    |
+| `client.provider(name)`     | `client.adapter(name)`     |
 | `client.withProvider(name)` | `client.withAdapter(name)` |
-| `event.provider` | `event.adapter` |
-| `memoryProvider` | `memoryAdapter` |
-| `failingProvider` | `failingAdapter` |
-| `MemoryProvider` | `MemoryAdapter` |
+| `event.provider`            | `event.adapter`            |
+| `memoryProvider`            | `memoryAdapter`            |
+| `failingProvider`           | `failingAdapter`           |
+| `MemoryProvider`            | `MemoryAdapter`            |
 
 The compat subpath keeps the client aliases and translates hook and middleware events while you migrate callers.
 
@@ -90,11 +91,11 @@ The compat subpath keeps the client aliases and translates hook and middleware e
 
 The v1 root exports only the adapter-first types. Update explicit imports and annotations:
 
-| v0 root type | v1 root type or shape |
-| --- | --- |
-| `SendOptions` | `EmailSendOptions` |
-| `SendBatchItem` | `EmailSendItem` with `{ message, options }` |
-| `SendBatchResult` | `EmailSendSettledResult`; successful entries use `result` instead of `response` |
+| v0 root type         | v1 root type or shape                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| `SendOptions`        | `EmailSendOptions`                                                                             |
+| `SendBatchItem`      | `EmailSendItem` with `{ message, options }`                                                    |
+| `SendBatchResult`    | `EmailSendSettledResult`; successful entries use `result` instead of `response`                |
 | `RecipientVariables` | `EmailPersonalizedRecipient["variables"]` for one recipient, passed through `sendPersonalized` |
 
 `RecipientVariables` has no root-level v1 alias because variables now belong to each `EmailPersonalizedRecipient`, not to an address-keyed message field. The compat subpath still exports all four legacy types for an incremental migration.
@@ -104,11 +105,15 @@ The v1 root exports only the adapter-first types. Update explicit imports and an
 v0 counted retries after the first call. v1 counts total attempts.
 
 ```ts title="before-v0.ts"
-retry: { retries: 2 } // three total calls
+retry: {
+  retries: 2;
+} // three total calls
 ```
 
 ```ts title="after-v1.ts"
-retry: { maxAttempts: 3 }
+retry: {
+  maxAttempts: 3;
+}
 ```
 
 Per-send `retries: 0` becomes `retry: { maxAttempts: 1 }`.
@@ -154,10 +159,7 @@ const first = results[0]?.ok ? results[0].response : undefined;
 ```
 
 ```ts title="after-v1.ts"
-const results = await email.sendMany([
-  { message: welcomeMessage },
-  { message: receiptMessage },
-]);
+const results = await email.sendMany([{ message: welcomeMessage }, { message: receiptMessage }]);
 const first = results[0]?.ok ? results[0].result : undefined;
 ```
 
@@ -199,7 +201,7 @@ headers: { "X-Trace": "abc" }
 ```
 
 ```ts title="after-v1.ts"
-headers: [{ name: "X-Trace", value: "abc" }]
+headers: [{ name: "X-Trace", value: "abc" }];
 ```
 
 Repeated names are preserved only by adapters that declare `repeatedHeaders: true`.
@@ -240,5 +242,13 @@ Compat translates legacy constructor and send option names, `retries`, `sendBatc
 
 The migration is complete only when the application has no `/compat` import, no migration-skill findings that belong to MailLayer, and no tests that depend on legacy result aliases.
 
-<Card title="Compatibility reference" href="/docs/reference/compatibility" description="See exactly what the temporary bridge translates." />
-<Card title="Client reference" href="/docs/reference/client" description="Look up the complete v1 method and option surface." />
+<Card
+  title="Compatibility reference"
+  href="/docs/reference/compatibility"
+  description="See exactly what the temporary bridge translates."
+/>
+<Card
+  title="Client reference"
+  href="/docs/reference/client"
+  description="Look up the complete v1 method and option surface."
+/>

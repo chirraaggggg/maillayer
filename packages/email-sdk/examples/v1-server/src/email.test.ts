@@ -1,12 +1,6 @@
 import { expect, test } from "bun:test";
-import {
-  createEmailClient,
-  EmailAdapterError,
-} from "@maillayer/core";
-import {
-  failingAdapter,
-  memoryAdapter,
-} from "@maillayer/core/testing";
+import { createEmailClient, EmailAdapterError } from "@maillayer/core";
+import { failingAdapter, memoryAdapter } from "@maillayer/core/testing";
 
 const message = {
   from: "Acme <hello@acme.com>",

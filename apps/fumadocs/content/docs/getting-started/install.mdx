@@ -33,7 +33,7 @@ import sdk = require("@maillayer/core");
 import { resend } from "@maillayer/core/resend";
 
 const email = sdk.createEmailClient({
-  adapters: [resend({ apiKey: process.env.RESEND_API_KEY! })],
+  adapters: [resend({ apiKey: process.env.RESEND_API_KEY })],
 });
 ```
 
@@ -69,5 +69,13 @@ For a global Homebrew install, use `brew install chirraaggggg/maillayer` after t
 
 </Steps>
 
-<Card title="Quickstart" href="/docs/getting-started/quickstart" description="Create a client and send a validated message." />
-<Card title="Provider credentials" href="/docs/getting-started/credentials" description="Set the environment variables required by your adapter." />
+<Card
+  title="Quickstart"
+  href="/docs/getting-started/quickstart"
+  description="Create a client and send a validated message."
+/>
+<Card
+  title="Provider credentials"
+  href="/docs/getting-started/credentials"
+  description="Set the environment variables required by your adapter."
+/>

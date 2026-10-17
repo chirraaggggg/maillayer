@@ -1,10 +1,5 @@
 import { createEmailClient as createV1EmailClient } from "./core.js";
-import {
-  toLegacyProvider,
-  toV1Adapter,
-  toV1Hooks,
-  toV1Plugin,
-} from "./compat/adapters.js";
+import { toLegacyProvider, toV1Adapter, toV1Hooks, toV1Plugin } from "./compat/adapters.js";
 import {
   toPersonalizedInput,
   toV1Message,
@@ -184,9 +179,7 @@ export type EmailRetryConfig = {
   shouldRetry?: (error: EmailSdkError, attempt: number) => boolean;
 };
 
-export type EmailClientOptions<
-  TPlugins extends readonly EmailPlugin[] = readonly EmailPlugin[],
-> = {
+export type EmailClientOptions<TPlugins extends readonly EmailPlugin[] = readonly EmailPlugin[]> = {
   adapters?: readonly LegacyEmailAdapter[];
   providers?: readonly LegacyEmailAdapter[];
   defaultAdapter?: string;
@@ -311,9 +304,7 @@ export function createEmailClient<
       if (message.recipientVariables && Object.keys(message.recipientVariables).length > 0) {
         warnOnce("recipientVariables", "Use sendPersonalized({ message, recipients }) instead.");
 
-        return withLegacyResult(
-          await client.sendPersonalized(toPersonalizedInput(message), send),
-        );
+        return withLegacyResult(await client.sendPersonalized(toPersonalizedInput(message), send));
       }
 
       return withLegacyResult(await client.send(toV1Message(message), send));

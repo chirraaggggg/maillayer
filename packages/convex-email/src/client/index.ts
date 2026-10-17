@@ -37,7 +37,10 @@ type QueryCtx = Pick<GenericQueryCtx<GenericDataModel>, "runQuery">;
 
 type ActionCtx = Pick<GenericActionCtx<GenericDataModel>, "runAction">;
 
-type PublicMutationCtx = Pick<GenericMutationCtx<GenericDataModel>, "runMutation" | "runQuery" | "auth">;
+type PublicMutationCtx = Pick<
+  GenericMutationCtx<GenericDataModel>,
+  "runMutation" | "runQuery" | "auth"
+>;
 
 type PublicQueryCtx = Pick<GenericQueryCtx<GenericDataModel>, "runQuery" | "auth">;
 
@@ -114,7 +117,9 @@ const maxBatchSize = 100;
 const encoder = new TextEncoder();
 
 /** Verifies Resend webhooks with the Svix signature headers. Rejects every other provider. */
-export function resendWebhookVerifier(options: ResendWebhookVerifierOptions): ConvexEmailWebhookVerifier {
+export function resendWebhookVerifier(
+  options: ResendWebhookVerifierOptions,
+): ConvexEmailWebhookVerifier {
   return async ({ provider, body, headers }) => {
     if (provider !== "resend") {
       return false;
@@ -133,7 +138,9 @@ export function resendWebhookVerifier(options: ResendWebhookVerifierOptions): Co
  * Verifies Mailgun webhooks with the HMAC in the JSON body. Mailgun signs the timestamp and token,
  * not the body, so keep the route on TLS. Rejects every other provider.
  */
-export function mailgunWebhookVerifier(options: MailgunWebhookVerifierOptions): ConvexEmailWebhookVerifier {
+export function mailgunWebhookVerifier(
+  options: MailgunWebhookVerifierOptions,
+): ConvexEmailWebhookVerifier {
   return async ({ provider, body }) => {
     if (provider !== "mailgun") {
       return false;
@@ -153,7 +160,9 @@ export function mailgunWebhookVerifier(options: MailgunWebhookVerifierOptions): 
  * (`https://user:pass@.../email/webhooks/postmark`) and check them here. Rejects every other
  * provider.
  */
-export function postmarkBasicAuthVerifier(options: PostmarkBasicAuthVerifierOptions): ConvexEmailWebhookVerifier {
+export function postmarkBasicAuthVerifier(
+  options: PostmarkBasicAuthVerifierOptions,
+): ConvexEmailWebhookVerifier {
   if (!options.username || !options.password) {
     throw new Error("postmarkBasicAuthVerifier requires a non-empty username and password.");
   }
@@ -500,7 +509,7 @@ export class ConvexEmail {
   ) {
     const ownerId = authorize
       ? await authorize(ctx, operation)
-      : (await ctx.auth.getUserIdentity())?.subject ?? null;
+      : ((await ctx.auth.getUserIdentity())?.subject ?? null);
 
     if (!ownerId) {
       throw new Error("Unauthorized");

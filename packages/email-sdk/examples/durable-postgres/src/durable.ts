@@ -429,7 +429,8 @@ export async function reconcile(
     if (decision === "not_sent") {
       const knownReceipt = await tx.query("SELECT 1 FROM receipts WHERE job_id=$1 LIMIT 1", [id]);
 
-      if (knownReceipt.rowCount || job.delivery) throw new Error("Receipt evidence forbids whole-job resend");
+      if (knownReceipt.rowCount || job.delivery)
+        throw new Error("Receipt evidence forbids whole-job resend");
     }
 
     const state =

@@ -55,9 +55,7 @@ export function mailersend(
     parseResponse(body, _message, response) {
       return {
         adapter: "mailersend",
-        id:
-          response.headers.get("x-message-id") ??
-          firstString(body, ["message_id", "id"]),
+        id: response.headers.get("x-message-id") ?? firstString(body, ["message_id", "id"]),
         raw: body,
       };
     },

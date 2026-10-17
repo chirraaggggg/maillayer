@@ -28,10 +28,10 @@ The default retry policy makes one attempt. The default delay uses capped expone
 
 `EmailAdapterError.delivery` is either `not_sent` or `unknown`.
 
-| Delivery value | Meaning | Default fallback behavior |
-| --- | --- | --- |
-| `not_sent` | The adapter can prove the provider did not accept the message. | Continue to the next configured adapter. |
-| `unknown` | Dispatch may have started, so delivery cannot be ruled out. | Stop to avoid an automatic duplicate. |
+| Delivery value | Meaning                                                        | Default fallback behavior                |
+| -------------- | -------------------------------------------------------------- | ---------------------------------------- |
+| `not_sent`     | The adapter can prove the provider did not accept the message. | Continue to the next configured adapter. |
+| `unknown`      | Dispatch may have started, so delivery cannot be ruled out.    | Stop to avoid an automatic duplicate.    |
 
 Network timeouts and failures after dispatch begins are conservatively classified as `unknown` unless the adapter can prove otherwise.
 
@@ -76,5 +76,13 @@ await pending; // throws EmailAbortError
 
 When no route succeeds, the client throws `EmailRouteError`. Its `failures` array preserves adapter order and contains typed `EmailAdapterError` values.
 
-<Card title="Error reference" href="/docs/reference/errors" description="Match on closed error codes and typed fields." />
-<Card title="Production pipeline" href="/docs/guides/production-send-pipeline" description="Combine routing with idempotency, queues, and observability." />
+<Card
+  title="Error reference"
+  href="/docs/reference/errors"
+  description="Match on closed error codes and typed fields."
+/>
+<Card
+  title="Production pipeline"
+  href="/docs/guides/production-send-pipeline"
+  description="Combine routing with idempotency, queues, and observability."
+/>

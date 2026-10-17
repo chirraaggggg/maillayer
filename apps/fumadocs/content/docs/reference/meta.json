@@ -2,6 +2,7 @@
   "title": "Reference",
   "icon": "LibraryBig",
   "pages": [
+    "index",
     "client",
     "message",
     "adapter-contract",

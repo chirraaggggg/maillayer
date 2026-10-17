@@ -19,7 +19,7 @@ import { createEmailClient } from "@maillayer/core";
 import { resend } from "@maillayer/core/resend";
 
 export const email = createEmailClient({
-  adapters: [resend({ apiKey: process.env.RESEND_API_KEY! })],
+  adapters: [resend({ apiKey: process.env.RESEND_API_KEY })],
 });
 ```
 
@@ -61,4 +61,8 @@ Keep the authorization check, recipient lookup, sender, template, and idempotenc
 
 Chat SDK and AI SDK can be used together. Chat SDK owns the conversation and platform adapters; [AI SDK](/docs/integrations/ai-sdk) owns model execution and the approval-gated `sendEmail` tool.
 
-<Card title="AI SDK" href="/docs/integrations/ai-sdk" description="Add a narrow email tool with explicit user approval." />
+<Card
+  title="AI SDK"
+  href="/docs/integrations/ai-sdk"
+  description="Add a narrow email tool with explicit user approval."
+/>

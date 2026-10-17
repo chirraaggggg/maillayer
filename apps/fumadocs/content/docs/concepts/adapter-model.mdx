@@ -17,8 +17,8 @@ import { smtp } from "@maillayer/core/smtp";
 
 const email = createEmailClient({
   adapters: [
-    resend({ apiKey: process.env.RESEND_API_KEY! }),
-    smtp({ name: "backup", host: process.env.SMTP_HOST! }),
+    resend({ apiKey: process.env.RESEND_API_KEY }),
+    smtp({ name: "backup", host: process.env.SMTP_HOST }),
   ],
   defaultAdapter: "resend",
 });
@@ -69,5 +69,13 @@ await backup.validate(message);
 await backup.send(message);
 ```
 
-<Card title="Adapter contract" href="/docs/reference/adapter-contract" description="Implement validation, capabilities, send, and optional personalized delivery." />
-<Card title="Capability groups" href="/docs/adapters/capability-groups" description="Choose routes by scheduling, idempotency, headers, and personalization." />
+<Card
+  title="Adapter contract"
+  href="/docs/reference/adapter-contract"
+  description="Implement validation, capabilities, send, and optional personalized delivery."
+/>
+<Card
+  title="Capability groups"
+  href="/docs/adapters/capability-groups"
+  description="Choose routes by scheduling, idempotency, headers, and personalization."
+/>

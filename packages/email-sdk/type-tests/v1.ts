@@ -2,18 +2,33 @@ import { cloudflare } from "../src/cloudflare.js";
 import { createEmailClient } from "../src/index.js";
 import type { EmailAdapter, EmailHookEvent, EmailMessage } from "../src/index.js";
 import { smtp } from "../src/smtp.js";
-import { normalizeWebhookEvent, verifyMailgunWebhook, verifyResendWebhook } from "../src/webhooks.js";
+import {
+  normalizeWebhookEvent,
+  verifyMailgunWebhook,
+  verifyResendWebhook,
+} from "../src/webhooks.js";
 import type { NormalizedWebhookEvent, WebhookDeliveryStatus } from "../src/webhooks.js";
 
 const verifiedWebhook: Promise<boolean> = verifyResendWebhook({
-  body: "{}", headers: new Headers(), secret: ["current", "previous"], now: Date.now(), toleranceSeconds: 300,
+  body: "{}",
+  headers: new Headers(),
+  secret: ["current", "previous"],
+  now: Date.now(),
+  toleranceSeconds: 300,
 });
 
-const verifiedMailgun: Promise<boolean> = verifyMailgunWebhook({ body: "{}", secret: "signing-key", signatureField: "parent-signature" });
+const verifiedMailgun: Promise<boolean> = verifyMailgunWebhook({
+  body: "{}",
+  secret: "signing-key",
+  signatureField: "parent-signature",
+});
 
-const normalizedWebhook: Promise<NormalizedWebhookEvent> = normalizeWebhookEvent({ provider: "resend", body: "{}" });
+const normalizedWebhook: Promise<NormalizedWebhookEvent> = normalizeWebhookEvent({
+  provider: "resend",
+  body: "{}",
+});
 
-normalizedWebhook.then(event => {
+normalizedWebhook.then((event) => {
   const status: WebhookDeliveryStatus | undefined = event.status;
   void status;
 });

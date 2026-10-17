@@ -87,7 +87,14 @@ function createTest() {
 }
 
 async function hmacBase64(key: Uint8Array<ArrayBuffer>, content: string) {
-  const cryptoKey = await crypto.subtle.importKey("raw", key, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    key,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+
   const signature = await crypto.subtle.sign("HMAC", cryptoKey, new TextEncoder().encode(content));
 
   return Buffer.from(signature).toString("base64");
@@ -96,9 +103,13 @@ async function hmacBase64(key: Uint8Array<ArrayBuffer>, content: string) {
 async function hmacHex(key: string, content: string) {
   const encoder = new TextEncoder();
 
-  const cryptoKey = await crypto.subtle.importKey("raw", encoder.encode(key), { name: "HMAC", hash: "SHA-256" }, false, [
-    "sign",
-  ]);
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(key),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
 
   const signature = await crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(content));
 
@@ -122,16 +133,27 @@ async function signedMailgunBody(token: string) {
   });
 }
 
-function webhookInput(provider: string, headers: Record<string, string>, body = "{}"): ConvexEmailWebhookRequest {
-  return { provider, headers, body, request: new Request("https://example.test/email/webhooks", { method: "POST" }) };
+function webhookInput(
+  provider: string,
+  headers: Record<string, string>,
+  body = "{}",
+): ConvexEmailWebhookRequest {
+  return {
+    provider,
+    headers,
+    body,
+    request: new Request("https://example.test/email/webhooks", { method: "POST" }),
+  };
 }
 
 describe("ConvexEmail.registerRoutes", () => {
   test("refuses to register routes without a verifier", () => {
-    expect(() => email.registerRoutes(httpRouter())).toThrow("registerRoutes() requires a webhook verifier");
-    expect(() => email.registerRoutes(httpRouter(), { unsafeAllowUnverifiedWebhooks: false })).toThrow(
-      "requires a webhook verifier",
+    expect(() => email.registerRoutes(httpRouter())).toThrow(
+      "registerRoutes() requires a webhook verifier",
     );
+    expect(() =>
+      email.registerRoutes(httpRouter(), { unsafeAllowUnverifiedWebhooks: false }),
+    ).toThrow("requires a webhook verifier");
   });
 
   test("registers unverified routes only with the explicit unsafe opt-in", async () => {
@@ -190,7 +212,11 @@ describe("ConvexEmail.registerRoutes", () => {
     const body = await signedMailgunBody("token_1");
 
     const accepted = await t.fetch("/email/webhooks/mailgun", { method: "POST", body });
-    const rejected = await t.fetch("/email/webhooks/mailgun", { method: "POST", body: body.replace("token_1", "token_2") });
+
+    const rejected = await t.fetch("/email/webhooks/mailgun", {
+      method: "POST",
+      body: body.replace("token_1", "token_2"),
+    });
 
     expect(accepted.status).toBe(200);
     expect(rejected.status).toBe(401);
@@ -234,7 +260,9 @@ describe("webhook verifier helpers", () => {
   });
 
   test("verifyByProvider rejects providers without a verifier", async () => {
-    const verify = verifyByProvider({ postmark: postmarkBasicAuthVerifier({ username: "hooks", password: "s3cret" }) });
+    const verify = verifyByProvider({
+      postmark: postmarkBasicAuthVerifier({ username: "hooks", password: "s3cret" }),
+    });
 
     expect(await verify(webhookInput("custom", {}))).toBe(false);
   });
@@ -290,7 +318,9 @@ describe("ConvexEmail.exposeApi", () => {
   test("returns null for an id that is not an email id", async () => {
     const t = createTest();
 
-    expect(await t.withIdentity({ subject: "user_123" }).query(app.status, { emailId: "not-an-id" })).toBeNull();
+    expect(
+      await t.withIdentity({ subject: "user_123" }).query(app.status, { emailId: "not-an-id" }),
+    ).toBeNull();
   });
 
   test("requires an explicit admin authorizer before exposing configuration", () => {
@@ -304,7 +334,9 @@ describe("ConvexEmail.exposeApi", () => {
       return identity?.tokenIdentifier.startsWith("app|") ? identity.subject : null;
     };
 
-    const auth = { getUserIdentity: async () => ({ subject: "user_123", tokenIdentifier: "app|user_123" }) };
+    const auth = {
+      getUserIdentity: async () => ({ subject: "user_123", tokenIdentifier: "app|user_123" }),
+    };
 
     expect(await authorize({ auth }, "send")).toBe("user_123");
   });

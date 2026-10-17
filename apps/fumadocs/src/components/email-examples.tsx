@@ -7,7 +7,7 @@ import {
   EmailSeparator,
   EmailText,
   ShadcnEmail,
-} from "@maillayer/core/react";
+} from "../../../../packages/email-sdk/src/react";
 import { useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
@@ -225,9 +225,7 @@ function TemplateBody({ id, theme }: EmailExampleProps & { theme: EmailTheme }) 
       return (
         <>
           <EmailHeading>Reset your password</EmailHeading>
-          <EmailText>
-            We received a request to reset the password for your Acme account.
-          </EmailText>
+          <EmailText>We received a request to reset the password for your Acme account.</EmailText>
           <EmailButton href="https://acme.com/reset">Reset password</EmailButton>
           <EmailText muted style={{ fontSize: 13, marginBottom: 0, marginTop: 20 }}>
             This link expires in 30 minutes. The request came from Safari on macOS.
@@ -271,7 +269,10 @@ function TemplateBody({ id, theme }: EmailExampleProps & { theme: EmailTheme }) 
             Your Acme trial ends Friday. Your workspace and data will stay available.
           </EmailText>
           <Details
-            rows={[["Current plan", "Pro trial"], ["Trial ends", "Friday, August 1"]]}
+            rows={[
+              ["Current plan", "Pro trial"],
+              ["Trial ends", "Friday, August 1"],
+            ]}
             theme={theme}
           />
           <EmailButton href="https://acme.com/plans">Choose a plan</EmailButton>
@@ -294,7 +295,10 @@ function TemplateBody({ id, theme }: EmailExampleProps & { theme: EmailTheme }) 
             <div style={{ backgroundColor: progressFill, height: "100%", width: "85%" }} />
           </div>
           <Details
-            rows={[["Used", "85,240 emails"], ["Plan limit", "100,000 emails"]]}
+            rows={[
+              ["Used", "85,240 emails"],
+              ["Plan limit", "100,000 emails"],
+            ]}
             theme={theme}
           />
           <EmailButton href="https://acme.com/usage">Review usage</EmailButton>
@@ -306,7 +310,11 @@ function TemplateBody({ id, theme }: EmailExampleProps & { theme: EmailTheme }) 
           <EmailHeading>Payment received</EmailHeading>
           <EmailText>Thanks for your payment. Here’s a summary for order #1842.</EmailText>
           <Details
-            rows={[["Acme Pro · July", "$49.00"], ["Tax", "$0.00"], ["Total", "$49.00"]]}
+            rows={[
+              ["Acme Pro · July", "$49.00"],
+              ["Tax", "$0.00"],
+              ["Total", "$49.00"],
+            ]}
             strongLast
             theme={theme}
           />
@@ -321,7 +329,10 @@ function TemplateBody({ id, theme }: EmailExampleProps & { theme: EmailTheme }) 
             Invoice INV-2048 is ready and will be charged to your saved payment method.
           </EmailText>
           <Details
-            rows={[["Amount due", "$249.00"], ["Due date", "August 1, 2026"]]}
+            rows={[
+              ["Amount due", "$249.00"],
+              ["Due date", "August 1, 2026"],
+            ]}
             theme={theme}
           />
           <EmailButton href="https://acme.com/invoices/2048">View invoice</EmailButton>
@@ -333,7 +344,10 @@ function TemplateBody({ id, theme }: EmailExampleProps & { theme: EmailTheme }) 
           <EmailHeading>Your refund is on its way</EmailHeading>
           <EmailText>We issued a $49.00 refund to your Visa ending in 4242.</EmailText>
           <Details
-            rows={[["Refund amount", "$49.00"], ["Expected", "3–5 business days"]]}
+            rows={[
+              ["Refund amount", "$49.00"],
+              ["Expected", "3–5 business days"],
+            ]}
             theme={theme}
           />
           <EmailText muted style={{ fontSize: 13, marginBottom: 0 }}>

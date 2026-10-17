@@ -180,9 +180,7 @@ async function run(command: string[], cwd: string): Promise<string> {
   ]);
 
   if (exitCode !== 0) {
-    throw new Error(
-      `${command.join(" ")} failed in ${cwd}.\n${stdout}${stderr}`.trimEnd(),
-    );
+    throw new Error(`${command.join(" ")} failed in ${cwd}.\n${stdout}${stderr}`.trimEnd());
   }
 
   return stdout;

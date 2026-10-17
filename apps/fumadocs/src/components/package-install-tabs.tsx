@@ -53,9 +53,7 @@ function isPackageManager(value: string | null): value is PackageManager {
   return packageManagers.some((manager) => manager.value === value);
 }
 
-export function PackageInstallTabs({
-  packageName = "@maillayer/core",
-}: PackageInstallTabsProps) {
+export function PackageInstallTabs({ packageName = "@maillayer/core" }: PackageInstallTabsProps) {
   const installTabsId = useId();
   const [selected, setSelected] = useState<PackageManager>("npm");
   const [copyState, setCopyState] = useState<CopyState>("idle");

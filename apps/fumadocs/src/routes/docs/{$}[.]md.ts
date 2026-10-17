@@ -44,8 +44,7 @@ function resolveMissingMarkdownPage(resolved: ReturnType<typeof resolveDocsVersi
   const latestPage = getDocsSource(latestDocsVersion).getPage(resolved.slugs);
 
   if (latestPage) {
-    const suffix =
-      resolved.slugs.length > 0 ? `${resolved.slugs.join("/")}.md` : "index.md";
+    const suffix = resolved.slugs.length > 0 ? `${resolved.slugs.join("/")}.md` : "index.md";
 
     return redirect({
       href: `${getDocsVersionBase(latestDocsVersion)}/${suffix}`,

@@ -31,7 +31,10 @@ function fieldList(fields: readonly AdapterSupportField[]) {
   return fields.map((field) => FIELD_LABELS[field]).join(", ");
 }
 
-function capabilityValue(capabilities: AdapterSupportCapabilities, key: keyof AdapterSupportCapabilities) {
+function capabilityValue(
+  capabilities: AdapterSupportCapabilities,
+  key: keyof AdapterSupportCapabilities,
+) {
   const value = capabilities[key];
 
   if (key === "repeatedHeaders" || key === "scheduling") {
@@ -67,7 +70,10 @@ function AdapterSupportRow({ entry }: { entry: AdapterSupportEntry }) {
     <div className="border-fd-border border-t py-4 first:border-t-0">
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0 md:w-64 md:shrink-0">
-          <a className="font-medium text-fd-foreground underline-offset-4 hover:underline" href={entry.setupHref}>
+          <a
+            className="font-medium text-fd-foreground underline-offset-4 hover:underline"
+            href={entry.setupHref}
+          >
             {entry.label}
           </a>
         </div>
@@ -108,7 +114,10 @@ function CapabilityRow({ entry }: { entry: AdapterSupportEntry }) {
     <div className="border-fd-border border-t py-4 first:border-t-0">
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div className="md:w-64 md:shrink-0">
-          <a className="font-medium text-fd-foreground underline-offset-4 hover:underline" href={entry.setupHref}>
+          <a
+            className="font-medium text-fd-foreground underline-offset-4 hover:underline"
+            href={entry.setupHref}
+          >
             {entry.label}
           </a>
         </div>
@@ -116,7 +125,9 @@ function CapabilityRow({ entry }: { entry: AdapterSupportEntry }) {
           {ADAPTER_CAPABILITY_KEYS.map((key) => (
             <div className="flex justify-between gap-3" key={key}>
               <dt className="text-fd-muted-foreground">{CAPABILITY_LABELS[key]}</dt>
-              <dd className="font-medium text-fd-foreground">{capabilityValue(entry.capabilities, key)}</dd>
+              <dd className="font-medium text-fd-foreground">
+                {capabilityValue(entry.capabilities, key)}
+              </dd>
             </div>
           ))}
         </dl>
@@ -129,7 +140,8 @@ export function AdapterCapabilitySupport() {
   return (
     <section className="my-6 rounded-xl border border-fd-border bg-fd-card/40">
       <div className="border-fd-border border-b px-4 py-3 text-sm text-fd-muted-foreground">
-        Delivery behavior by built-in adapter. Unsupported message fields still fail field validation first.
+        Delivery behavior by built-in adapter. Unsupported message fields still fail field
+        validation first.
       </div>
       <div className="px-4">
         {ADAPTER_SUPPORT_ENTRIES.map((entry) => (

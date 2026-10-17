@@ -135,45 +135,42 @@ describe("maillayer CLI", () => {
     { override: ["--base-url"] },
     { override: ["--base-url", ""] },
     { override: ["--base-url="] },
-  ])(
-    "doctor rejects a valueless base URL override without falling back",
-    async ({ override }) => {
-      let calls = 0;
+  ])("doctor rejects a valueless base URL override without falling back", async ({ override }) => {
+    let calls = 0;
 
-      const server = Bun.serve({
-        hostname: "127.0.0.1",
-        port: 0,
-        fetch() {
-          calls++;
+    const server = Bun.serve({
+      hostname: "127.0.0.1",
+      port: 0,
+      fetch() {
+        calls++;
 
-          return Response.json({ data: [], has_more: false });
-        },
-      });
+        return Response.json({ data: [], has_more: false });
+      },
+    });
 
-      try {
-        const result = await runCli(
-          [
-            "doctor",
-            "--adapter",
-            "resend",
-            "--api-key",
-            "fixture-key",
-            "--live",
-            "--json",
-            ...override,
-          ],
-          { RESEND_BASE_URL: server.url.origin },
-        );
+    try {
+      const result = await runCli(
+        [
+          "doctor",
+          "--adapter",
+          "resend",
+          "--api-key",
+          "fixture-key",
+          "--live",
+          "--json",
+          ...override,
+        ],
+        { RESEND_BASE_URL: server.url.origin },
+      );
 
-        expect(result.exitCode).toBe(1);
-        expect(result.stderr).toBe("");
-        expect(JSON.parse(result.stdout).checks.configuration.status).toBe("failed");
-        expect(calls).toBe(0);
-      } finally {
-        server.stop(true);
-      }
-    },
-  );
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toBe("");
+      expect(JSON.parse(result.stdout).checks.configuration.status).toBe("failed");
+      expect(calls).toBe(0);
+    } finally {
+      server.stop(true);
+    }
+  });
 
   test("doctor live JSON uses flag credentials over environment and verifies Resend sender", async () => {
     let calls = 0;
@@ -268,12 +265,28 @@ describe("maillayer CLI", () => {
     });
 
     try {
-      const result = await runCli([
-        "doctor", "--adapter", "graph", "--live", "--json",
-        "--tenant-id", "tenant", "--client-id", "client", "--user", "mailbox@example.com",
-        "--client-secret", "flag-private-secret", "--token-url", server.url.href,
-        "--scope", "https://graph.microsoft.us/.default",
-      ], { MS_GRAPH_CLIENT_SECRET: "env-private-secret" });
+      const result = await runCli(
+        [
+          "doctor",
+          "--adapter",
+          "graph",
+          "--live",
+          "--json",
+          "--tenant-id",
+          "tenant",
+          "--client-id",
+          "client",
+          "--user",
+          "mailbox@example.com",
+          "--client-secret",
+          "flag-private-secret",
+          "--token-url",
+          server.url.href,
+          "--scope",
+          "https://graph.microsoft.us/.default",
+        ],
+        { MS_GRAPH_CLIENT_SECRET: "env-private-secret" },
+      );
 
       expect(result.exitCode).toBe(0);
       expect(result.stderr).toBe("");
@@ -568,7 +581,12 @@ describe("maillayer CLI", () => {
 
   test.each([
     { name: "--channel-id", flags: ["--channel-id", "chan_flag"], env: {}, channel: "chan_flag" },
-    { name: "HELO_CHANNEL_ID", flags: [], env: { HELO_CHANNEL_ID: "chan_env" }, channel: "chan_env" },
+    {
+      name: "HELO_CHANNEL_ID",
+      flags: [],
+      env: { HELO_CHANNEL_ID: "chan_env" },
+      channel: "chan_env",
+    },
     { name: "no channel", flags: [], env: { HELO_CHANNEL_ID: undefined }, channel: null },
   ])("send passes the Helo channel from $name", async ({ flags, env, channel }) => {
     const channels: Array<string | null> = [];

@@ -293,9 +293,7 @@ function cloudflareOptionalReplyTo(addresses: OneOrMany<EmailAddress> | undefine
   return cloudflareAddress(values[0]!);
 }
 
-function cloudflareOptionalBindingReplyTo(
-  addresses: OneOrMany<EmailAddress> | undefined,
-) {
+function cloudflareOptionalBindingReplyTo(addresses: OneOrMany<EmailAddress> | undefined) {
   const values = arrayify(addresses);
 
   if (values.length === 0) {

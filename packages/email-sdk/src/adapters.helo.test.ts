@@ -131,7 +131,11 @@ describe("provider payloads", () => {
     const sent = helo({ apiKey: "helo_key", fetch: fetcher }).send(base, context);
 
     await expect(sent).rejects.toBeInstanceOf(EmailAdapterError);
-    await expect(sent).rejects.toMatchObject({ retryable: false, delivery: "unknown", status: 200 });
+    await expect(sent).rejects.toMatchObject({
+      retryable: false,
+      delivery: "unknown",
+      status: 200,
+    });
   });
 
   test("Helo treats a failed send as not sent and never retryable", async () => {
@@ -154,10 +158,7 @@ describe("provider payloads", () => {
 
   test("Helo surfaces problem details with delivery state", async () => {
     const send = (body: JsonValue, status: number) =>
-      helo({ apiKey: "helo_key", fetch: jsonCapture(body, { status }).fetch }).send(
-        base,
-        context,
-      );
+      helo({ apiKey: "helo_key", fetch: jsonCapture(body, { status }).fetch }).send(base, context);
 
     await expect(
       send(
@@ -217,9 +218,9 @@ describe("provider payloads", () => {
   test("Helo reports an empty 401 body", async () => {
     const fetcher: typeof fetch = async () => new Response("", { status: 401 });
 
-    await expect(
-      helo({ apiKey: "bad", fetch: fetcher }).send(base, context),
-    ).rejects.toMatchObject({ status: 401, delivery: "not_sent", retryable: false });
+    await expect(helo({ apiKey: "bad", fetch: fetcher }).send(base, context)).rejects.toMatchObject(
+      { status: 401, delivery: "not_sent", retryable: false },
+    );
   });
 
   test("Helo rejects shapes its API cannot represent before fetch", async () => {
@@ -247,7 +248,9 @@ describe("provider payloads", () => {
       adapter.send(
         {
           ...base,
-          metadata: Object.fromEntries(Array.from({ length: 11 }, (_, index) => [`k${index}`, "v"])),
+          metadata: Object.fromEntries(
+            Array.from({ length: 11 }, (_, index) => [`k${index}`, "v"]),
+          ),
         },
         context,
       ),
@@ -255,9 +258,9 @@ describe("provider payloads", () => {
     await expect(
       adapter.send({ ...base, metadata: { key: "v".repeat(101) } }, context),
     ).rejects.toBeInstanceOf(EmailValidationError);
-    await expect(adapter.send({ ...base, subject: "s".repeat(257) }, context)).rejects.toBeInstanceOf(
-      EmailValidationError,
-    );
+    await expect(
+      adapter.send({ ...base, subject: "s".repeat(257) }, context),
+    ).rejects.toBeInstanceOf(EmailValidationError);
     await expect(
       adapter.send({ ...base, sendAt: "2026-07-10T12:30:00.000Z" }, context),
     ).rejects.toBeInstanceOf(EmailValidationError);

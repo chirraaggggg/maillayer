@@ -1,26 +1,11 @@
-import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import browserCollections from "collections/browser";
 import { useFumadocsLoader } from "fumadocs-core/source/client";
-import { DocsLayout } from "fumadocs-ui/layouts/docs";
-import {
-  DocsBody,
-  DocsDescription,
-  DocsPage,
-  DocsTitle,
-  MarkdownCopyButton,
-  ViewOptionsPopover,
-} from "fumadocs-ui/layouts/docs/page";
+import type { ReactNode } from "react";
 
 import { useMDXComponents } from "@/components/mdx";
-import { VersionPicker } from "@/components/version-picker";
-import { buildAdapterFaq, getAdapterSupportEntry } from "@/lib/adapter-faq";
-import { getLatestDocsRedirect } from "@/lib/docs-redirects";
-import docsLastmod from "@/lib/docs-lastmod.generated.json";
-import { baseOptions } from "@/lib/layout.shared";
-import { buildDocsStructuredData, siteImageAlt } from "@/lib/metadata";
-import { appName, gitConfig, siteOgImageUrl, siteUrl } from "@/lib/shared";
 import { getDocsSource, slugsToMarkdownPath } from "@/lib/source";
 import {
   type DocsVersionCollection,
@@ -29,6 +14,18 @@ import {
   latestDocsVersion,
   resolveDocsVersionedSlugs,
 } from "@/lib/versions";
+import { appName, siteOgImageUrl, siteUrl } from "@/lib/shared";
+import { buildDocsStructuredData, siteImageAlt } from "@/lib/metadata";
+import docsLastmod from "@/lib/docs-lastmod.generated.json";
+import { getAdapterSupportEntry } from "@/lib/adapter-faq";
+import { buildAdapterFaq } from "@/lib/adapter-faq";
+import { getLatestDocsRedirect } from "@/lib/docs-redirects";
+import {
+  BrandHeader,
+  DocsLayout,
+  ReadingColumn,
+  type Breadcrumb,
+} from "@/components/paper-docs-layout";
 
 export const Route = createFileRoute("/docs/$")({
   loader: async ({ params }) => {
@@ -172,35 +169,33 @@ function resolveMissingVersionedDocsPage(resolved: ReturnType<typeof resolveDocs
 function createDocsClientLoader(collection: (typeof browserCollections)[DocsVersionCollection]) {
   return collection.createClientLoader({
     component(
-      { toc, frontmatter, default: MDX },
+      { frontmatter, default: MDX },
       // you can define props for the component
       {
-        contentPath,
         docsBasePath,
         markdownUrl,
         path,
       }: {
-        contentPath: string;
         docsBasePath: string;
         markdownUrl: string;
         path: string;
       },
     ) {
       return (
-        <DocsPage toc={toc}>
-          <DocsTitle>{frontmatter.title}</DocsTitle>
-          <DocsDescription>{frontmatter.description}</DocsDescription>
-          <div className="flex flex-row gap-2 items-center border-b -mt-4 pb-6">
-            <MarkdownCopyButton markdownUrl={markdownUrl} />
-            <ViewOptionsPopover
-              markdownUrl={markdownUrl}
-              githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/${contentPath}/${path}`}
-            />
+        <DocsPage
+          breadcrumbs={[]}
+          title={frontmatter.title}
+          description={frontmatter.description ?? "MailLayer documentation."}
+        >
+          <div className="mb-8 border-b border-[var(--paper-border)] pb-6">
+            <p className="text-sm text-[var(--paper-muted)]">
+              <a href={markdownUrl}>View this page as Markdown</a>
+            </p>
           </div>
-          <DocsBody>
+          <article>
             <MDX components={useMDXComponents(undefined, { docsBasePath })} />
             {docsBasePath === "/docs" ? <AdapterFaq path={path} /> : null}
-          </DocsBody>
+          </article>
         </DocsPage>
       );
     },
@@ -208,22 +203,7 @@ function createDocsClientLoader(collection: (typeof browserCollections)[DocsVers
 }
 
 const clientLoaders = {
-  docsV120: createDocsClientLoader(browserCollections.docsV120),
   docs: createDocsClientLoader(browserCollections.docs),
-  docsV110: createDocsClientLoader(browserCollections.docsV110),
-  docsV101: createDocsClientLoader(browserCollections.docsV101),
-  docsV100: createDocsClientLoader(browserCollections.docsV100),
-  docsV065: createDocsClientLoader(browserCollections.docsV065),
-  docsV064: createDocsClientLoader(browserCollections.docsV064),
-  docsV063: createDocsClientLoader(browserCollections.docsV063),
-  docsV062: createDocsClientLoader(browserCollections.docsV062),
-  docsV061: createDocsClientLoader(browserCollections.docsV061),
-  docsV060: createDocsClientLoader(browserCollections.docsV060),
-  docsV050: createDocsClientLoader(browserCollections.docsV050),
-  docsV040: createDocsClientLoader(browserCollections.docsV040),
-  docsV030: createDocsClientLoader(browserCollections.docsV030),
-  docsV021: createDocsClientLoader(browserCollections.docsV021),
-  docsV020: createDocsClientLoader(browserCollections.docsV020),
 };
 
 function getClientLoader(collection: DocsVersionCollection) {
@@ -249,25 +229,36 @@ function AdapterFaq({ path }: { path: string }) {
 }
 
 function Page() {
-  const { contentPath, docsBasePath, markdownUrl, pageTree, path, versionCollection } =
+  const { docsBasePath, markdownUrl, path, versionCollection } =
     useFumadocsLoader(Route.useLoaderData());
 
   const contentLoader = getClientLoader(versionCollection);
 
+  return contentLoader.useContent(path, { docsBasePath, markdownUrl, path });
+}
+
+interface DocsPageProps {
+  breadcrumbs: Breadcrumb[];
+  title: string;
+  description: string;
+  children: ReactNode;
+  actions?: ReactNode;
+}
+
+/**
+ * Central documentation page layout.
+ *
+ * Wraps the paper-inspired document chrome, breadcrumbs, and reading column
+ * around the fumadocs-core MDX content. The per-page loader metadata,
+ * Markdown copy button, version control, and structured data remain.
+ */
+export function DocsPage({ breadcrumbs, title, description, children, actions }: DocsPageProps) {
   return (
-    <DocsLayout
-      {...baseOptions({ mainLinks: false, versionPicker: false })}
-      sidebar={{
-        footer: (
-          <div className="mt-2">
-            <VersionPicker variant="sidebar" />
-          </div>
-        ),
-      }}
-      tree={pageTree}
-    >
-      <Link to={markdownUrl} hidden />
-      {contentLoader.useContent(path, { contentPath, docsBasePath, markdownUrl, path })}
+    <DocsLayout breadcrumbs={breadcrumbs} title={title} description={description} actions={actions}>
+      {children}
     </DocsLayout>
   );
 }
+
+// Re-export for use in other routes that may want the paper chrome.
+export { BrandHeader, ReadingColumn };

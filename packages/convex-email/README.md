@@ -207,7 +207,7 @@ app.use(convexEmail, {
 });
 ```
 
-Environment-backed fields also accept an `Env` suffix — `apiKeyEnv`, `apiTokenEnv`, `tokenEnv`, `serverTokenEnv`, `domainEnv`, `accountIdEnv`, `projectIdEnv`, `regionEnv`, and so on — which repoints a field at a different *declared* variable. Naming a variable the component does not declare throws an explicit error instead of silently resolving to nothing once deployed.
+Environment-backed fields also accept an `Env` suffix — `apiKeyEnv`, `apiTokenEnv`, `tokenEnv`, `serverTokenEnv`, `domainEnv`, `accountIdEnv`, `projectIdEnv`, `regionEnv`, and so on — which repoints a field at a different _declared_ variable. Naming a variable the component does not declare throws an explicit error instead of silently resolving to nothing once deployed.
 
 Non-serializable MailLayer options such as custom `fetch`, SMTP `tls`, and function-valued Iterable `dataFields` are intentionally not exposed in component config.
 

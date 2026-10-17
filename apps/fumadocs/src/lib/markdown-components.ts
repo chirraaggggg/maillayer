@@ -146,9 +146,7 @@ function transformProseLine(line: string, currentVersion: boolean, state: LineSt
   out = out.replace(/<ProviderBadge\b([^>]*)\/>/g, (_tag, attrs) =>
     renderProviderBadge(parseStringAttrs(attrs)),
   );
-  out = out.replace(/<Card\b([^>]*)\/>/g, (_tag, attrs) =>
-    renderCard(parseStringAttrs(attrs)),
-  );
+  out = out.replace(/<Card\b([^>]*)\/>/g, (_tag, attrs) => renderCard(parseStringAttrs(attrs)));
   out = out.replace(/<PackageInstallTabs\b([^>]*)\/>/g, (_tag, attrs) =>
     renderPackageInstall(parseStringAttrs(attrs)),
   );
@@ -165,7 +163,11 @@ function transformProseLine(line: string, currentVersion: boolean, state: LineSt
   const dataComponents: [RegExp, string, () => string][] = [
     [/<ProviderGrid\b[^>]*\/>/g, "/docs/adapters", renderProviderGrid],
     [/<AdapterFieldSupport\b[^>]*\/>/g, "/docs/adapters/field-support", renderFieldSupport],
-    [/<AdapterCapabilitySupport\b[^>]*\/>/g, "/docs/adapters/capability-groups", renderCapabilitySupport],
+    [
+      /<AdapterCapabilitySupport\b[^>]*\/>/g,
+      "/docs/adapters/capability-groups",
+      renderCapabilitySupport,
+    ],
     [/<AdapterPricing\b[^>]*\/>/g, "/docs/adapters/pricing", renderPricing],
     [/<AdapterVerification\b[^>]*\/>/g, "/docs/adapters/verification", renderVerification],
     [/<CommunityPluginRegistry\b[^>]*\/>/g, "/docs/plugins/community", renderCommunityRegistry],
@@ -473,7 +475,10 @@ const CAPABILITY_LABELS: Record<keyof AdapterSupportCapabilities, string> = {
   personalized: "Personalized fanout",
 };
 
-function capabilityValue(capabilities: AdapterSupportCapabilities, key: keyof AdapterSupportCapabilities) {
+function capabilityValue(
+  capabilities: AdapterSupportCapabilities,
+  key: keyof AdapterSupportCapabilities,
+) {
   const value = capabilities[key];
 
   if (key === "repeatedHeaders" || key === "scheduling") return value ? "Yes" : "No";
@@ -487,7 +492,11 @@ function capabilityValue(capabilities: AdapterSupportCapabilities, key: keyof Ad
   return value === "native" ? "Native" : "Expanded";
 }
 
-const liveCheckIds = new Set(verificationRows().filter((row) => row.check).map((row) => row.id));
+const liveCheckIds = new Set(
+  verificationRows()
+    .filter((row) => row.check)
+    .map((row) => row.id),
+);
 
 function renderProviderBadge(attrs: Attrs) {
   const provider = providers.find((item) => item.key === attrs.get("adapter"));
@@ -549,9 +558,7 @@ function renderPricing() {
 
   const notes = adapterPricing
     .map((row) => {
-      const sources = row.sources
-        .map((source) => `[${source.label}](${source.href})`)
-        .join(", ");
+      const sources = row.sources.map((source) => `[${source.label}](${source.href})`).join(", ");
 
       return `- ${row.provider.name}: ${row.note} Source: ${sources}.`;
     })

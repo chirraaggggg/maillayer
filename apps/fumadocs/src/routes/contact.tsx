@@ -29,9 +29,9 @@ function Contact() {
           <p className="text-sm font-medium text-fd-muted-foreground">Contact</p>
           <h1 className="mt-3 text-4xl font-medium leading-tight md:text-5xl">Contact</h1>
           <p className="mt-5 text-base leading-7 text-fd-muted-foreground md:text-lg">
-            MailLayer is an open-source project maintained by MailLayer. The fastest way to reach the
-            maintainers is on GitHub — issues and discussions are public, so others benefit from the
-            answer too.
+            MailLayer is an open-source project maintained by MailLayer. The fastest way to reach
+            the maintainers is on GitHub — issues and discussions are public, so others benefit from
+            the answer too.
           </p>
 
           <div className="mt-10 space-y-9 text-sm leading-7 text-fd-muted-foreground md:text-base">

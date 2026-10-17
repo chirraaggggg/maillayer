@@ -50,12 +50,7 @@ for (const pagePath of pages) {
     type: "registry:component",
     title,
     description,
-    dependencies: [
-      "@maillayer/core",
-      "@react-email/render",
-      "react",
-      "react-dom",
-    ],
+    dependencies: ["@maillayer/core", "@react-email/render", "react", "react-dom"],
     files: [
       {
         path: registryTarget,
@@ -70,7 +65,9 @@ for (const pagePath of pages) {
   expectedFiles.add(`${slug}.json`);
 
   if (check) {
-    const current = await Bun.file(outputPath).text().catch(() => "");
+    const current = await Bun.file(outputPath)
+      .text()
+      .catch(() => "");
 
     if (current !== expected) {
       console.error(`[email-registry] stale: ${relative(appRoot, outputPath)}`);

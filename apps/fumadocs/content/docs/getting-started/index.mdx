@@ -1,0 +1,49 @@
+---
+title: Get started
+description: Install MailLayer, configure the adapter for the provider you already use, and send your first email.
+---
+
+MailLayer is a library you install into your own Node.js or Bun application — not a hosted service. You keep your existing provider account and credentials; the SDK adds message validation, typed errors, retries, and fallbacks around one `send()` call.
+
+## 1. Install
+
+<PackageInstallTabs />
+
+## 2. Configure a client
+
+Create one client with the adapter for the provider account you already have. Every adapter imports from its own subpath, so only the code that constructs the client changes when you switch providers.
+
+```ts title="src/email.ts" lineNumbers
+import { createEmailClient } from "@maillayer/core";
+import { resend } from "@maillayer/core/resend";
+
+export const email = createEmailClient({
+  adapters: [resend({ apiKey: process.env.RESEND_API_KEY! })],
+});
+```
+
+## 3. Send your first email
+
+```ts title="src/send-welcome.ts" lineNumbers
+import { email } from "./email.js";
+
+const result = await email.send({
+  from: "Acme <hello@acme.dev>",
+  to: "ada@example.com",
+  subject: "Welcome",
+  text: "Hi Ada, your account is ready.",
+});
+
+console.log(result.adapter, result.id);
+```
+
+Every adapter returns the same normalized `SendResult`, so this code works unchanged with any supported provider.
+
+## Next steps
+
+<Cards>
+  <Card title="Provider credentials" href="/docs/getting-started/credentials" description="Where each adapter reads its credentials from, and how to verify them with the CLI." />
+  <Card title="Provider explorer" href="/docs/providers" description="Browse every adapter, its verified field support, and its limitations." />
+  <Card title="Retries and fallbacks" href="/docs/concepts/fallbacks-and-retries" description="Retry transient failures and route across compatible adapters." />
+  <Card title="Troubleshooting" href="/docs/guides/troubleshoot-failed-sends" description="Diagnose failures by error class, stable code, and delivery classification." />
+</Cards>

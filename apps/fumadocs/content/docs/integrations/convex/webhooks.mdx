@@ -18,7 +18,7 @@ email.registerRoutes(http, {
   pathPrefix: "/email",
   providers: ["resend"],
   verify: verifyByProvider({
-    resend: resendWebhookVerifier({ secret: process.env.RESEND_WEBHOOK_SECRET! }),
+    resend: resendWebhookVerifier({ secret: process.env.RESEND_WEBHOOK_SECRET }),
   }),
 });
 
@@ -33,17 +33,18 @@ This registers `POST /email/webhooks/resend` on your deployment's `.convex.site`
 
 The component ships verifier helpers built on the SDK's [webhook verification](/docs/reference/webhooks):
 
-| Helper | Checks |
-| --- | --- |
-| `resendWebhookVerifier({ secret, toleranceSeconds? })` | Resend (Svix) signature and timestamp |
-| `mailgunWebhookVerifier({ secret, toleranceSeconds?, signatureField? })` | Mailgun HMAC over timestamp and token |
-| `postmarkBasicAuthVerifier({ username, password })` | Basic auth credentials you set on the Postmark webhook URL |
-| `verifyByProvider({ ... })` | Dispatches by provider name and rejects providers without a verifier |
+| Helper                                                                   | Checks                                                               |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| `resendWebhookVerifier({ secret, toleranceSeconds? })`                   | Resend (Svix) signature and timestamp                                |
+| `mailgunWebhookVerifier({ secret, toleranceSeconds?, signatureField? })` | Mailgun HMAC over timestamp and token                                |
+| `postmarkBasicAuthVerifier({ username, password })`                      | Basic auth credentials you set on the Postmark webhook URL           |
+| `verifyByProvider({ ... })`                                              | Dispatches by provider name and rejects providers without a verifier |
 
 Each helper rejects requests for a different provider. You can also pass your own function: `verify` receives the provider name, original `Request`, raw body, and normalized headers, and returns `true` to accept.
 
 <Callout type="warn" title="Unverified routes are for local development only">
-`unsafeAllowUnverifiedWebhooks: true` registers routes without verification and logs a warning. Anyone who can reach the URL can then forge delivery events. Never deploy it.
+  `unsafeAllowUnverifiedWebhooks: true` registers routes without verification and logs a warning.
+  Anyone who can reach the URL can then forge delivery events. Never deploy it.
 </Callout>
 
 ## What the component stores
@@ -52,13 +53,13 @@ Every accepted delivery receives a stable provider delivery id when the provider
 
 When `providerMessageId` matches a stored send, the component appends a `webhook` event and updates normalized state:
 
-| Provider event | Stored result |
-| --- | --- |
-| Delivered | `deliveryStatus: "delivered"` and `deliveredAt` |
-| Permanent bounce or rejection | `deliveryStatus: "bounced"` |
-| Spam complaint | `deliveryStatus: "complained"` |
-| Temporary failure | Event history only |
-| Open, click, or unknown event | Event history only |
+| Provider event                | Stored result                                   |
+| ----------------------------- | ----------------------------------------------- |
+| Delivered                     | `deliveryStatus: "delivered"` and `deliveredAt` |
+| Permanent bounce or rejection | `deliveryStatus: "bounced"`                     |
+| Spam complaint                | `deliveryStatus: "complained"`                  |
+| Temporary failure             | Event history only                              |
+| Open, click, or unknown event | Event history only                              |
 
 Bounces and complaints remain sticky against a late delivered event. When both a bounce and complaint arrive, the latest terminal webhook wins.
 
@@ -75,4 +76,8 @@ Normalization support is not verification support. The SDK exports Resend and Ma
 3. Query `email.status` and `email.listEvents`.
 4. Replay the same delivery id and confirm no second event appears.
 
-<Card title="Send and track email" href="/docs/integrations/convex/sending-and-status" description="Read queue state and the webhook-backed delivery result." />
+<Card
+  title="Send and track email"
+  href="/docs/integrations/convex/sending-and-status"
+  description="Read queue state and the webhook-backed delivery result."
+/>

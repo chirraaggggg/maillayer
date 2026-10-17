@@ -12,7 +12,7 @@ import { createEmailClient } from "@maillayer/core";
 import { sendgrid } from "@maillayer/core/sendgrid";
 
 export const email = createEmailClient({
-  adapters: [sendgrid({ apiKey: process.env.SENDGRID_API_KEY! })],
+  adapters: [sendgrid({ apiKey: process.env.SENDGRID_API_KEY })],
 });
 ```
 
@@ -62,4 +62,8 @@ SENDGRID_API_KEY=SG.x npx --package @maillayer/core maillayer send \
   --dry-run
 ```
 
-<Card title="SendGrid adapter" href="/docs/adapters/sendgrid" description="See mapped fields, scheduling, and personalized delivery." />
+<Card
+  title="SendGrid adapter"
+  href="/docs/adapters/sendgrid"
+  description="See mapped fields, scheduling, and personalized delivery."
+/>

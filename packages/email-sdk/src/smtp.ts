@@ -82,7 +82,8 @@ export function smtp<const Name extends string = "smtp">(
 
         return {
           adapter: name,
-          id: parseQueueIdentifier(response.response) ?? context.idempotencyKey ?? response.messageId,
+          id:
+            parseQueueIdentifier(response.response) ?? context.idempotencyKey ?? response.messageId,
           accepted: (response.accepted ?? []).map(String),
           rejected: (response.rejected ?? []).map(String),
           raw: response,
@@ -160,7 +161,10 @@ async function toNodemailerMessage(
     subject: message.subject,
     text: message.text,
     html: message.html,
-    headers: headersToArray(message.headers)?.map((header) => ({ key: header.name, value: header.value })),
+    headers: headersToArray(message.headers)?.map((header) => ({
+      key: header.name,
+      value: header.value,
+    })),
     attachments,
     messageId: idempotencyKey ? `<${idempotencyKey}@maillayer.local>` : undefined,
     envelope: {

@@ -98,7 +98,11 @@ export function buildEmailClient(options: BuildEmailClientOptions) {
 }
 
 /** Any value an adapter config field can hold, inline or parsed from the environment. */
-type AdapterOptionValue = string | number | boolean | Readonly<Record<string, ConvexEmailMetadataValue>>;
+type AdapterOptionValue =
+  | string
+  | number
+  | boolean
+  | Readonly<Record<string, ConvexEmailMetadataValue>>;
 
 /** MailLayer adapter options keyed by registry field name. */
 type ResolvedAdapterOptions = Record<string, AdapterOptionValue>;
@@ -246,7 +250,9 @@ function envNameFor(
 
   // Graph URL and identity fields must not turn unrelated secrets into request URLs.
   if (kind === "graph" && override !== fallback) {
-    throw new Error(`Graph ${key}Env must use ${fallback}; map custom values in app.use(convexEmail, { env }).`);
+    throw new Error(
+      `Graph ${key}Env must use ${fallback}; map custom values in app.use(convexEmail, { env }).`,
+    );
   }
 
   // A deployed component only receives the variables its contract declares, so an override
@@ -262,9 +268,14 @@ function envNameFor(
 
   for (const ownerKind of CONVEX_EMAIL_ADAPTER_KINDS) {
     for (const [ownerKey, field] of Object.entries(adapterFields(ownerKind) ?? {})) {
-      if (field.env === override && field.restrictEnvToField &&
-        (kind !== ownerKind || key !== ownerKey)) {
-        throw new Error(`Convex environment variable ${override} is restricted to ${ownerKind}.${ownerKey}.`);
+      if (
+        field.env === override &&
+        field.restrictEnvToField &&
+        (kind !== ownerKind || key !== ownerKey)
+      ) {
+        throw new Error(
+          `Convex environment variable ${override} is restricted to ${ownerKind}.${ownerKey}.`,
+        );
       }
     }
   }

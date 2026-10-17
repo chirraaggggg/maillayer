@@ -79,10 +79,12 @@ export function helo(options: HeloAdapterOptions): EmailAdapter<"helo", { baseUr
         const code = jsonString(body, "errorCode");
         const detail = jsonString(body, "errorMessage") ?? "no reason given";
 
-        throw new EmailAdapterError(
-          `Helo failed the send: ${detail}${code ? ` (${code})` : ""}.`,
-          { adapter: "helo", status: response.status, retryable: false, delivery: "not_sent" },
-        );
+        throw new EmailAdapterError(`Helo failed the send: ${detail}${code ? ` (${code})` : ""}.`, {
+          adapter: "helo",
+          status: response.status,
+          retryable: false,
+          delivery: "not_sent",
+        });
       }
 
       const id = jsonString(body, "messageId");

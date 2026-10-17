@@ -253,7 +253,10 @@ const pricingByProvider = {
   graph: {
     model: "Microsoft 365 license",
     sources: [
-      { label: "Microsoft 365 licensing", href: "https://www.microsoft.com/en-us/microsoft-365/enterprise/microsoft365-plans-and-pricing" },
+      {
+        label: "Microsoft 365 licensing",
+        href: "https://www.microsoft.com/en-us/microsoft-365/enterprise/microsoft365-plans-and-pricing",
+      },
     ],
     note: "Included with Microsoft 365 and Azure AD licenses. Cost depends on your licensing agreement. Per-message rates do not apply; shown as varies because the license is separate from the SDK.",
     prices: [varies, varies, varies, varies, varies, varies],
@@ -269,6 +272,30 @@ const pricingByProvider = {
     sources: [{ label: "Helo pricing", href: "https://www.helohq.com/pricing" }],
     note: "One plan: a $5 monthly platform fee plus $0.00035 per email, with no included volume, tiers, or commitments. There is no free plan; new accounts get 1,000 free test sends to their own verified domains.",
     prices: [usd(5.35), usd(22.5), usd(40), usd(92.5), usd(180), usd(355)],
+  },
+  mailjet: {
+    model: "Usage tiers",
+    sources: [{ label: "Mailjet pricing", href: "https://www.mailjet.com/pricing/" }],
+    note: "Public pricing varies by plan and region; verify the current tier before committing to a volume estimate.",
+    prices: [varies, varies, varies, varies, varies, varies],
+  },
+  smtp2go: {
+    model: "Usage tiers",
+    sources: [{ label: "SMTP2GO pricing", href: "https://www.smtp2go.com/pricing/" }],
+    note: "Public pricing is plan-based and changes with included monthly volume; values are intentionally shown as varies.",
+    prices: [varies, varies, varies, varies, varies, varies],
+  },
+  elasticemail: {
+    model: "Usage-based",
+    sources: [{ label: "Elastic Email pricing", href: "https://elasticemail.com/pricing" }],
+    note: "Transactional email pricing depends on the current Elastic Email package and account terms.",
+    prices: [varies, varies, varies, varies, varies, varies],
+  },
+  socketlabs: {
+    model: "Plan-based",
+    sources: [{ label: "SocketLabs pricing", href: "https://www.socketlabs.com/pricing/" }],
+    note: "SocketLabs pricing is plan-based and does not map cleanly to a public per-volume estimate.",
+    prices: [varies, varies, varies, varies, varies, varies],
   },
 } satisfies Record<Provider["key"], PricingDetails>;
 
@@ -315,10 +342,7 @@ export function getAdapterPricingRows({
 
   return adapterPricing
     .filter((row) => {
-      if (
-        normalizedQuery &&
-        !row.provider.name.toLocaleLowerCase().includes(normalizedQuery)
-      ) {
+      if (normalizedQuery && !row.provider.name.toLocaleLowerCase().includes(normalizedQuery)) {
         return false;
       }
 
@@ -356,6 +380,8 @@ function comparePricingRows(
 
   const difference = leftPrice.cents - rightPrice.cents;
 
-  return (sort === "cost-desc" ? -difference : difference) ||
-    left.provider.name.localeCompare(right.provider.name);
+  return (
+    (sort === "cost-desc" ? -difference : difference) ||
+    left.provider.name.localeCompare(right.provider.name)
+  );
 }

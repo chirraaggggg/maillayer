@@ -156,7 +156,11 @@ function providerFailureMetadata(cause: unknown): ConvexEmailProviderFailure | u
   return metadata;
 }
 
-async function parseProviderWebhook(provider: string, body: string, headers: Record<string, string>) {
+async function parseProviderWebhook(
+  provider: string,
+  body: string,
+  headers: Record<string, string>,
+) {
   if (provider === "resend" || provider === "postmark" || provider === "mailgun") {
     const parsed = await normalizeSdkWebhook({ provider, body, headers });
 

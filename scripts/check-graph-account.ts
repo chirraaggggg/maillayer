@@ -42,9 +42,7 @@ const response = await email.send({
     "<p>MailLayer Graph smoke test. If you received this, the adapter can send.</p>",
 });
 
-console.log(
-  JSON.stringify({ ok: true, adapter: response.adapter, check: "send" }, null, 2),
-);
+console.log(JSON.stringify({ ok: true, adapter: response.adapter, check: "send" }, null, 2));
 
 async function verifyToken(tenantId: string, clientId: string, clientSecret: string) {
   const tokenResponse = await fetch(

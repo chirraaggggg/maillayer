@@ -95,7 +95,11 @@ describe("provider payloads", () => {
     );
 
     await expect(sent).rejects.toBeInstanceOf(EmailAdapterError);
-    await expect(sent).rejects.toMatchObject({ retryable: false, delivery: "unknown", status: 201 });
+    await expect(sent).rejects.toMatchObject({
+      retryable: false,
+      delivery: "unknown",
+      status: 201,
+    });
   });
 
   test("SendHeron treats a suppressed send as not sent and never retryable", async () => {

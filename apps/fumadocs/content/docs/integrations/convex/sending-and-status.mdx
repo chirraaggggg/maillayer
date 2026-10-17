@@ -61,15 +61,15 @@ A subscribed client updates as the record moves through `queued`, `processing`, 
 
 ## Understand the two status layers
 
-| Field | Meaning |
-| --- | --- |
-| `status` | Whether the component queued and handed the message to a provider. |
-| `deliveryStatus` | What a provider webhook later reported about mailbox delivery. |
-| `attemptedAdapters` | Every named adapter attempted across the current record. |
-| `providerMessageId` | The provider receipt used to correlate webhook events or reconcile a terminal partial send. |
-| `providerFailure` | Normalized terminal failure details, including retryability, delivery certainty, and recipient counts when available. |
-| `lastError` | The last component send failure, if the send is retrying or terminal. |
-| `nextAttemptAt` | When the next automatic retry becomes eligible. |
+| Field               | Meaning                                                                                                               |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `status`            | Whether the component queued and handed the message to a provider.                                                    |
+| `deliveryStatus`    | What a provider webhook later reported about mailbox delivery.                                                        |
+| `attemptedAdapters` | Every named adapter attempted across the current record.                                                              |
+| `providerMessageId` | The provider receipt used to correlate webhook events or reconcile a terminal partial send.                           |
+| `providerFailure`   | Normalized terminal failure details, including retryability, delivery certainty, and recipient counts when available. |
+| `lastError`         | The last component send failure, if the send is retrying or terminal.                                                 |
+| `nextAttemptAt`     | When the next automatic retry becomes eligible.                                                                       |
 
 A `sent` queue status is not proof of inbox delivery. Treat webhook-backed `delivered` as the positive delivery signal.
 
@@ -89,5 +89,13 @@ const canceled = await email.cancel(ctx, { emailId });
 
 Cancellation returns `true` only while the record is still queued. It cannot recall a provider request that already started.
 
-<Card title="Process webhooks" href="/docs/integrations/convex/webhooks" description="Turn provider events into normalized delivery state." />
-<Card title="Test and recover" href="/docs/integrations/convex/testing-and-recovery" description="Inspect failures and start a safe manual retry." />
+<Card
+  title="Process webhooks"
+  href="/docs/integrations/convex/webhooks"
+  description="Turn provider events into normalized delivery state."
+/>
+<Card
+  title="Test and recover"
+  href="/docs/integrations/convex/testing-and-recovery"
+  description="Inspect failures and start a safe manual retry."
+/>

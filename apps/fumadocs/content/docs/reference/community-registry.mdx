@@ -7,21 +7,21 @@ The registry lives at `apps/fumadocs/content/community/plugins.json` and is rend
 
 ## Entry fields
 
-| Field | Required | Contract |
-| --- | --- | --- |
-| `name` | Yes | Unique display name |
-| `package` | Yes | Unique valid npm package name |
-| `kind` | Yes | `adapter`, `plugin`, or `hybrid` |
-| `status` | Yes | `community`, `verified`, or `official` |
-| `description` | Yes | One-line summary |
-| `href` | Yes | HTTPS package or docs URL |
-| `repo` | Yes | HTTPS public source repository |
-| `maintainer` | Yes | Maintainer handle |
-| `pluginId` | When applicable | Unique plugin id |
-| `adapter` | Adapter/hybrid | Literal routing name |
-| `importName` | When applicable | Public factory export |
-| `verifiedVersion` | Verified/official | Exact audited version |
-| `verification` | Verified/official | Review metadata |
+| Field             | Required          | Contract                               |
+| ----------------- | ----------------- | -------------------------------------- |
+| `name`            | Yes               | Unique display name                    |
+| `package`         | Yes               | Unique valid npm package name          |
+| `kind`            | Yes               | `adapter`, `plugin`, or `hybrid`       |
+| `status`          | Yes               | `community`, `verified`, or `official` |
+| `description`     | Yes               | One-line summary                       |
+| `href`            | Yes               | HTTPS package or docs URL              |
+| `repo`            | Yes               | HTTPS public source repository         |
+| `maintainer`      | Yes               | Maintainer handle                      |
+| `pluginId`        | When applicable   | Unique plugin id                       |
+| `adapter`         | Adapter/hybrid    | Literal routing name                   |
+| `importName`      | When applicable   | Public factory export                  |
+| `verifiedVersion` | Verified/official | Exact audited version                  |
+| `verification`    | Verified/official | Review metadata                        |
 
 Verification metadata requires `reviewedAt`, `reviewedBy`, `provenance: true`, `noInstallScripts: true`, and `runtimeDependencies`; notes are optional.
 
@@ -43,4 +43,8 @@ CI checks the schema, duplicates, required adapter names, and verification block
 
 Static checks reduce obvious supply-chain risk but do not prove third-party code or provider behavior is safe.
 
-<Card title="Publish a plugin" href="/docs/guides/authoring/publish-community-plugin" description="Prepare a package and registry change." />
+<Card
+  title="Publish a plugin"
+  href="/docs/guides/authoring/publish-community-plugin"
+  description="Prepare a package and registry change."
+/>

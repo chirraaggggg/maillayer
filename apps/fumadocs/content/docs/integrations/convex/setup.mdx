@@ -76,10 +76,7 @@ import { ConvexEmail } from "@maillayer/convex-email";
 import { components } from "./_generated/api";
 
 export const email = new ConvexEmail(components.convexEmail, {
-  adapters: [
-    { kind: "resend" },
-    { kind: "smtp", name: "backup-smtp" },
-  ],
+  adapters: [{ kind: "resend" }, { kind: "smtp", name: "backup-smtp" }],
   defaultAdapter: "resend",
   fallbackAdapters: ["backup-smtp"],
   maxAttempts: 3,
@@ -151,11 +148,18 @@ app.use(convexEmail, {
 });
 ```
 
-`apiKeyEnv`, `apiTokenEnv`, `tokenEnv`, and the other `Env` suffixes repoint a field at a *different declared* variable. Naming a variable the component does not declare fails at send time with an explicit error rather than silently resolving to nothing.
+`apiKeyEnv`, `apiTokenEnv`, `tokenEnv`, and the other `Env` suffixes repoint a field at a _different declared_ variable. Naming a variable the component does not declare fails at send time with an explicit error rather than silently resolving to nothing.
+
 </Callout>
 
 <Callout type="info" title="Serializable adapter options">
-Custom `fetch` functions, SMTP TLS objects, and function-valued provider options cannot cross the component boundary. Use the equivalent serializable option or keep that specialized send in an application Node action.
+  Custom `fetch` functions, SMTP TLS objects, and function-valued provider options cannot cross the
+  component boundary. Use the equivalent serializable option or keep that specialized send in an
+  application Node action.
 </Callout>
 
-<Card title="Send and track email" href="/docs/integrations/convex/sending-and-status" description="Queue messages and expose reactive state." />
+<Card
+  title="Send and track email"
+  href="/docs/integrations/convex/sending-and-status"
+  description="Queue messages and expose reactive state."
+/>

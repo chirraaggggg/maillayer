@@ -39,7 +39,10 @@ test("registry rejects fields implying a passing run or date", () => {
     { ...base, probe: "Passed on 2026-01-01." },
   ]) {
     expect(() =>
-      validateAdapterVerification(withRecords(), { schemaVersion: 1, liveChecks: { resend: check } }),
+      validateAdapterVerification(withRecords(), {
+        schemaVersion: 1,
+        liveChecks: { resend: check },
+      }),
     ).toThrow();
   }
 
@@ -67,21 +70,32 @@ test("contract test membership in the docs table matches packages/email-sdk/src 
 
 test("validator fails closed on invalid and unknown evidence", () => {
   expect(() => validateAdapterVerification({ schemaVersion: 2, records: [] })).toThrow();
-  expect(() => validateAdapterVerification({ schemaVersion: 1, records: [], rawResponse: "secret" })).toThrow();
+  expect(() =>
+    validateAdapterVerification({ schemaVersion: 1, records: [], rawResponse: "secret" }),
+  ).toThrow();
   expect(() => validateAdapterVerification(withRecords({ adapter: "unknown" }))).toThrow();
 });
 
 test("registry/evidence consistency: probe-backed kinds require a configured probe", () => {
   expect(validateAdapterVerification(withRecords(record)).records).toHaveLength(1);
 
-  for (const kind of ["auth-probe-configured", "auth-check", "send-verified", "delivery-verified"]) {
-    expect(() => validateAdapterVerification(withRecords({ ...record, adapter: "postmark", kind }))).toThrow(
-      /requires a registered live check/,
-    );
+  for (const kind of [
+    "auth-probe-configured",
+    "auth-check",
+    "send-verified",
+    "delivery-verified",
+  ]) {
+    expect(() =>
+      validateAdapterVerification(withRecords({ ...record, adapter: "postmark", kind })),
+    ).toThrow(/requires a registered live check/);
   }
 
-  expect(validateAdapterVerification(withRecords({ ...record, adapter: "postmark", kind: "contract-test" })).records).toHaveLength(1);
-  expect(() => validateAdapterVerification(withRecords({ ...record, adapter: "not-an-adapter" }))).toThrow(
-    /Unknown evidence adapter/,
-  );
+  expect(
+    validateAdapterVerification(
+      withRecords({ ...record, adapter: "postmark", kind: "contract-test" }),
+    ).records,
+  ).toHaveLength(1);
+  expect(() =>
+    validateAdapterVerification(withRecords({ ...record, adapter: "not-an-adapter" })),
+  ).toThrow(/Unknown evidence adapter/);
 });

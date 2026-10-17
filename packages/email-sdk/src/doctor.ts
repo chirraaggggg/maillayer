@@ -239,35 +239,48 @@ export async function runDoctor(options: DoctorOptions): Promise<DoctorResult> {
         void response.body?.cancel().catch(() => {});
         checks.authentication =
           response.status === 401 || response.status === 400
-            ? check("invalid_credentials", "Graph rejected the client credentials. Verify the tenant, client ID, secret, and application permissions.")
+            ? check(
+                "invalid_credentials",
+                "Graph rejected the client credentials. Verify the tenant, client ID, secret, and application permissions.",
+              )
             : response.status === 429
-              ? check("rate_limited", "Graph rate limited the authentication check (HTTP 429). Retry later; this does not prove the credentials are invalid.")
+              ? check(
+                  "rate_limited",
+                  "Graph rate limited the authentication check (HTTP 429). Retry later; this does not prove the credentials are invalid.",
+                )
               : uncertain();
 
         return;
       }
 
       const body = await boundedJson(response, controller.signal);
-      checks.authentication =
-        jsonString(body, "access_token")
-          ? authenticated()
-          : uncertain();
+      checks.authentication = jsonString(body, "access_token") ? authenticated() : uncertain();
     };
 
     try {
       await Promise.race([work(), deadline]);
     } catch (error) {
       checks.authentication = controller.signal.aborted
-        ? check("timeout", "The live check timed out. Check connectivity and provider status, then retry.")
+        ? check(
+            "timeout",
+            "The live check timed out. Check connectivity and provider status, then retry.",
+          )
         : error instanceof TransportFailure
-          ? check("network_failure", "The live check failed at the network or redirect transport layer. Check connectivity, TLS, proxy settings, and the fixed token URL; redirects are not followed.")
+          ? check(
+              "network_failure",
+              "The live check failed at the network or redirect transport layer. Check connectivity, TLS, proxy settings, and the fixed token URL; redirects are not followed.",
+            )
           : uncertain();
     } finally {
       clearTimeout(timer);
       controller.abort();
     }
 
-    if (domain) checks.sender = check("unsupported", "Graph sender readiness is not checked by this non-sending probe.");
+    if (domain)
+      checks.sender = check(
+        "unsupported",
+        "Graph sender readiness is not checked by this non-sending probe.",
+      );
 
     return finish();
   }
@@ -391,8 +404,7 @@ export async function runDoctor(options: DoctorOptions): Promise<DoctorResult> {
       if (hasMore !== true || page === 9) return;
       const cursor = jsonString(domains.at(-1), "id");
 
-      if (cursor === undefined || !cursor || cursor.length > 256 || cursors.has(cursor))
-        return;
+      if (cursor === undefined || !cursor || cursor.length > 256 || cursors.has(cursor)) return;
       cursors.add(cursor);
       const next = await request(`/domains?limit=100&after=${encodeURIComponent(cursor)}`);
       const failure = httpFailure(next.status, adapter, next.body);
@@ -447,11 +459,7 @@ function httpFailure(
       "The provider rate limited the live check (HTTP 429). Wait before retrying and reduce request frequency; this does not prove the key is invalid.",
     );
 
-  if (
-    adapter === "resend" &&
-    status === 401 &&
-    jsonField(body, "name") === "restricted_api_key"
-  ) {
+  if (adapter === "resend" && status === 401 && jsonField(body, "name") === "restricted_api_key") {
     return check(
       "insufficient_permissions",
       "This Resend key is restricted to sending. Use a Full access key for domain inspection or verify sender readiness in the dashboard.",
@@ -520,7 +528,10 @@ function safeBase(value: string | undefined, expected: string): string | undefin
   return undefined;
 }
 
-function graphTokenUrl(value: string | undefined, tenantId: string | undefined): string | undefined {
+function graphTokenUrl(
+  value: string | undefined,
+  tenantId: string | undefined,
+): string | undefined {
   const fallback = tenantId?.trim()
     ? `https://login.microsoftonline.com/${encodeURIComponent(tenantId.trim())}/oauth2/v2.0/token`
     : undefined;
@@ -532,9 +543,19 @@ function graphTokenUrl(value: string | undefined, tenantId: string | undefined):
 
     if (url.username || url.password || url.search || url.hash) return;
 
-    if (["127.0.0.1", "[::1]"].includes(url.hostname) && ["http:", "https:"].includes(url.protocol)) return url.href;
+    if (["127.0.0.1", "[::1]"].includes(url.hostname) && ["http:", "https:"].includes(url.protocol))
+      return url.href;
 
-    if (url.protocol !== "https:" || !["login.microsoftonline.com", "login.microsoftonline.us", "login.chinacloudapi.cn", "login.microsoftonline.de"].includes(url.hostname)) return;
+    if (
+      url.protocol !== "https:" ||
+      ![
+        "login.microsoftonline.com",
+        "login.microsoftonline.us",
+        "login.chinacloudapi.cn",
+        "login.microsoftonline.de",
+      ].includes(url.hostname)
+    )
+      return;
 
     return url.href;
   } catch {

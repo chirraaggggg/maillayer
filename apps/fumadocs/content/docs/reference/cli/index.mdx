@@ -7,12 +7,12 @@ The `@maillayer/core` package installs the `maillayer` binary with a Node sheban
 
 ## Commands
 
-| Command | Purpose |
-| --- | --- |
-| `version` | Print package name and version; `--json` returns JSON. |
-| `adapters` | List bundled adapter names, required environment, and notes; `--json` returns JSON. |
-| `doctor` | Check whether required values are present for one adapter. `--live` authenticates without sending; `--json` returns structured checks. |
-| `send` | Build, validate, and optionally send one message. |
+| Command    | Purpose                                                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `version`  | Print package name and version; `--json` returns JSON.                                                                                 |
+| `adapters` | List bundled adapter names, required environment, and notes; `--json` returns JSON.                                                    |
+| `doctor`   | Check whether required values are present for one adapter. `--live` authenticates without sending; `--json` returns structured checks. |
+| `send`     | Build, validate, and optionally send one message.                                                                                      |
 
 `providers` aliases `adapters`. `--provider` aliases `--adapter` in CLI input, but new examples use adapter vocabulary.
 
@@ -28,6 +28,18 @@ Usage and SDK errors print one message to stderr and exit with status 1. Unexpec
 
 CLI runs use the same default telemetry and opt-outs as the SDK. `maillayer telemetry disable` turns it off for the machine, `maillayer telemetry status` shows the current state, and `maillayer telemetry enable` turns it back on. Set `MAILLAYER_TELEMETRY=0` for repeatable smoke tests.
 
-<Card title="List adapters" href="/docs/reference/cli/adapters" description="Inspect the bundled registry and credential names." />
-<Card title="Check setup" href="/docs/reference/cli/doctor" description="Verify required values are present." />
-<Card title="Validate or send" href="/docs/reference/cli/send" description="See every message and adapter flag." />
+<Card
+  title="List adapters"
+  href="/docs/reference/cli/adapters"
+  description="Inspect the bundled registry and credential names."
+/>
+<Card
+  title="Check setup"
+  href="/docs/reference/cli/doctor"
+  description="Verify required values are present."
+/>
+<Card
+  title="Validate or send"
+  href="/docs/reference/cli/send"
+  description="See every message and adapter flag."
+/>

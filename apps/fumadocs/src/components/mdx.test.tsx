@@ -5,7 +5,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { getMDXComponents } from "./mdx";
 
 test("verification page renders the evidence table with the honest empty state", () => {
-  const source = readFileSync(new URL("../../content/docs/adapters/verification.mdx", import.meta.url), "utf8");
+  const source = readFileSync(
+    new URL("../../content/docs/adapters/verification.mdx", import.meta.url),
+    "utf8",
+  );
+
   const components = getMDXComponents();
   expect(source).toContain("<AdapterVerification />");
   expect(components.AdapterVerification).toBeInstanceOf(Function);
@@ -17,12 +21,24 @@ test("verification page renders the evidence table with the honest empty state",
 });
 
 test("Convex overview uses the registered card container", () => {
-  const source = readFileSync(new URL("../../content/docs/integrations/convex/index.mdx", import.meta.url), "utf8");
+  const source = readFileSync(
+    new URL("../../content/docs/integrations/convex/index.mdx", import.meta.url),
+    "utf8",
+  );
+
   const components = getMDXComponents();
   expect(source).toContain("<Cards>");
   expect(source).not.toContain("CardGroup");
   expect(components.Cards).toBeInstanceOf(Function);
-  const html = renderToStaticMarkup(createElement(components.Cards, {}, createElement("a", { href: "/docs/integrations/convex/webhooks" }, "Process webhooks")));
+
+  const html = renderToStaticMarkup(
+    createElement(
+      components.Cards,
+      {},
+      createElement("a", { href: "/docs/integrations/convex/webhooks" }, "Process webhooks"),
+    ),
+  );
+
   expect(html).toContain("Process webhooks");
   expect(html).toContain("/docs/integrations/convex/webhooks");
 });

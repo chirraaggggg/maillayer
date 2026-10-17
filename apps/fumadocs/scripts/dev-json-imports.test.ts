@@ -55,7 +55,9 @@ describe("development JSON import classification", () => {
       expect(request(url)).toBeUndefined();
     }
 
-    expect(request("/src/lib/docs-lastmod.generated.json?import", undefined, "POST")).toBeUndefined();
+    expect(
+      request("/src/lib/docs-lastmod.generated.json?import", undefined, "POST"),
+    ).toBeUndefined();
   });
 
   test("recognizes encoded known paths without rewriting Vite's URL", () => {
@@ -64,7 +66,12 @@ describe("development JSON import classification", () => {
   });
 
   test("malformed URLs cannot throw or reject asynchronously", () => {
-    for (const url of ["//[invalid/data.json?import", "/src/lib/%ZZ.json?import", "", "http://bad/import"]) {
+    for (const url of [
+      "//[invalid/data.json?import",
+      "/src/lib/%ZZ.json?import",
+      "",
+      "http://bad/import",
+    ]) {
       expect(request(url)).toBeUndefined();
     }
   });

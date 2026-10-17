@@ -33,10 +33,9 @@ export type JsonProviderOptions<Name extends string, TPayload> = {
   ) => LegacyAdapterResult;
 };
 
-export function jsonProvider<
-  const Name extends keyof typeof SUPPORTED_MESSAGE_FIELDS,
-  TPayload,
->(options: JsonProviderOptions<Name, TPayload>): EmailAdapter<Name, { baseUrl: string }> {
+export function jsonProvider<const Name extends keyof typeof SUPPORTED_MESSAGE_FIELDS, TPayload>(
+  options: JsonProviderOptions<Name, TPayload>,
+): EmailAdapter<Name, { baseUrl: string }> {
   return {
     name: options.name,
     ...builtInAdapterDefinition(options.name),

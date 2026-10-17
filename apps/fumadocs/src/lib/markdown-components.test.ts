@@ -128,7 +128,7 @@ After.`;
     expect(output).not.toContain("<Tab");
     expect(output).not.toContain("</Tab>");
     // The fenced sample code survives verbatim.
-    expect(output).toContain("<ShadcnEmail preview=\"Your workspace is ready\">");
+    expect(output).toContain('<ShadcnEmail preview="Your workspace is ready">');
     expect(output).toContain("npx shadcn@latest add https://maillayer.dev/r/welcome.json");
   });
 
@@ -171,7 +171,7 @@ After.`;
 
   test("leaves JSX inside fenced code blocks untouched", () => {
     const markdown =
-      "```tsx\n<ShadcnEmail preview=\"Hi\">\n  <EmailCard />\n</ShadcnEmail>\n```\n\n<Card title=\"Docs\" href=\"/docs\" />";
+      '```tsx\n<ShadcnEmail preview="Hi">\n  <EmailCard />\n</ShadcnEmail>\n```\n\n<Card title="Docs" href="/docs" />';
 
     const output = renderComponentsAsMarkdown(markdown);
 

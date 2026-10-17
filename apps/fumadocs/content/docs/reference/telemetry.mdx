@@ -57,11 +57,11 @@ Use `measurement_schema_version = 2` when aggregating the current send measureme
 
 Keep these event series separate:
 
-| Event | Unit | Counting rule |
-| --- | --- | --- |
-| `email sent` | Logical send operation | One event per `send()` or `sendPersonalized()` call, regardless of retries or fallback. Each `sendMany()` item emits one. |
-| `email adapter attempted` | Adapter invocation | One event for each actual `send` or native `sendPersonalized` invocation, including retries and fallback attempts. |
-| `email batch sent` | Batch summary | Describes batch size and item outcomes; never add it to operation or provider-volume totals. |
+| Event                     | Unit                   | Counting rule                                                                                                             |
+| ------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `email sent`              | Logical send operation | One event per `send()` or `sendPersonalized()` call, regardless of retries or fallback. Each `sendMany()` item emits one. |
+| `email adapter attempted` | Adapter invocation     | One event for each actual `send` or native `sendPersonalized` invocation, including retries and fallback attempts.        |
+| `email batch sent`        | Batch summary          | Describes batch size and item outcomes; never add it to operation or provider-volume totals.                              |
 
 On logical operations, `message_count` is the requested number of individual messages: one for `send()` regardless of `to`/`cc`/`bcc` count, or one per personalized recipient. This includes operations that fail validation before contacting a provider. Use attempt events to measure work that reached an adapter.
 
@@ -73,15 +73,15 @@ Provider acceptance is not inbox delivery. Acceptance is recorded at the adapter
 
 Use these properties to build reports. Filter to `measurement_schema_version = 2` and the event named in each row.
 
-| Report | Event | Sum |
-| --- | --- | --- |
-| Logical operations | `email sent` | `logical_operation_count` |
-| Successful / failed operations | `email sent` | `operation_success_count` / `operation_failure_count` |
-| Provider attempts | `email adapter attempted` | `provider_attempt_count` |
-| Submitted messages | `email adapter attempted` | `provider_submitted_message_count` |
-| Submitted recipients | `email adapter attempted` | `provider_submitted_recipient_count` |
-| Explicitly accepted messages / recipients | `email adapter attempted` | `provider_accepted_message_count` / `provider_accepted_recipient_count` |
-| Uncertain provider failures | `email adapter attempted`, with `provider_volume_eligible = true` | `uncertain_attempt_count` |
+| Report                                    | Event                                                             | Sum                                                                     |
+| ----------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Logical operations                        | `email sent`                                                      | `logical_operation_count`                                               |
+| Successful / failed operations            | `email sent`                                                      | `operation_success_count` / `operation_failure_count`                   |
+| Provider attempts                         | `email adapter attempted`                                         | `provider_attempt_count`                                                |
+| Submitted messages                        | `email adapter attempted`                                         | `provider_submitted_message_count`                                      |
+| Submitted recipients                      | `email adapter attempted`                                         | `provider_submitted_recipient_count`                                    |
+| Explicitly accepted messages / recipients | `email adapter attempted`                                         | `provider_accepted_message_count` / `provider_accepted_recipient_count` |
+| Uncertain provider failures               | `email adapter attempted`, with `provider_volume_eligible = true` | `uncertain_attempt_count`                                               |
 
 Submitted volume includes explicit acceptance and successful submissions where the adapter returns no recipient lists, as Resend does. `acceptance_basis` distinguishes `explicit`, `inferred_from_success`, and `unknown`. An explicitly empty acceptance list never implies acceptance. Explicit acceptance is a subset of submitted volume; adding these counters together would double count.
 
@@ -122,4 +122,8 @@ Telemetry does not collect message bodies, subjects, addresses, headers, attachm
 
 The default state file is `~/.config/maillayer/telemetry.json`, or `$XDG_CONFIG_HOME/maillayer/telemetry.json` when `XDG_CONFIG_HOME` is set.
 
-<Card title="Observability plugin" href="/docs/plugins/built-in/observability" description="Configure your own application log, metric, and trace events." />
+<Card
+  title="Observability plugin"
+  href="/docs/plugins/built-in/observability"
+  description="Configure your own application log, metric, and trace events."
+/>

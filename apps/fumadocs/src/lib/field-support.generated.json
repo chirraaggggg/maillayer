@@ -47,8 +47,7 @@
     "bcc": true,
     "replyTo": true,
     "headers": true,
-    "attachments": true,
-    "tags": true
+    "attachments": true
   },
   "mailgun": {
     "cc": true,
@@ -200,5 +199,39 @@
     "attachments": true,
     "tags": true,
     "metadata": true
+  },
+  "mailjet": {
+    "cc": true,
+    "bcc": true,
+    "replyTo": true,
+    "headers": true,
+    "attachments": true,
+    "tags": true,
+    "sendAt": true
+  },
+  "smtp2go": {
+    "cc": true,
+    "bcc": true,
+    "replyTo": true,
+    "headers": true,
+    "attachments": true,
+    "sendAt": true
+  },
+  "elasticemail": {
+    "cc": true,
+    "bcc": true,
+    "replyTo": true,
+    "headers": true,
+    "attachments": true,
+    "tags": true,
+    "sendAt": true
+  },
+  "socketlabs": {
+    "cc": true,
+    "bcc": true,
+    "replyTo": true,
+    "headers": true,
+    "attachments": true,
+    "tags": true
   }
 }

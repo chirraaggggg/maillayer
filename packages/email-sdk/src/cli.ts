@@ -143,7 +143,8 @@ const factories = {
       baseUrl: stringFlag(flags, "base-url") ?? process.env.MS_GRAPH_BASE_URL,
       tokenUrl: stringFlag(flags, "token-url") ?? process.env.MS_GRAPH_TOKEN_URL,
       scope: stringFlag(flags, "scope") ?? process.env.MS_GRAPH_SCOPE,
-      saveToSentItems: booleanFlag(flags, "save-to-sent-items") ?? booleanEnv("MS_GRAPH_SAVE_TO_SENT_ITEMS"),
+      saveToSentItems:
+        booleanFlag(flags, "save-to-sent-items") ?? booleanEnv("MS_GRAPH_SAVE_TO_SENT_ITEMS"),
     }),
   unosend: (flags) =>
     unosend({
@@ -443,10 +444,22 @@ async function doctor(flags: CliFlags) {
         : provider
           ? process.env[`${provider.name.toUpperCase()}_BASE_URL`]
           : undefined,
-    tenantId: provider?.name === "graph" ? stringFlag(flags, "tenant-id") ?? process.env.MS_GRAPH_TENANT_ID : undefined,
-    clientId: provider?.name === "graph" ? stringFlag(flags, "client-id") ?? process.env.MS_GRAPH_CLIENT_ID : undefined,
-    tokenUrl: provider?.name === "graph" ? stringFlag(flags, "token-url") ?? process.env.MS_GRAPH_TOKEN_URL : undefined,
-    scope: provider?.name === "graph" ? stringFlag(flags, "scope") ?? process.env.MS_GRAPH_SCOPE : undefined,
+    tenantId:
+      provider?.name === "graph"
+        ? (stringFlag(flags, "tenant-id") ?? process.env.MS_GRAPH_TENANT_ID)
+        : undefined,
+    clientId:
+      provider?.name === "graph"
+        ? (stringFlag(flags, "client-id") ?? process.env.MS_GRAPH_CLIENT_ID)
+        : undefined,
+    tokenUrl:
+      provider?.name === "graph"
+        ? (stringFlag(flags, "token-url") ?? process.env.MS_GRAPH_TOKEN_URL)
+        : undefined,
+    scope:
+      provider?.name === "graph"
+        ? (stringFlag(flags, "scope") ?? process.env.MS_GRAPH_SCOPE)
+        : undefined,
   });
 
   if (!provider)

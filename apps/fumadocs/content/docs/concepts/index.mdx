@@ -1,0 +1,41 @@
+---
+title: Concepts
+description: How MailLayer's adapter model, message lifecycle, retries, and delivery hooks fit together.
+---
+
+MailLayer's runtime is a thin coordination layer between your application code and the email provider you already use. Understanding how adapters, messages, and results are modelled makes the rest of the API predictable.
+
+## Core concepts
+
+<Cards>
+  <Card
+    title="Adapter model"
+    href="/docs/concepts/adapter-model"
+    description="How adapters turn one MailLayer message into a provider request, and how the client routes to one configured adapter at a time."
+  />
+  <Card
+    title="Sending modes"
+    href="/docs/concepts/sending-modes"
+    description="send, sendMany, and sendPersonalized — when to use each, and how results differ."
+  />
+  <Card
+    title="Fallbacks and retries"
+    href="/docs/concepts/fallbacks-and-retries"
+    description="Retry transient failures on the current adapter, then fall back to another only when delivery is known to have failed."
+  />
+  <Card
+    title="Hooks"
+    href="/docs/concepts/hooks"
+    description="Observe the send lifecycle with before-send, after-send, and on-error hooks without modifying the message or intercepting errors."
+  />
+</Cards>
+
+## Quick summary
+
+**One message shape, one API.** Every adapter accepts the same `EmailMessage` and returns the same `EmailSendResult`. You configure the adapter once; call sites never change when you switch providers.
+
+**Adapters are named routes.** `createEmailClient` derives a typed union of adapter names from the adapters you pass. Selecting an unknown name fails TypeScript; passing one at runtime throws `EmailAdapterNotFoundError`.
+
+**Results are normalized.** `adapter`, `id`, `accepted`, and `rejected` come back in the same structure regardless of which provider handled the send.
+
+**Errors are typed.** `EmailValidationError`, `EmailAdapterNotFoundError`, `EmailAdapterError`, and friends are distinct classes with structured fields — not strings to parse.

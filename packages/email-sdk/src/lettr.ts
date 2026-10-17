@@ -81,20 +81,17 @@ export function lettr(options: LettrAdapterOptions): EmailAdapter<"lettr", { bas
         ...arrayify(message.bcc),
       ].map(emailAddressOf);
 
-      const response = await fetcher(
-        `${baseUrl}${scheduledAt ? "/emails/scheduled" : "/emails"}`,
-        {
-          method: "POST",
-          signal: context.signal,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${options.apiKey}`,
-            ...options.headers,
-          },
-          body: JSON.stringify(await toLettrPayload(message, scheduledAt)),
+      const response = await fetcher(`${baseUrl}${scheduledAt ? "/emails/scheduled" : "/emails"}`, {
+        method: "POST",
+        signal: context.signal,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${options.apiKey}`,
+          ...options.headers,
         },
-      );
+        body: JSON.stringify(await toLettrPayload(message, scheduledAt)),
+      });
 
       if (!response.ok) {
         const body = await readErrorBody(response);
@@ -212,11 +209,13 @@ export function assertLettrMessage(message: EmailMessage) {
     }
   }
 
-  for (const recipient of [...arrayify(message.to), ...arrayify(message.cc), ...arrayify(message.bcc)]) {
+  for (const recipient of [
+    ...arrayify(message.to),
+    ...arrayify(message.cc),
+    ...arrayify(message.bcc),
+  ]) {
     if (isStringMember(recipient) ? recipient.includes("<") : Boolean(recipient.name)) {
-      throw new EmailValidationError(
-        "lettr recipient fields only support plain email addresses.",
-      );
+      throw new EmailValidationError("lettr recipient fields only support plain email addresses.");
     }
   }
 

@@ -21,9 +21,7 @@ describe("adapter FAQ", () => {
     const faq = buildAdapterFaq(postmark);
     const byQuestion = Object.fromEntries(faq.map((item) => [item.question, item.answer]));
 
-    expect(byQuestion["Does MailLayer support Postmark?"]).toContain(
-      "@maillayer/core/postmark",
-    );
+    expect(byQuestion["Does MailLayer support Postmark?"]).toContain("@maillayer/core/postmark");
     expect(byQuestion["Which message fields does the Postmark adapter support?"]).toContain(
       "does not support Scheduled sending (sendAt)",
     );

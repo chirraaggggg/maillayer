@@ -64,7 +64,10 @@ if (!latest) {
     );
   }
 
-  if (publishedMajor === currentDocsMajorVersion && currentDocsPublishedVersion !== latestPublishedVersion) {
+  if (
+    publishedMajor === currentDocsMajorVersion &&
+    currentDocsPublishedVersion !== latestPublishedVersion
+  ) {
     fail(
       `${latestPublishedVersion} should publish the ${currentDocsVersion} docs line, but the docs config does not expose it as the current published docs version.`,
     );
@@ -115,7 +118,9 @@ for (const version of docsVersions) {
   }
 
   if (version.contentPath !== expectedContentPath) {
-    fail(`${version.version} contentPath must be ${expectedContentPath}, got ${version.contentPath}.`);
+    fail(
+      `${version.version} contentPath must be ${expectedContentPath}, got ${version.contentPath}.`,
+    );
   }
 
   if (!existsSync(contentDir)) {

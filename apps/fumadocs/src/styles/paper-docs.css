@@ -1,0 +1,408 @@
+/* Paper-inspired documentation design system.
+ *
+ * Replaces fumadocs-ui's black-and-yellow theme with a warm, reading-focused
+ * paper look: cream cards, ink text, a subtle paper texture, and a compact
+ * top-nav rail instead of the inherited side rail + right TOC.
+ */
+
+@import "tailwindcss";
+
+/* ---------- Paper palette ---------- */
+
+:root {
+  --paper-navy: #1f2a44;
+  --paper-ink: #1a1816;
+  --paper-paper: #faf6ee;
+  --paper-card: #fbf7ee;
+  --paper-card-hover: #f3ebd8;
+  --paper-border: #d8cdb8;
+  --paper-border-strong: #b8a98a;
+  --paper-accent: #7a5c3e;
+  --paper-accent-soft: #efe3d0;
+  --paper-muted: #6b6255;
+  --paper-muted-soft: #9a9081;
+  --paper-bg: #f4efe3;
+  --paper-code-bg: #efe9dc;
+  --paper-logo-color: #7a5c3e;
+  --paper-header-bg: #f3efe3;
+}
+
+/* ---------- Reset & base ---------- */
+
+body {
+  background: var(--paper-bg);
+  color: var(--paper-ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Page shell ---------- */
+
+.page-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ---------- Paper header ---------- */
+
+.paper-header {
+  background: var(--paper-header-bg);
+  border-bottom: 1px solid var(--paper-border);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.paper-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 1.25rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem;
+}
+
+.paper-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.paper-header__home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--paper-paper);
+  color: var(--paper-logo-color);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.paper-header__home:hover {
+  background: var(--paper-accent-soft);
+  color: var(--paper-ink);
+}
+
+.paper-logo {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+.paper-header__title-block {
+  min-width: 0;
+}
+
+.paper-header__title {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--paper-ink);
+}
+
+.paper-header__description {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.92rem;
+  color: var(--paper-muted);
+}
+
+.paper-header__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+}
+
+.paper-nav-rail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.paper-nav-rail__item {
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  color: var(--paper-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.paper-nav-rail__item:hover {
+  background: rgba(122, 92, 62, 0.08);
+  color: var(--paper-ink);
+}
+
+.paper-nav-rail__item--active {
+  background: var(--paper-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.paper-header__breadcrumbs {
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.breadcrumb-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.breadcrumb-link {
+  color: var(--paper-muted);
+  text-decoration: none;
+  transition: color 0.12s ease, text-decoration 0.12s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--paper-ink);
+  text-decoration: underline;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+  content: "/";
+  color: var(--paper-border-strong);
+  font-weight: 500;
+}
+
+/* ---------- Reading column ---------- */
+
+.reading-column {
+  flex: 1 1 auto;
+  max-width: 820px;
+  margin: 1.5rem auto 2.5rem;
+  padding: 0 1.25rem;
+  width: 100%;
+}
+
+.reading-column :where(h1, h2, h3, h4, h5, h6) {
+  color: var(--paper-ink);
+  line-height: 1.25;
+}
+
+.reading-column :where(h2) {
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--paper-border);
+  padding-bottom: 0.4rem;
+  margin: 2rem 0 1rem;
+}
+
+.reading-column :where(h3) {
+  font-size: 1.15rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.reading-column :where(p) {
+  margin: 0 0 0.9rem;
+}
+
+.reading-column :where(blockquote) {
+  border-left: 3px solid var(--paper-accent);
+  background: var(--paper-card);
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0 6px 6px 0;
+  color: var(--paper-muted);
+}
+
+.reading-column :where(code) {
+  background: var(--paper-code-bg);
+  border: 1px solid var(--paper-border);
+  border-radius: 4px;
+  padding: 0.1rem 0.3rem;
+  font-size: 0.85em;
+  color: var(--paper-accent);
+}
+
+.reading-column :where(pre) {
+  background: var(--paper-code-bg);
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.reading-column :where(pre code) {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+.reading-column :where(a) {
+  color: var(--paper-accent);
+  text-decoration: none;
+}
+
+.reading-column :where(a:hover) {
+  text-decoration: underline;
+}
+
+.reading-column :where(ul, ol) {
+  padding-left: 1.4rem;
+  margin: 0 0 0.9rem;
+}
+
+.reading-column :where(li) {
+  margin-bottom: 0.35rem;
+}
+
+.reading-column :where(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+/* ---------- Cards ---------- */
+
+.docs-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  background: var(--paper-card);
+  text-decoration: none;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.docs-card:hover {
+  background: var(--paper-card-hover);
+  border-color: var(--paper-border-strong);
+}
+
+.docs-card h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+}
+
+.docs-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+
+/* ---------- Table of contents placeholder ---------- */
+
+.reading-column .contents {
+  display: none;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 720px) {
+  .paper-header__inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .paper-header__brand {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .paper-header__title-block {
+    width: 100%;
+  }
+
+  .paper-header__nav {
+    order: 1;
+  }
+
+  .paper-header__breadcrumbs {
+    order: 2;
+  }
+
+  .reading-column {
+    margin: 1rem 0 1.5rem;
+    padding: 0 1rem;
+  }
+}
+
+/* ---------- Theme toggle in nav rail ---------- */
+
+.paper-nav-toggle {
+  /* The ThemeToggle renders its own button; we just need proper alignment
+     when placed inside the nav rail flex container. */
+  margin-left: 0.25rem;
+  flex-shrink: 0;
+}
+
+/* ---------- Dark mode palette ----------
+   fumadocs-ui uses next-themes with attribute="class".
+   It adds a "dark" class to <html> — NOT a data-theme attribute. */
+
+.dark {
+  --paper-navy: #a8bbd8;
+  --paper-ink: #f0ebe0;
+  --paper-paper: #1e1a14;
+  --paper-card: #262118;
+  --paper-card-hover: #2e2720;
+  --paper-border: #3a3328;
+  --paper-border-strong: #5a4e3c;
+  --paper-accent: #c4895e;
+  --paper-accent-soft: #3a2a1c;
+  --paper-muted: #a09580;
+  --paper-muted-soft: #7a6e5e;
+  --paper-bg: #181410;
+  --paper-code-bg: #211d16;
+  --paper-logo-color: #c4895e;
+  --paper-header-bg: #1c1810;
+}
+
+/* Dark mode reading column: ensure code blocks and inline code remain legible */
+.dark .reading-column :where(code) {
+  background: var(--paper-code-bg);
+  border-color: var(--paper-border);
+  color: #e0a878;
+}
+
+.dark .reading-column :where(pre) {
+  background: var(--paper-code-bg);
+  border-color: var(--paper-border);
+}
+
+.dark .reading-column :where(blockquote) {
+  background: var(--paper-card);
+}
+
+.dark .docs-card {
+  background: var(--paper-card);
+}
+
+.dark .docs-card:hover {
+  background: var(--paper-card-hover);
+}
+

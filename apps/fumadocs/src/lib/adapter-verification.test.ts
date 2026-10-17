@@ -36,7 +36,9 @@ describe("adapter verification evidence", () => {
     expect(rows).toHaveLength(27);
     expect(rows.filter((row) => row.check)).toHaveLength(7);
     expect(rows.every((row) => row.contractTestFiles.length > 0)).toBe(true);
-    expect(rows.every((row) => Object.values(row.evidence).every((value) => value === undefined))).toBe(true);
+    expect(
+      rows.every((row) => Object.values(row.evidence).every((value) => value === undefined)),
+    ).toBe(true);
     expect(evidenceState(undefined, now)).toBe("No published run evidence");
   });
 
@@ -53,14 +55,23 @@ describe("adapter verification evidence", () => {
     expect(html).not.toContain("Source run");
     expect(html).not.toContain("<time");
 
-    for (const title of ["Contract tests", "Configured auth probe", "Dated auth check", "Verified send", "Verified delivery"]) {
+    for (const title of [
+      "Contract tests",
+      "Configured auth probe",
+      "Dated auth check",
+      "Verified send",
+      "Verified delivery",
+    ]) {
       expect(html).toContain(title);
     }
   });
 
   test("renders failed, stale, inconclusive and maintainer-attributed fixtures", () => {
     const failed = renderToStaticMarkup(
-      createElement(AdapterVerification, { evidence: fixture({ ...record, outcome: "fail", timestamp: "2026-01-01T00:00:00Z" }), now }),
+      createElement(AdapterVerification, {
+        evidence: fixture({ ...record, outcome: "fail", timestamp: "2026-01-01T00:00:00Z" }),
+        now,
+      }),
     );
 
     expect(failed).toContain("Failed · Stale");
@@ -71,25 +82,38 @@ describe("adapter verification evidence", () => {
     expect(failed).toContain(`Scope: ${record.scope}`);
 
     const maintainer = renderToStaticMarkup(
-      createElement(AdapterVerification, { evidence: fixture({ ...record, outcome: "inconclusive", source: "maintainer:leo" }), now }),
+      createElement(AdapterVerification, {
+        evidence: fixture({ ...record, outcome: "inconclusive", source: "maintainer:leo" }),
+        now,
+      }),
     );
 
     expect(maintainer).toContain("Inconclusive");
     expect(maintainer).toContain("Source: maintainer:leo");
-    expect(maintainer).not.toContain("href=\"maintainer");
+    expect(maintainer).not.toContain('href="maintainer');
   });
 
   test("dates and outcomes remain distinct from configured probes", () => {
     expect(evidenceState(record, now)).toBe("Passed");
     expect(evidenceState({ ...record, outcome: "fail" }, now)).toBe("Failed");
     expect(evidenceState({ ...record, outcome: "inconclusive" }, now)).toBe("Inconclusive");
-    expect(evidenceState({ ...record, timestamp: "2026-01-01T00:00:00Z" }, now)).toBe("Passed · Stale");
-    expect(evidenceState({ ...record, outcome: "fail", timestamp: "2026-01-01T00:00:00Z" }, now)).toBe("Failed · Stale");
+    expect(evidenceState({ ...record, timestamp: "2026-01-01T00:00:00Z" }, now)).toBe(
+      "Passed · Stale",
+    );
+    expect(
+      evidenceState({ ...record, outcome: "fail", timestamp: "2026-01-01T00:00:00Z" }, now),
+    ).toBe("Failed · Stale");
   });
 
   test("latest failure supersedes older success without filling other columns", () => {
     const rows = verificationRows(
-      { schemaVersion: 1, records: [{ ...record, timestamp: "2026-07-01T00:00:00Z" }, { ...record, outcome: "fail" }] },
+      {
+        schemaVersion: 1,
+        records: [
+          { ...record, timestamp: "2026-07-01T00:00:00Z" },
+          { ...record, outcome: "fail" },
+        ],
+      },
       now,
     );
 
@@ -101,15 +125,30 @@ describe("adapter verification evidence", () => {
   });
 
   test("rejects unknown adapters and inconsistent registry membership", () => {
-    expect(() => parse(fixture({ ...record, adapter: "unknown" }))).toThrow(/Unknown evidence adapter/);
+    expect(() => parse(fixture({ ...record, adapter: "unknown" }))).toThrow(
+      /Unknown evidence adapter/,
+    );
 
-    for (const kind of ["auth-probe-configured", "auth-check", "send-verified", "delivery-verified"]) {
-      expect(() => parse(fixture({ ...record, adapter: "smtp", kind }))).toThrow(/requires a registered live check/);
+    for (const kind of [
+      "auth-probe-configured",
+      "auth-check",
+      "send-verified",
+      "delivery-verified",
+    ]) {
+      expect(() => parse(fixture({ ...record, adapter: "smtp", kind }))).toThrow(
+        /requires a registered live check/,
+      );
     }
 
-    expect(parse(fixture({ ...record, adapter: "smtp", kind: "contract-test" })).records).toHaveLength(1);
-    expect(() => parseEvidence(empty, ["resend"], ["unknown"], now)).toThrow(/Unknown live adapter/);
-    expect(() => parseEvidence(empty, ["resend", "resend"], [], now)).toThrow(/Duplicate adapter IDs/);
+    expect(
+      parse(fixture({ ...record, adapter: "smtp", kind: "contract-test" })).records,
+    ).toHaveLength(1);
+    expect(() => parseEvidence(empty, ["resend"], ["unknown"], now)).toThrow(
+      /Unknown live adapter/,
+    );
+    expect(() => parseEvidence(empty, ["resend", "resend"], [], now)).toThrow(
+      /Duplicate adapter IDs/,
+    );
   });
 
   test("rejects each missing required field", () => {
@@ -139,7 +178,9 @@ describe("adapter verification evidence", () => {
       expect(() => parse(fixture({ ...record, ...changes }))).toThrow();
     }
 
-    expect(() => parse({ schemaVersion: 1, records: [record, record] })).toThrow(/Duplicate evidence/);
+    expect(() => parse({ schemaVersion: 1, records: [record, record] })).toThrow(
+      /Duplicate evidence/,
+    );
   });
 
   test("source must be attributable: maintainer handle or public repository run", () => {
@@ -159,7 +200,14 @@ describe("adapter verification evidence", () => {
 
     expect(parse(fixture(record)).records).toHaveLength(1);
     expect(parse(fixture({ ...record, source: "maintainer:leo" })).records).toHaveLength(1);
-    expect(parse(fixture({ ...record, source: "https://github.com/chirraaggggg/maillayer/actions/runs/12/job/34" })).records).toHaveLength(1);
+    expect(
+      parse(
+        fixture({
+          ...record,
+          source: "https://github.com/chirraaggggg/maillayer/actions/runs/12/job/34",
+        }),
+      ).records,
+    ).toHaveLength(1);
   });
 
   test("summary must be sanitized: no raw provider responses, credentials, or addresses", () => {

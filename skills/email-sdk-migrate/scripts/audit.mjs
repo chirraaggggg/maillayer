@@ -13,14 +13,30 @@ const patterns = [
   ["providers option", /\bproviders\s*:/g, "Rename to adapters."],
   ["defaultProvider option", /\bdefaultProvider\b/g, "Rename to defaultAdapter."],
   ["fallbackProviders option", /\bfallbackProviders\b/g, "Use fallback: { adapters: [...] }."],
-  ["provider send option/event", /\bprovider\s*:/g, "Review MailLayer options/events and rename to adapter."],
+  [
+    "provider send option/event",
+    /\bprovider\s*:/g,
+    "Review MailLayer options/events and rename to adapter.",
+  ],
   ["provider() helper", /\.provider\s*\(/g, "Use adapter(name)."],
   ["withProvider() helper", /\.withProvider\s*\(/g, "Use withAdapter(name)."],
   ["retry count", /\bretries\s*:/g, "Convert retry count to total maxAttempts."],
   ["sendBatch()", /\.sendBatch\s*\(/g, "Use sendMany([{ message, options }])."],
-  ["recipientVariables", /\brecipientVariables\b/g, "Use sendPersonalized({ message, recipients })."],
-  ["EmailProvider type", /\bEmailProvider(?:Context|Response|Error|NotFoundError)?\b/g, "Use the EmailAdapter/EmailSendResult v1 types."],
-  ["legacy batch types", /\b(?:SendOptions|SendBatchItem|SendBatchResult|RecipientVariables)\b/g, "Use v1 Email-prefixed types."],
+  [
+    "recipientVariables",
+    /\brecipientVariables\b/g,
+    "Use sendPersonalized({ message, recipients }).",
+  ],
+  [
+    "EmailProvider type",
+    /\bEmailProvider(?:Context|Response|Error|NotFoundError)?\b/g,
+    "Use the EmailAdapter/EmailSendResult v1 types.",
+  ],
+  [
+    "legacy batch types",
+    /\b(?:SendOptions|SendBatchItem|SendBatchResult|RecipientVariables)\b/g,
+    "Use v1 Email-prefixed types.",
+  ],
 ];
 
 const findings = [];
@@ -59,7 +75,8 @@ async function walk(directory) {
 async function scan(path) {
   const source = await readFile(path, "utf8");
 
-  if (!source.includes("maillayer") && !patterns.some(([, pattern]) => test(pattern, source))) return;
+  if (!source.includes("maillayer") && !patterns.some(([, pattern]) => test(pattern, source)))
+    return;
 
   const lines = source.split("\n");
 

@@ -33,6 +33,10 @@ export function getFieldSupport(key: ProviderKey): Partial<Record<MessageField, 
   return fieldSupport[key];
 }
 
+export function isProviderKey(key: Provider["key"]): key is ProviderKey {
+  return Object.hasOwn(fieldSupport, key);
+}
+
 export function getProvider(key: ProviderKey): Provider {
   const provider = providers.find((entry) => entry.key === key);
 

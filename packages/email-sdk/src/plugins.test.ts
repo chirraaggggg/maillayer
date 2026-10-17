@@ -478,7 +478,11 @@ describe("email plugins", () => {
     });
 
     const result = await client.sendPersonalized({
-      message: { from: message.from, subject: "Hi %recipient.name%", text: "Hello %recipient.name%" },
+      message: {
+        from: message.from,
+        subject: "Hi %recipient.name%",
+        text: "Hello %recipient.name%",
+      },
       recipients: [
         { to: "ada@example.com", variables: { name: "Ada" } },
         { to: "linus@example.com", variables: { name: "Linus" } },
@@ -496,10 +500,7 @@ describe("email plugins", () => {
       "afterSend",
       "afterSend",
     ]);
-    expect(observed).toEqual([
-      "email.sent:community:welcome",
-      "email.sent:community:welcome",
-    ]);
+    expect(observed).toEqual(["email.sent:community:welcome", "email.sent:community:welcome"]);
   });
 });
 

@@ -69,4 +69,3 @@ export function baseOptions({
     githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
   };
 }
-

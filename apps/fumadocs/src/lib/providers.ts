@@ -253,6 +253,42 @@ export const providers = [
     logo: "https://www.google.com/s2/favicons?domain=helohq.com&sz=64",
     currentOnly: true,
   },
+  {
+    name: "Mailjet",
+    key: "mailjet",
+    importPath: "@maillayer/core/mailjet",
+    docs: "/docs/adapters/mailjet",
+    website: "https://mailjet.com",
+    summary: "Full-featured transactional email API with drag-and-drop editor and marketing automation.",
+    logo: "https://www.mailjet.com/images/logo.svg",
+  },
+  {
+    name: "SMTP2GO",
+    key: "smtp2go",
+    importPath: "@maillayer/core/smtp2go",
+    docs: "/docs/adapters/smtp2go",
+    website: "https://smtp2go.com",
+    summary: "Reliable transactional email delivery with SMPT relay and API options.",
+    logo: "https://www.smtp2go.com/assets/img/favicons/favicon-32x32.png",
+  },
+  {
+    name: "Elastic Email",
+    key: "elasticemail",
+    importPath: "@maillayer/core/elasticemail",
+    docs: "/docs/adapters/elasticemail",
+    website: "https://elasticemail.com",
+    summary: "Transactional email with REST API and SMTP relay, GDPR-compliant.",
+    logo: "https://elasticemail.com/images/logo.png",
+  },
+  {
+    name: "SocketLabs",
+    key: "socketlabs",
+    importPath: "@maillayer/core/socketlabs",
+    docs: "/docs/adapters/socketlabs",
+    website: "https://socketlabs.com",
+    summary: "Transactional email injection API with advanced delivery optimization.",
+    logo: "https://socketlabs.com/assets/img/logo.svg",
+  },
 ] as const;
 
 export type Provider = (typeof providers)[number];

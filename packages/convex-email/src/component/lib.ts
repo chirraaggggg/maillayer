@@ -270,11 +270,7 @@ export const recordProviderAttempt = internalMutation({
   handler: async (ctx, args) => {
     const email = await ctx.db.get(args.emailId);
 
-    if (
-      !email ||
-      email.status !== "processing" ||
-      email.processingLease !== args.processingLease
-    ) {
+    if (!email || email.status !== "processing" || email.processingLease !== args.processingLease) {
       return false;
     }
 
@@ -309,11 +305,7 @@ export const markSent = internalMutation({
   handler: async (ctx, args) => {
     const email = await ctx.db.get(args.emailId);
 
-    if (
-      !email ||
-      email.status !== "processing" ||
-      email.processingLease !== args.processingLease
-    ) {
+    if (!email || email.status !== "processing" || email.processingLease !== args.processingLease) {
       return false;
     }
 
@@ -351,11 +343,7 @@ export const markFailedOrRetry = internalMutation({
   handler: async (ctx, args) => {
     const email = await ctx.db.get(args.emailId);
 
-    if (
-      !email ||
-      email.status !== "processing" ||
-      email.processingLease !== args.processingLease
-    ) {
+    if (!email || email.status !== "processing" || email.processingLease !== args.processingLease) {
       return false;
     }
 

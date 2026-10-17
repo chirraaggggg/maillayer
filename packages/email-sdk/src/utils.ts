@@ -1,12 +1,16 @@
-import { readFile } from "node:fs/promises";
-
 import {
   EmailAbortError,
   EmailAdapterError,
   EmailSdkError,
   EmailValidationError,
 } from "./errors.js";
-import { causeString, isJsonObject, isJsonString, isStringMember, readJson } from "./internal/decode.js";
+import {
+  causeString,
+  isJsonObject,
+  isJsonString,
+  isStringMember,
+  readJson,
+} from "./internal/decode.js";
 import type { JsonValue } from "./internal/decode.js";
 import type {
   EmailAddress,
@@ -326,10 +330,7 @@ function isRetryableRuntimeError(error: Error) {
 
   const code = causeString(error, "code");
 
-  if (
-    code !== undefined &&
-    /^(ECONNRESET|ECONNREFUSED|ETIMEDOUT|EAI_AGAIN|EPIPE)$/i.test(code)
-  ) {
+  if (code !== undefined && /^(ECONNRESET|ECONNREFUSED|ETIMEDOUT|EAI_AGAIN|EPIPE)$/i.test(code)) {
     return true;
   }
 
@@ -365,6 +366,8 @@ export async function attachmentContentToString(
 
 export async function attachmentToBase64(attachment: EmailAttachment) {
   if (attachment.path) {
+    const { readFile } = await import("node:fs/promises");
+
     return (await readFile(attachment.path)).toString("base64");
   }
 
@@ -373,6 +376,8 @@ export async function attachmentToBase64(attachment: EmailAttachment) {
 
 export async function attachmentToBytes(attachment: EmailAttachment) {
   if (attachment.path) {
+    const { readFile } = await import("node:fs/promises");
+
     return readFile(attachment.path);
   }
 
@@ -435,7 +440,7 @@ export const SUPPORTED_MESSAGE_FIELDS = {
   },
   cloudflare: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true },
   unosend: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true, tags: true },
-  ses: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true, tags: true },
+  ses: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true },
   mailgun: {
     cc: true,
     bcc: true,
@@ -538,9 +543,43 @@ export const SUPPORTED_MESSAGE_FIELDS = {
     tags: true,
     metadata: true,
   },
+  mailjet: {
+    cc: true,
+    bcc: true,
+    replyTo: true,
+    headers: true,
+    attachments: true,
+    tags: true,
+    sendAt: true,
+  },
+  smtp2go: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true, sendAt: true },
+  elasticemail: {
+    cc: true,
+    bcc: true,
+    replyTo: true,
+    headers: true,
+    attachments: true,
+    tags: true,
+    sendAt: true,
+  },
+  socketlabs: {
+    cc: true,
+    bcc: true,
+    replyTo: true,
+    headers: true,
+    attachments: true,
+    tags: true,
+  },
 } satisfies Record<string, MessageFieldSupport>;
 
-const NATIVE_IDEMPOTENCY = new Set(["resend", "jetemail", "lettermint", "primitive", "sendheron", "helo"]);
+const NATIVE_IDEMPOTENCY = new Set([
+  "resend",
+  "jetemail",
+  "lettermint",
+  "primitive",
+  "sendheron",
+  "helo",
+]);
 
 // SendHeron refuses any attachment type outside this allowlist.
 const SENDHERON_ATTACHMENT_TYPES = new Set([
@@ -598,7 +637,7 @@ export function validateBuiltInAdapter(
   const capabilities = BUILT_IN_ADAPTER_CAPABILITIES[adapter];
   const headerNames = new Set<string>();
 
-	for (const header of headersToArray(message.headers) ?? []) {
+  for (const header of headersToArray(message.headers) ?? []) {
     const normalized = header.name.toLowerCase();
 
     if (!capabilities.repeatedHeaders && headerNames.has(normalized)) {
@@ -631,7 +670,7 @@ export function validateBuiltInAdapter(
     assertMaxItems(adapter, "replyTo", replyTo, 50);
   }
 
-	if (adapter === "cloudflare") {
+  if (adapter === "cloudflare") {
     assertMaxItems(
       adapter,
       "recipient",
@@ -640,39 +679,44 @@ export function validateBuiltInAdapter(
     );
     assertMaxItems(adapter, "replyTo", replyTo, 1);
 
-		for (const recipient of [...to, ...arrayify(message.cc), ...arrayify(message.bcc)]) {
-			if (isStringMember(recipient) ? recipient.includes("<") : Boolean(recipient.name)) {
-				throw new EmailValidationError(
-					"cloudflare recipient fields only support plain email addresses.",
-				);
-			}
-		}
-	}
+    for (const recipient of [...to, ...arrayify(message.cc), ...arrayify(message.bcc)]) {
+      if (isStringMember(recipient) ? recipient.includes("<") : Boolean(recipient.name)) {
+        throw new EmailValidationError(
+          "cloudflare recipient fields only support plain email addresses.",
+        );
+      }
+    }
+  }
 
-	if (
-		adapter === "brevo" ||
-		adapter === "mailersend" ||
-		adapter === "mailtrap" ||
-		adapter === "plunk" ||
-		adapter === "unosend" ||
-		adapter === "sequenzy" ||
-		adapter === "lettr"
-	) {
-		assertMaxItems(adapter, "replyTo", replyTo, 1);
-	}
+  if (
+    adapter === "brevo" ||
+    adapter === "mailersend" ||
+    adapter === "mailtrap" ||
+    adapter === "plunk" ||
+    adapter === "unosend" ||
+    adapter === "sequenzy" ||
+    adapter === "lettr"
+  ) {
+    assertMaxItems(adapter, "replyTo", replyTo, 1);
+  }
 
   if (adapter === "sequenzy") {
     assertMaxItems(adapter, "recipient", to, 50);
   }
 
-  if (adapter === "postmark" || adapter === "lettermint" || adapter === "mailtrap" || adapter === "lettr") {
+  if (
+    adapter === "postmark" ||
+    adapter === "lettermint" ||
+    adapter === "mailtrap" ||
+    adapter === "lettr"
+  ) {
     assertMaxItems(adapter, "tag", [...(message.tags ?? [])], 1);
   }
 
   if (adapter === "scaleway" && replyTo.length > 0) {
-		const hasReplyHeader = (headersToArray(message.headers) ?? []).some(
-			(header) => header.name.toLowerCase() === "reply-to",
-		);
+    const hasReplyHeader = (headersToArray(message.headers) ?? []).some(
+      (header) => header.name.toLowerCase() === "reply-to",
+    );
 
     if (hasReplyHeader) {
       throw new EmailValidationError(
@@ -795,17 +839,17 @@ export function validateBuiltInAdapter(
       }
     }
 
-		for (const header of headersToArray(message.headers) ?? []) {
-			if (header.name.toLowerCase() === "bcc") {
-				throw new EmailValidationError("SMTP does not allow Bcc in message headers.");
-			}
+    for (const header of headersToArray(message.headers) ?? []) {
+      if (header.name.toLowerCase() === "bcc") {
+        throw new EmailValidationError("SMTP does not allow Bcc in message headers.");
+      }
 
-			if (!/^[!-9;-~]+$/.test(header.name)) {
-				throw new EmailValidationError(
-					`SMTP header name ${JSON.stringify(header.name)} contains invalid characters.`,
-				);
-			}
-		}
+      if (!/^[!-9;-~]+$/.test(header.name)) {
+        throw new EmailValidationError(
+          `SMTP header name ${JSON.stringify(header.name)} contains invalid characters.`,
+        );
+      }
+    }
   }
 }
 

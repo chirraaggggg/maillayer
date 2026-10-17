@@ -27,13 +27,31 @@ try {
     cwd: packageDir,
   });
   await run("npm", ["init", "--yes", "--silent"], { cwd: scratch });
-  const tarball = join(tarballDir, (await readdir(tarballDir)).find((file) => file.endsWith(".tgz")));
+
+  const tarball = join(
+    tarballDir,
+    (await readdir(tarballDir)).find((file) => file.endsWith(".tgz")),
+  );
+
   await run(
     "npm",
-    ["install", "--ignore-scripts", "--no-audit", "--no-fund", tarball, "ai@7", "react@19", "react-dom@19", "@react-email/render@2"],
+    [
+      "install",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      tarball,
+      "ai@7",
+      "react@19",
+      "react-dom@19",
+      "@react-email/render@2",
+    ],
     { cwd: scratch },
   );
-  await writeFile(join(scratch, "probe.mjs"), 'const sdk = await import("@maillayer/core");\nif (typeof sdk.createEmailClient !== "function") throw new Error("ESM root export missing");\n');
+  await writeFile(
+    join(scratch, "probe.mjs"),
+    'const sdk = await import("@maillayer/core");\nif (typeof sdk.createEmailClient !== "function") throw new Error("ESM root export missing");\n',
+  );
   await run("node", ["probe.mjs"], { cwd: scratch });
 
   if (requireMode) {

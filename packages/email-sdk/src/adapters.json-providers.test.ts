@@ -6,12 +6,16 @@ import { lettermint } from "./lettermint.js";
 import { lettr } from "./lettr.js";
 import { loops } from "./loops.js";
 import { mailchimp } from "./mailchimp.js";
+import { mailjet } from "./mailjet.js";
 import { mailersend } from "./mailersend.js";
 import { mailpace } from "./mailpace.js";
 import { mailtrap } from "./mailtrap.js";
 import { plunk } from "./plunk.js";
 import { scaleway } from "./scaleway.js";
 import { sendgrid } from "./sendgrid.js";
+import { smtp2go } from "./smtp2go.js";
+import { elasticemail } from "./elasticemail.js";
+import { socketlabs } from "./socketlabs.js";
 import type { EmailAdapter, EmailMessage } from "./types.js";
 import { unosend } from "./unosend.js";
 import { zeptomail } from "./zeptomail.js";
@@ -104,6 +108,38 @@ describe("provider payloads", () => {
           ...message,
           to: "ada@example.com",
         },
+      },
+      {
+        name: "mailjet",
+        provider: mailjet({
+          apiKey: "key",
+          fetch: jsonCapture({}).fetch,
+        }),
+        message: messageWithoutMetadata,
+      },
+      {
+        name: "smtp2go",
+        provider: smtp2go({
+          apiKey: "key",
+          fetch: jsonCapture({}).fetch,
+        }),
+        message: messageWithoutProviderSpecificFields,
+      },
+      {
+        name: "elasticemail",
+        provider: elasticemail({
+          apiKey: "key",
+          fetch: jsonCapture({}).fetch,
+        }),
+        message: messageWithoutMetadata,
+      },
+      {
+        name: "socketlabs",
+        provider: socketlabs({
+          apiKey: "key",
+          fetch: jsonCapture({}).fetch,
+        }),
+        message: messageWithoutMetadata,
       },
     ];
 

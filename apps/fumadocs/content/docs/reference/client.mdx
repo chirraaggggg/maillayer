@@ -19,15 +19,15 @@ type EmailClientOptions<Adapters, Plugins> = {
 };
 ```
 
-| Option | Default | Behavior |
-| --- | --- | --- |
-| `adapters` | `[]` | Literal-named adapter routes. Plugins may add routes. |
-| `defaultAdapter` | First registered adapter | Primary route for operations without an override. |
-| `fallback` | No fallback | Candidate adapters and unknown-delivery policy. |
-| `retry` | `{ maxAttempts: 1 }` | Client-level retry policy. |
-| `hooks` | None | Best-effort lifecycle observers. |
-| `plugins` | `[]` | Synchronous route, hook, middleware, and extension composition. |
-| `telemetry` | `true` | Anonymous SDK analytics unless an environment opt-out applies. |
+| Option           | Default                  | Behavior                                                        |
+| ---------------- | ------------------------ | --------------------------------------------------------------- |
+| `adapters`       | `[]`                     | Literal-named adapter routes. Plugins may add routes.           |
+| `defaultAdapter` | First registered adapter | Primary route for operations without an override.               |
+| `fallback`       | No fallback              | Candidate adapters and unknown-delivery policy.                 |
+| `retry`          | `{ maxAttempts: 1 }`     | Client-level retry policy.                                      |
+| `hooks`          | None                     | Best-effort lifecycle observers.                                |
+| `plugins`        | `[]`                     | Synchronous route, hook, middleware, and extension composition. |
+| `telemetry`      | `true`                   | Anonymous SDK analytics unless an environment opt-out applies.  |
 
 Duplicate adapter names, duplicate plugin ids, unknown default/fallback names, `maxAttempts < 1`, async plugin adapters, and extension-key collisions throw during construction.
 
@@ -149,5 +149,13 @@ await email.send(message);
 waitUntil(email.flush());
 ```
 
-<Card title="Message reference" href="/docs/reference/message" description="Look up every normalized message field." />
-<Card title="Error reference" href="/docs/reference/errors" description="Handle the closed v1 error union." />
+<Card
+  title="Message reference"
+  href="/docs/reference/message"
+  description="Look up every normalized message field."
+/>
+<Card
+  title="Error reference"
+  href="/docs/reference/errors"
+  description="Handle the closed v1 error union."
+/>

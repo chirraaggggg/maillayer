@@ -4,10 +4,10 @@ A private ESM project that runs on Node.js 20+ or Bun 1.1+ with only two depende
 
 Two commands:
 
-| Command | What it does | Contacts Resend? |
-| --- | --- | --- |
-| `npm run validate` (default) | Loads `.env`, builds the message, runs `email.validate` | No |
-| `npm run send` | Same, then `email.send` once | Yes, one `POST /emails` |
+| Command                      | What it does                                            | Contacts Resend?        |
+| ---------------------------- | ------------------------------------------------------- | ----------------------- |
+| `npm run validate` (default) | Loads `.env`, builds the message, runs `email.validate` | No                      |
+| `npm run send`               | Same, then `email.send` once                            | Yes, one `POST /emails` |
 
 ## 1. Install
 
@@ -42,11 +42,11 @@ This works with the placeholder values from `.env.example`. `email.validate` che
 
 `first-send.mjs` loads `.env.local`, then `.env`, from its own directory, without overriding variables that already exist in the process: **process environment > `.env.local` > `.env`**. Neither the SDK nor the CLI reads these files; the starter does it explicitly with `dotenv`. Bun also preloads `.env` on its own before the script runs, so use `bun --no-env-file first-send.mjs` if you want the starter's loader to be the only one.
 
-| Variable | Value |
-| --- | --- |
-| `RESEND_API_KEY` | A Resend API key with sending permission. Keep it server-side. |
-| `EMAIL_FROM` | A sender on a domain verified in Resend, for example `Acme <hello@updates.acme.com>`. |
-| `EMAIL_TO` | A recipient you control. |
+| Variable         | Value                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| `RESEND_API_KEY` | A Resend API key with sending permission. Keep it server-side.                        |
+| `EMAIL_FROM`     | A sender on a domain verified in Resend, for example `Acme <hello@updates.acme.com>`. |
+| `EMAIL_TO`       | A recipient you control.                                                              |
 
 `.env` and `.env.local` are git-ignored; commit only `.env.example`.
 
@@ -106,19 +106,19 @@ The SDK sends anonymous usage telemetry by default (adapter names, success/failu
 
 ## Likely errors
 
-| Output | Meaning |
-| --- | --- |
-| `ERR_MODULE_NOT_FOUND` | Run `npm install` in this directory; Node must be 20 or newer. |
-| `Set EMAIL_FROM and EMAIL_TO ... before --send.` | One or both addresses are missing. Nothing was sent. |
-| `Set a real server-only RESEND_API_KEY ...` | The key is missing or still the placeholder. Nothing was sent. |
-| `Replace example addresses ...` | `EMAIL_FROM`/`EMAIL_TO` still use reserved example/test domains. Nothing was sent. |
-| `Set EMAIL_FROM and EMAIL_TO to one valid mailbox each.` | An address is not `user@domain` or `Name <user@domain>`. |
-| `validation_error: ...` | The SDK rejected the message locally (missing subject/body, unsupported field). |
-| `route_error: All configured email adapters failed. <- adapter_error: Resend failed with 401: ...` | The API key is invalid or missing. |
+| Output                                                                                                           | Meaning                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `ERR_MODULE_NOT_FOUND`                                                                                           | Run `npm install` in this directory; Node must be 20 or newer.                                             |
+| `Set EMAIL_FROM and EMAIL_TO ... before --send.`                                                                 | One or both addresses are missing. Nothing was sent.                                                       |
+| `Set a real server-only RESEND_API_KEY ...`                                                                      | The key is missing or still the placeholder. Nothing was sent.                                             |
+| `Replace example addresses ...`                                                                                  | `EMAIL_FROM`/`EMAIL_TO` still use reserved example/test domains. Nothing was sent.                         |
+| `Set EMAIL_FROM and EMAIL_TO to one valid mailbox each.`                                                         | An address is not `user@domain` or `Name <user@domain>`.                                                   |
+| `validation_error: ...`                                                                                          | The SDK rejected the message locally (missing subject/body, unsupported field).                            |
+| `route_error: All configured email adapters failed. <- adapter_error: Resend failed with 401: ...`               | The API key is invalid or missing.                                                                         |
 | `... <- adapter_error: Resend failed with 403: You can only send testing emails to your own email address (...)` | You are sending from `onboarding@resend.dev` to an address other than your account email. Verify a domain. |
-| `... <- adapter_error: Resend failed with 403: The ... domain is not verified` | `EMAIL_FROM` uses a domain not verified in Resend. |
-| `... <- adapter_error: Resend failed with 422: ...` | Resend rejected a field; the message names it. |
-| `... <- adapter_error: Resend failed with 429: ...` | Rate limit or plan quota. Wait, then retry once. |
+| `... <- adapter_error: Resend failed with 403: The ... domain is not verified`                                   | `EMAIL_FROM` uses a domain not verified in Resend.                                                         |
+| `... <- adapter_error: Resend failed with 422: ...`                                                              | Resend rejected a field; the message names it.                                                             |
+| `... <- adapter_error: Resend failed with 429: ...`                                                              | Rate limit or plan quota. Wait, then retry once.                                                           |
 
 Errors exit with status 1. The SDK reports a single-adapter send failure as `route_error` wrapping the `adapter_error`; the starter prints both. Output contains the SDK error code and Resend's message, never the API key.
 

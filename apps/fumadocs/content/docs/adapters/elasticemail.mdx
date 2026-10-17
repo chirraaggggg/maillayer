@@ -1,0 +1,81 @@
+---
+title: Elastic Email
+description: Send through the Elastic Email REST API, with transactional and SMTP relay sending.
+icon: elasticemail
+---
+
+## Capabilities
+
+| Repeated headers | Idempotency | Scheduling | Personalized |
+| --- | --- | --- | --- |
+| No | `none` | No | `expanded` |
+
+These values come from the adapter's exported `capabilities` declaration. The [field support matrix](/docs/adapters/field-support) covers normalized message fields.
+
+The Elastic Email adapter calls the Elastic Email REST API with plain `fetch`, so your bundle does not need the official Elastic Email SDK. It maps `cc`, `bcc`, `replyTo`, `headers`, `attachments`, and `tags` onto the provider's send payload. `metadata` is not an Elastic Email concept, so the adapter rejects it before any request is made.
+
+<ProviderBadge adapter="elasticemail" />
+
+## Configure
+
+Create an Elastic Email API key and verify the sender identity for the domain you plan to send from.
+
+```ts title="lib/email.ts"
+import { createEmailClient } from "@maillayer/core";
+import { elasticemail } from "@maillayer/core/elasticemail";
+
+export const email = createEmailClient({
+  adapters: [elasticemail({ apiKey: process.env.ELASTICEMAIL_API_KEY! })],
+});
+```
+
+<TypeTable
+  type={{
+    apiKey: {
+      description: "Elastic Email API key.",
+      type: "string",
+      required: true,
+    },
+    baseUrl: {
+      description: "Override the API origin, e.g. for a regional endpoint.",
+      type: "string",
+      default: '"https://apie.elasticemail.com"',
+    },
+    fetch: {
+      description: "Custom fetch implementation for tests or special runtimes.",
+      type: "typeof fetch",
+    },
+  }}
+/>
+
+## Send
+
+```ts
+const result = await email.send({
+  from: "Acme <alerts@acme.com>",
+  to: "user@example.com",
+  subject: "Your invoice is ready",
+  html: "<p>Your March invoice is attached.</p>",
+  tags: [{ name: "type", value: "invoice" }],
+});
+
+console.log(result.id); // Elastic Email message id
+```
+
+## Verify from the CLI
+
+```bash
+ELASTICEMAIL_API_KEY="..." npx --package @maillayer/core maillayer doctor --adapter elasticemail
+```
+
+```bash
+npx --package @maillayer/core maillayer send \
+  --adapter elasticemail \
+  --from "Acme <alerts@acme.com>" \
+  --to user@example.com \
+  --subject "Elastic Email smoke test" \
+  --text "It works" \
+  --dry-run
+```
+
+Drop `--dry-run` to send for real. The adapter fails fast with an `EmailValidationError` if the message carries `metadata`, since the provider payload does not map that field.

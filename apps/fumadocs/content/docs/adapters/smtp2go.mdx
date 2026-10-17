@@ -1,0 +1,81 @@
+---
+title: SMTP2Go
+description: Send through the SMTP2Go email API or SMTP relay, with regional endpoints and API keys scoped to a sending profile.
+icon: smtp2go
+---
+
+## Capabilities
+
+| Repeated headers | Idempotency | Scheduling | Personalized |
+| --- | --- | --- | --- |
+| No | `none` | No | `expanded` |
+
+These values come from the adapter's exported `capabilities` declaration. The [field support matrix](/docs/adapters/field-support) covers normalized message fields.
+
+The SMTP2Go adapter calls the SMTP2Go send API with plain `fetch`, so your bundle does not pull in the SMTP2Go SDK. It maps `cc`, `bcc`, `replyTo`, `headers`, `attachments`, and `tags` onto the provider's `_send` payload. `metadata` is not a SMTP2Go concept, so the adapter rejects it before any request is made.
+
+<ProviderBadge adapter="smtp2go" />
+
+## Configure
+
+Create a SMTP2Go API key and configure the sending profile you plan to send from.
+
+```ts title="lib/email.ts"
+import { createEmailClient } from "@maillayer/core";
+import { smtp2go } from "@maillayer/core/smtp2go";
+
+export const email = createEmailClient({
+  adapters: [smtp2go({ apiKey: process.env.SMTP2GO_API_KEY! })],
+});
+```
+
+<TypeTable
+  type={{
+    apiKey: {
+      description: "SMTP2Go API key.",
+      type: "string",
+      required: true,
+    },
+    baseUrl: {
+      description: "Override the API origin, e.g. for a regional endpoint.",
+      type: "string",
+      default: '"https://api.smtp2go.com"',
+    },
+    fetch: {
+      description: "Custom fetch implementation for tests or special runtimes.",
+      type: "typeof fetch",
+    },
+  }}
+/>
+
+## Send
+
+```ts
+const result = await email.send({
+  from: "Acme <alerts@acme.com>",
+  to: "user@example.com",
+  subject: "Your invoice is ready",
+  html: "<p>Your March invoice is attached.</p>",
+  tags: [{ name: "type", value: "invoice" }],
+});
+
+console.log(result.id); // SMTP2Go message id
+```
+
+## Verify from the CLI
+
+```bash
+SMTP2GO_API_KEY="..." npx --package @maillayer/core maillayer doctor --adapter smtp2go
+```
+
+```bash
+npx --package @maillayer/core maillayer send \
+  --adapter smtp2go \
+  --from "Acme <alerts@acme.com>" \
+  --to user@example.com \
+  --subject "SMTP2Go smoke test" \
+  --text "It works" \
+  --dry-run
+```
+
+Drop `--dry-run` to send for real. The adapter fails fast with an `EmailValidationError` if the message carries `metadata` or `cc`, since the provider payload does not map those fields.

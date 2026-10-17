@@ -1,0 +1,728 @@
+/* Replaces fumadocs-ui/css/black.css and the old inherited stylesheet. */
+@import "tailwindcss";
+@import "./paper-docs.css";
+
+/* ---------- MailLayer landing page custom styles ---------- */
+
+.ml-landing {
+  /* Prevent any overflowing child (e.g. un-sized SVG) from creating a
+     horizontal scrollbar on the landing page. */
+  overflow-x: hidden;
+}
+
+/* ── Grain overlay (decorative noise texture) ── */
+.ml-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* ── Navigation ── */
+.ml-nav {
+  background: var(--paper-header-bg);
+  border-bottom: 1px solid var(--paper-border);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.ml-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* ── Nav inner layout (logo left, links right) ── */
+.ml-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+
+.ml-nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.ml-nav-links a {
+  color: var(--paper-ink);
+  text-decoration: none;
+  font-size: 0.92rem;
+}
+
+.ml-nav-links a:hover {
+  color: var(--paper-accent);
+}
+
+/* Hide the mobile-only Docs link on desktop */
+.ml-mobile-menu {
+  display: none;
+}
+
+.ml-wordmark {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--paper-logo-color);
+  text-decoration: none;
+}
+
+/* Envelope icon inside the wordmark — constrain it so it never blows up */
+.ml-mark {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.ml-hero {
+  background: var(--paper-bg);
+  padding: 3rem 0;
+}
+
+.ml-hero-text {
+  max-width: 680px;
+}
+
+.ml-hero-title {
+  font-family: "Instrument Serif", "Georgia", serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.08;
+  margin-bottom: 1rem;
+}
+
+.ml-hero-title-accent {
+  /* Relative so the absolutely-positioned underline SVG anchors to this span */
+  position: relative;
+  display: inline-block;
+}
+
+/* Animated wavy underline — must not stretch the line height */
+.ml-title-underline {
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 14px;
+  color: var(--paper-accent);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ml-hero-phonetic {
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+  margin-top: 0.5rem;
+}
+
+.ml-defs {
+  margin-top: 2rem;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ml-defs li {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  font-size: 1rem;
+  color: var(--paper-ink);
+  line-height: 1.5;
+}
+
+.ml-def-num {
+  font-weight: 700;
+  color: var(--paper-accent);
+  min-width: 1.75rem;
+  flex-shrink: 0;
+}
+
+.ml-hero-actions {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ml-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--paper-accent);
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.15s ease;
+}
+
+.ml-btn:hover {
+  opacity: 0.9;
+}
+
+.ml-btn-pill {
+  padding: 0.75rem 2rem;
+  border-radius: 100px;
+}
+
+.ml-hero-aside {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+
+/* The little curly-arrow SVG next to "or just npm i …" */
+.ml-hero-aside > svg {
+  width: 40px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--paper-muted);
+}
+
+.ml-cards-section {
+  padding: 3rem 0;
+  background: var(--paper-card);
+}
+
+.ml-center-label {
+  text-align: center;
+  color: var(--paper-muted);
+  margin-bottom: 1.5rem;
+  font-size: 0.92rem;
+}
+
+.ml-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.ml-pcard {
+  background: white;
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  padding: 1rem;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ml-pcard-icon {
+  font-size: 1.5rem;
+  color: var(--paper-accent);
+}
+
+.ml-pcard-name {
+  font-weight: 600;
+  color: var(--paper-ink);
+}
+
+.ml-pcard-desc {
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+
+.ml-pcard-dashed {
+  border: 2px dashed var(--paper-border-strong);
+}
+
+.ml-pcard-icon-dashed {
+  color: var(--paper-border-strong);
+}
+
+.ml-diagram-section {
+  padding: 4rem 0;
+  background: var(--paper-card);
+}
+
+/* Wrapper that constrains the architecture SVG on wide screens */
+.ml-diagram-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.ml-diagram-heading {
+  font-size: 1.75rem;
+  font-family: "Instrument Serif", "Georgia", serif;
+  color: var(--paper-ink);
+  margin: 0 0 0.5rem;
+}
+
+.ml-diagram-sub {
+  font-size: 1rem;
+  color: var(--paper-muted);
+  margin: 0 0 2rem;
+  line-height: 1.6;
+}
+
+/* Architecture diagram SVG */
+.ml-arch-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* SVG text styles */
+.ml-arch-label {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--paper-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ml-arch-brand-label {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 700;
+  fill: var(--paper-accent);
+}
+
+.ml-arch-sub-label {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 9px;
+  fill: var(--paper-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ml-arch-tiny {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 8px;
+  fill: var(--paper-muted-soft);
+}
+
+.ml-arch-provider {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--paper-ink);
+}
+
+.ml-arch-code {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 9px;
+  fill: var(--paper-ink);
+}
+
+.ml-arch-kw {
+  fill: var(--paper-accent);
+  font-style: italic;
+}
+
+.ml-arch-em {
+  fill: var(--paper-navy);
+  font-weight: 600;
+}
+
+.ml-arch-str {
+  fill: var(--paper-muted);
+}
+
+/* Theme toggle inside the landing nav */
+.ml-theme-toggle {
+  margin-left: 0.25rem;
+  color: var(--paper-muted) !important;
+  flex-shrink: 0;
+}
+
+.ml-fan-svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.ml-fan-caption {
+  font-size: 0.9rem;
+  color: var(--paper-muted);
+  margin-bottom: 1rem;
+}
+
+.ml-fan-code {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+  margin-bottom: 1.5rem;
+}
+
+.ml-fan-node {
+  fill: none;
+  stroke: var(--paper-accent);
+  stroke-width: 2px;
+}
+
+.ml-fan-initial {
+  fill: var(--paper-accent);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.ml-fan-name {
+  fill: var(--paper-ink);
+  font-size: 0.9rem;
+}
+
+.ml-fan-line {
+  fill: none;
+  stroke: var(--paper-muted);
+  stroke-width: 1px;
+}
+
+.ml-fan-ok {
+  fill: var(--paper-accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.ml-split-section {
+  padding: 3rem 0;
+}
+
+/* Two-column flex layout for the "What you get back" section */
+.ml-split {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 860px) {
+  .ml-split {
+    flex-direction: column;
+  }
+}
+
+.ml-split-text {
+  flex: 1;
+}
+
+.ml-split-text h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.ml-split-text p {
+  font-size: 1rem;
+  color: var(--paper-muted);
+  margin-bottom: 1.5rem;
+}
+
+.ml-code-panel {
+  flex: 1;
+  background: var(--paper-code-bg);
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ml-code-header {
+  background: var(--paper-card);
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--paper-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+}
+
+.ml-code-filename {
+  color: var(--paper-ink);
+  font-family: "JetBrains Mono", "Courier New", monospace;
+}
+
+.ml-copy-btn {
+  background: transparent;
+  border: none;
+  color: var(--paper-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.8rem;
+}
+
+.ml-copy-btn:hover {
+  color: var(--paper-ink);
+}
+
+.ml-inline-code {
+  color: var(--paper-accent);
+  background: var(--paper-code-bg);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 0.85rem;
+}
+
+/* Code block display inside .ml-code-panel */
+.ml-code-block {
+  display: block;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--paper-ink);
+  margin: 0;
+}
+
+.ml-code-line {
+  display: block;
+  white-space: pre;
+}
+
+/* Empty spacer line between code blocks */
+.ml-code-gap {
+  display: block;
+  height: 0.85rem;
+}
+
+/* Annotation below the code panel */
+.ml-panel-annotation {
+  padding: 0.5rem 1rem;
+  font-size: 0.78rem;
+  color: var(--paper-muted);
+  font-style: italic;
+  border-top: 1px solid var(--paper-border);
+}
+
+/* ── Syntax highlight tokens ── */
+/* Keyword (import, from, const, await) */
+.ml-dc-kw {
+  color: var(--paper-accent);
+  font-style: italic;
+}
+
+/* Emphasis / identifier (variable names, function names) */
+.ml-dc-em {
+  color: var(--paper-navy);
+  font-weight: 500;
+}
+
+/* String literal */
+.ml-dc-str {
+  color: var(--paper-muted);
+}
+
+.ml-features-section {
+  padding: 3rem 0;
+}
+
+.ml-features-heading {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.ml-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.ml-feature {
+  background: white;
+  border: 1px solid var(--paper-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-decoration: none;
+}
+
+.ml-feature-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 1rem;
+}
+
+.ml-feature h3 {
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem;
+  color: var(--paper-ink);
+}
+
+.ml-feature p {
+  color: var(--paper-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.ml-feature-note {
+  font-size: 0.85rem;
+  color: var(--paper-muted);
+  margin-top: 0.5rem;
+}
+
+.ml-pills-section {
+  padding: 3rem 0;
+  background: var(--paper-card);
+}
+
+.ml-pills-label {
+  font-size: 0.92rem;
+  color: var(--paper-muted);
+  margin-bottom: 1rem;
+}
+
+.ml-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ml-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  border: 1px solid var(--paper-border);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: var(--paper-ink);
+  font-size: 0.92rem;
+}
+
+.ml-pill-icon {
+  font-size: 1.2rem;
+  color: var(--paper-accent);
+}
+
+.ml-pill-icon-dashed {
+  color: var(--paper-border-strong);
+}
+
+.ml-closing-section {
+  padding: 3rem 0;
+  background: var(--paper-bg);
+}
+
+.ml-closing-note {
+  max-width: 680px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--paper-ink);
+}
+
+.ml-closing-squiggle {
+  display: inline-block;
+  vertical-align: middle;
+  width: 120px;
+  height: 10px;
+  color: var(--paper-muted);
+  overflow: visible;
+}
+
+.ml-footer {
+  background: var(--paper-header-bg);
+  padding: 3rem 0;
+}
+
+.ml-footer-line {
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.2;
+  margin: 2rem 0;
+}
+
+.ml-footer-platforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.ml-footer-platforms a {
+  color: var(--paper-muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+}
+
+.ml-footer-platforms a:hover {
+  color: var(--paper-ink);
+}
+
+.ml-footer-bottom {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--paper-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--paper-muted);
+  font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+  .ml-nav-links {
+    display: none;
+  }
+  .ml-mobile-menu {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.9rem;
+    background: var(--paper-accent);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .ml-hero-title {
+    font-size: clamp(1.75rem, 7vw, 2.5rem);
+  }
+  .ml-defs {
+    margin-top: 1rem;
+  }
+  .ml-hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ml-hero-aside {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+  .ml-pills {
+    justify-content: center;
+  }
+}
+
+/* ---------- Landing page dark mode ----------
+   paper-docs.css owns the palette variables (.dark selector).
+   Here we patch landing-specific components that use literal "white". */
+
+.dark .ml-pcard {
+  background: var(--paper-card);
+}
+
+.dark .ml-feature {
+  background: var(--paper-card);
+}
+
+.dark .ml-pill {
+  background: var(--paper-card);
+}
+
+.dark .ml-grain {
+  opacity: 0.012;
+}
+
+/* SVG arch diagram fills adapt via CSS variables on SVG attributes */
+.dark .ml-arch-em {
+  fill: var(--paper-navy);
+}

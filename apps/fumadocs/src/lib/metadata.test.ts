@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
 
-import { buildDocsStructuredData, homeStructuredData, siteImageAlt, siteMeta, siteTitle } from "@/lib/metadata";
+import {
+  buildDocsStructuredData,
+  homeStructuredData,
+  siteImageAlt,
+  siteMeta,
+  siteTitle,
+} from "@/lib/metadata";
 import { providers } from "@/lib/providers";
 import { appDescription, llmsOverview, siteOgImageUrl } from "@/lib/shared";
 
@@ -49,7 +55,9 @@ describe("homepage product explanation", () => {
     expect(home.match(/aria-label="TypeScript email send example"/g)).toHaveLength(1);
     // The code panel renders tokens as JSX spans, so match the literals it contains.
     expect(home).toContain("'@maillayer/core/resend'");
-    expect(home).toMatch(/apiKey: process\.env\.["}]*\s*(<em|<span[^>]*>)RESEND_API_KEY(<\/em>|<\/span>)\s*\{"! \}\)\],"\}/);
+    expect(home).toMatch(
+      /apiKey: process\.env\.["}]*\s*(<em|<span[^>]*>)RESEND_API_KEY(<\/em>|<\/span>)\s*\{"! \}\)\],"\}/,
+    );
     expect(home).toContain("'Acme <hello@acme.dev>'");
     expect(home).toContain("'ada@example.com'");
     expect(home).not.toContain("landing-mobile-only");
@@ -59,7 +67,9 @@ describe("homepage product explanation", () => {
     for (const match of home.matchAll(/docsPath="(\/docs[^"{}]*)"/g)) {
       const path = match[1]!.replace(/^\/docs\/?/, "");
       const base = new URL(`../../content/docs/${path}`, import.meta.url);
-      expect(existsSync(`${base.pathname}.mdx`) || existsSync(`${base.pathname}/index.mdx`)).toBe(true);
+      expect(existsSync(`${base.pathname}.mdx`) || existsSync(`${base.pathname}/index.mdx`)).toBe(
+        true,
+      );
     }
   });
 
@@ -70,7 +80,9 @@ describe("homepage product explanation", () => {
       readFileSync(new URL("../../content/docs/index.mdx", import.meta.url), "utf8"),
     ];
 
-    expect(appDescription.startsWith("One API. Every email provider. Fully open source.")).toBe(true);
+    expect(appDescription.startsWith("One API. Every email provider. Fully open source.")).toBe(
+      true,
+    );
     expect(siteTitle).toContain("One API. Every email provider. Fully open source.");
 
     for (const text of [appDescription, ...readmes]) {
@@ -79,15 +91,17 @@ describe("homepage product explanation", () => {
     }
 
     for (const text of readmes) {
-      expect(text).toContain("26 provider API");
-      expect(text).toContain("27 adapters total");
+      expect(text).toContain("30 provider API");
+      expect(text).toContain("31 adapters total");
     }
 
-    expect(llmsOverview).toContain("27 adapters total");
+    expect(llmsOverview).toContain("31 adapters total");
     const webpage = homeStructuredData["@graph"].find((node) => node["@type"] === "WebPage");
     expect(webpage?.speakable.cssSelector).toEqual(["#landing-heading", "#landing-summary"]);
     const faq = homeStructuredData["@graph"].find((node) => node["@type"] === "FAQPage");
-    expect(faq?.mainEntity[0]?.acceptedAnswer.text.startsWith("Email, without the lock-in.")).toBe(true);
+    expect(faq?.mainEntity[0]?.acceptedAnswer.text.startsWith("Email, without the lock-in.")).toBe(
+      true,
+    );
   });
 
   test("keeps machine-readable copy within the runtime and delivery boundaries", () => {
@@ -95,7 +109,11 @@ describe("homepage product explanation", () => {
     expect(llmsOverview).toContain("Node.js 20+ or Bun 1.1+");
     expect(llmsOverview).toContain("not delivery");
     expect(llmsOverview).toContain("direct provider SDK is sufficient");
-    const software = homeStructuredData["@graph"].find((node) => node["@type"] === "SoftwareApplication");
+
+    const software = homeStructuredData["@graph"].find(
+      (node) => node["@type"] === "SoftwareApplication",
+    );
+
     expect(software?.runtimePlatform).toEqual(["Node.js 20+", "Bun 1.1+"]);
     const webpage = homeStructuredData["@graph"].find((node) => node["@type"] === "WebPage");
 

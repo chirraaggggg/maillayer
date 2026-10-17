@@ -19,20 +19,20 @@ Dry run creates the real adapter with placeholder credentials where needed, call
 
 ## Message flags
 
-| Flag | Behavior |
-| --- | --- |
-| `--from` | Sender address |
-| `--to` | Comma-separated recipients |
-| `--subject` | Subject |
-| `--text`, `--html` | At least one body |
-| `--cc`, `--bcc`, `--reply-to` | Comma-separated addresses |
-| `--header "Name: value"` | Repeatable lossless headers |
-| `--tag name=value` | Repeatable tags |
-| `--metadata key=value` | Repeatable provider metadata, parsed as strings |
-| `--attachment path[:type]` | Repeatable server-side files; `--attach` also works |
-| `--message path` | Start from an `EmailMessage` JSON file; explicit flags override fields |
-| `--send-at` | RFC 3339 schedule for capable adapters |
-| `--dry-run` | Validate and print without sending |
+| Flag                          | Behavior                                                               |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `--from`                      | Sender address                                                         |
+| `--to`                        | Comma-separated recipients                                             |
+| `--subject`                   | Subject                                                                |
+| `--text`, `--html`            | At least one body                                                      |
+| `--cc`, `--bcc`, `--reply-to` | Comma-separated addresses                                              |
+| `--header "Name: value"`      | Repeatable lossless headers                                            |
+| `--tag name=value`            | Repeatable tags                                                        |
+| `--metadata key=value`        | Repeatable provider metadata, parsed as strings                        |
+| `--attachment path[:type]`    | Repeatable server-side files; `--attach` also works                    |
+| `--message path`              | Start from an `EmailMessage` JSON file; explicit flags override fields |
+| `--send-at`                   | RFC 3339 schedule for capable adapters                                 |
+| `--dry-run`                   | Validate and print without sending                                     |
 
 ## Adapter flags
 
@@ -46,4 +46,8 @@ Without `--dry-run`, the command constructs one adapter, calls `client.send`, an
 
 Do not run a live command against an external recipient without approval.
 
-<Card title="Adapter pages" href="/docs/adapters" description="See provider-specific environment and field rules." />
+<Card
+  title="Adapter pages"
+  href="/docs/adapters"
+  description="See provider-specific environment and field rules."
+/>

@@ -14,7 +14,7 @@ const entrypoints = Object.values(packageJson.exports)
 for (const entrypoint of new Set(entrypoints)) {
   const source = resolve(packageDir, "src", `${entrypoint}.ts`);
   const sourceWithTsx = resolve(packageDir, "src", `${entrypoint}.tsx`);
-  const resolvedSource = await Bun.file(source).exists() ? source : sourceWithTsx;
+  const resolvedSource = (await Bun.file(source).exists()) ? source : sourceWithTsx;
 
   if (!(await Bun.file(resolvedSource).exists())) {
     throw new Error(`Cannot find CommonJS entrypoint source for ${entrypoint}: ${resolvedSource}`);

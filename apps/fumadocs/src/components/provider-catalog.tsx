@@ -10,9 +10,10 @@ type LiveCheckProvider = keyof typeof verification.liveChecks;
 export function ProviderGrid() {
   const selectedVersion = useSelectedDocsVersion();
 
-  const visibleProviders = (selectedVersion.current
-    ? [...providers]
-    : providers.filter((provider) => !("currentOnly" in provider && provider.currentOnly))
+  const visibleProviders = (
+    selectedVersion.current
+      ? [...providers]
+      : providers.filter((provider) => !("currentOnly" in provider && provider.currentOnly))
   ).sort(compareProviders);
 
   return (
@@ -51,7 +52,9 @@ export function ProviderBadge({ adapter }: { adapter: string }) {
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span className="font-medium">{provider.name}</span>
             <ProviderStatus provider={provider} />
-            <code className="break-all text-xs text-fd-muted-foreground">{provider.importPath}</code>
+            <code className="break-all text-xs text-fd-muted-foreground">
+              {provider.importPath}
+            </code>
           </div>
         </div>
         <a
@@ -112,7 +115,12 @@ function ProviderStatus({ provider }: { provider: Provider }) {
 
   return (
     <span className="inline-flex items-center gap-1.5">
-      <a href="/docs/adapters/verification" aria-label="Live check available — view current evidence" className="inline-flex items-center gap-1 text-xs text-fd-muted-foreground" title="A configured non-sending probe, not a published passing run">
+      <a
+        href="/docs/adapters/verification"
+        aria-label="Live check available — view current evidence"
+        className="inline-flex items-center gap-1 text-xs text-fd-muted-foreground"
+        title="A configured non-sending probe, not a published passing run"
+      >
         <ExternalLink
           aria-hidden="true"
           className="size-3.5 text-fd-muted-foreground"

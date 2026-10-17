@@ -5,7 +5,11 @@ description: One API. Every email provider. Fully open source.
 
 One API. Every email provider. Fully open source. Install the SDK, add the adapter for your existing provider account, and call `email.send()`. The message shape stays the same if you switch providers later.
 
-<Card title="Send your first email" href="/docs/getting-started/quickstart" description="Install the SDK, configure one adapter, and send a message from Node.js or Bun." />
+<Card
+  title="Send your first email"
+  href="/docs/getting-started/quickstart"
+  description="Install the SDK, configure one adapter, and send a message from Node.js or Bun."
+/>
 
 ## Start here
 
@@ -14,7 +18,7 @@ import { createEmailClient } from "@maillayer/core";
 import { resend } from "@maillayer/core/resend";
 
 export const email = createEmailClient({
-  adapters: [resend({ apiKey: process.env.RESEND_API_KEY! })],
+  adapters: [resend({ apiKey: process.env.RESEND_API_KEY })],
 });
 ```
 
@@ -35,7 +39,23 @@ Now call `email.send({ from, to, subject, text })`. Add retries, fallback, plugi
 
 MailLayer is server-side and supports Node.js 20+ or Bun 1.1+. Use ESM imports on any supported runtime, or `require()` from CommonJS applications on Node.js `^20.19.0 || >=22.12.0` (20.19+ on 20.x, or 22.12+). On older supported runtimes, use dynamic `import()`. See [Install](/docs/getting-started/install) for typed CommonJS configuration. Keep API keys and SMTP credentials out of browser bundles.
 
-<Card title="Install" href="/docs/getting-started/install" description="Install the SDK and confirm your Node.js or Bun version." />
-<Card title="Schedule an email" href="/docs/guides/schedule-email" description="Use sendAt for provider scheduling, or keep long-running jobs in your own queue." />
-<Card title="Choose an adapter" href="/docs/concepts/adapter-model" description="Set a default adapter and select another by its typed name when needed." />
-<Card title="Upgrade from 0.x" href="/docs/guides/migrate/v0-to-v1" description="Replace v0 provider names and send options with v1 adapters and options." />
+<Card
+  title="Install"
+  href="/docs/getting-started/install"
+  description="Install the SDK and confirm your Node.js or Bun version."
+/>
+<Card
+  title="Schedule an email"
+  href="/docs/guides/schedule-email"
+  description="Use sendAt for provider scheduling, or keep long-running jobs in your own queue."
+/>
+<Card
+  title="Choose an adapter"
+  href="/docs/concepts/adapter-model"
+  description="Set a default adapter and select another by its typed name when needed."
+/>
+<Card
+  title="Upgrade from 0.x"
+  href="/docs/guides/migrate/v0-to-v1"
+  description="Replace v0 provider names and send options with v1 adapters and options."
+/>

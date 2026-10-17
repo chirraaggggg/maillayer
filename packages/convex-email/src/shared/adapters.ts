@@ -159,7 +159,10 @@ export const CONVEX_EMAIL_ADAPTERS = {
     tenantId: { type: "string", env: "MS_GRAPH_TENANT_ID", required: true },
     clientId: { type: "string", env: "MS_GRAPH_CLIENT_ID", required: true },
     clientSecret: {
-      type: "string", env: "MS_GRAPH_CLIENT_SECRET", required: true, restrictEnvToField: true,
+      type: "string",
+      env: "MS_GRAPH_CLIENT_SECRET",
+      required: true,
+      restrictEnvToField: true,
     },
     user: { type: "string", env: "MS_GRAPH_USER", inline: true, required: true },
     saveToSentItems: { type: "boolean", env: "MS_GRAPH_SAVE_TO_SENT_ITEMS", inline: true },
@@ -194,9 +197,8 @@ export function isConvexEmailAdapterKind(kind: string): kind is ConvexEmailAdapt
   return adapterFieldsByKind.has(kind);
 }
 
-export const CONVEX_EMAIL_ADAPTER_KINDS: ConvexEmailAdapterKind[] = Object.keys(
-  CONVEX_EMAIL_ADAPTERS,
-).filter(isConvexEmailAdapterKind);
+export const CONVEX_EMAIL_ADAPTER_KINDS: ConvexEmailAdapterKind[] =
+  Object.keys(CONVEX_EMAIL_ADAPTERS).filter(isConvexEmailAdapterKind);
 
 type ConvexAdapterEnvName<TFields> = {
   [K in keyof TFields]: TFields[K] extends { env: infer TEnv extends string } ? TEnv : never;

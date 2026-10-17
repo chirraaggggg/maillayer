@@ -27,7 +27,7 @@ import { createEmailClient } from "@maillayer/core";
 import { acmePlugin } from "@example/maillayer-acme";
 
 const email = createEmailClient({
-  plugins: [acmePlugin({ apiKey: process.env.ACME_API_KEY! })],
+  plugins: [acmePlugin({ apiKey: process.env.ACME_API_KEY })],
 });
 ```
 
@@ -37,5 +37,13 @@ The plugin must register at least one adapter when the client has no `adapters` 
 
 The MailLayer maintainers do not verify third-party credentials, delivery claims, or account behavior. Report core contract defects to MailLayer and package-specific defects to the community maintainer.
 
-<Card title="Publish a community plugin" href="/docs/guides/authoring/publish-community-plugin" description="Package, test, and document a plugin for external users." />
-<Card title="Publish a community adapter" href="/docs/guides/authoring/publish-community-adapter" description="Ship a provider route without adding it to core." />
+<Card
+  title="Publish a community plugin"
+  href="/docs/guides/authoring/publish-community-plugin"
+  description="Package, test, and document a plugin for external users."
+/>
+<Card
+  title="Publish a community adapter"
+  href="/docs/guides/authoring/publish-community-adapter"
+  description="Ship a provider route without adding it to core."
+/>

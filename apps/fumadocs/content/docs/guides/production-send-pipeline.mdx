@@ -14,11 +14,11 @@ import { smtp } from "@maillayer/core/smtp";
 
 export const email = createEmailClient({
   adapters: [
-    resend({ apiKey: process.env.RESEND_API_KEY! }),
+    resend({ apiKey: process.env.RESEND_API_KEY }),
     smtp({
       name: "backup",
-      host: process.env.SMTP_HOST!,
-      auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
+      host: process.env.SMTP_HOST,
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
     }),
   ],
   defaultAdapter: "resend",
@@ -73,4 +73,8 @@ The [durable PostgreSQL example](https://github.com/chirraaggggg/maillayer/tree/
 
 [Convex Email](/docs/integrations/convex) provides queue state, attempts, cancellation, test-mode redirection, and webhook history for Convex applications.
 
-<Card title="Troubleshoot failures" href="/docs/guides/troubleshoot-failed-sends" description="Inspect typed errors and delivery classification." />
+<Card
+  title="Troubleshoot failures"
+  href="/docs/guides/troubleshoot-failed-sends"
+  description="Inspect typed errors and delivery classification."
+/>

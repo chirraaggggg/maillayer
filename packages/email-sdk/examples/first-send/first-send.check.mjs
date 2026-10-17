@@ -18,7 +18,10 @@ test("default command validates without credentials and never calls transport", 
 });
 
 test("--send refuses without EMAIL_FROM and EMAIL_TO, before any network call", async () => {
-  await assert.rejects(run({ args: ["--send"], env: {}, fixture: noNetwork }), /EMAIL_FROM and EMAIL_TO/);
+  await assert.rejects(
+    run({ args: ["--send"], env: {}, fixture: noNetwork }),
+    /EMAIL_FROM and EMAIL_TO/,
+  );
   await assert.rejects(
     run({ args: ["--send"], env: { EMAIL_FROM: "hello@acme-starter.dev" }, fixture: noNetwork }),
     /EMAIL_FROM and EMAIL_TO/,
@@ -33,20 +36,31 @@ test("--send refuses placeholder keys and example addresses", async () => {
   const addresses = { EMAIL_FROM: "hello@acme-starter.dev", EMAIL_TO: "test@acme-starter.dev" };
   await assert.rejects(run({ args: ["--send"], env: addresses }), /RESEND_API_KEY/);
   await assert.rejects(
-    run({ args: ["--send"], env: { ...addresses, RESEND_API_KEY: "re_replace_with_real_server_key" } }),
+    run({
+      args: ["--send"],
+      env: { ...addresses, RESEND_API_KEY: "re_replace_with_real_server_key" },
+    }),
     /RESEND_API_KEY/,
   );
   await assert.rejects(
     run({
       args: ["--send"],
-      env: { EMAIL_FROM: "hello@example.com", EMAIL_TO: "approved@acme-starter.dev", RESEND_API_KEY: "re_not_a_real_secret_1234" },
+      env: {
+        EMAIL_FROM: "hello@example.com",
+        EMAIL_TO: "approved@acme-starter.dev",
+        RESEND_API_KEY: "re_not_a_real_secret_1234",
+      },
     }),
     /Replace example addresses/,
   );
   await assert.rejects(
     run({
       args: ["--send"],
-      env: { EMAIL_FROM: "sender@example.test", EMAIL_TO: "recipient@example.test", RESEND_API_KEY: "re_test_synthetic_000" },
+      env: {
+        EMAIL_FROM: "sender@example.test",
+        EMAIL_TO: "recipient@example.test",
+        RESEND_API_KEY: "re_test_synthetic_000",
+      },
       fixture: undefined,
     }),
     /Replace example addresses/,
@@ -55,13 +69,22 @@ test("--send refuses placeholder keys and example addresses", async () => {
 
 test("usage and malformed addresses are rejected", async () => {
   await assert.rejects(run({ args: ["--base-url"], env: {} }), /Usage/);
-  await assert.rejects(run({ env: { EMAIL_FROM: "invalid" }, fixture: noNetwork }), /valid mailbox/);
+  await assert.rejects(
+    run({ env: { EMAIL_FROM: "invalid" }, fixture: noNetwork }),
+    /valid mailbox/,
+  );
 });
 
 test("CLI refusal exits 1 without leaking credentials", () => {
   const result = spawnSync(process.execPath, ["first-send.mjs", "--send"], {
     cwd: new URL(".", import.meta.url),
-    env: { ...process.env, MAILLAYER_TELEMETRY: "0", RESEND_API_KEY: "re_private_do_not_log", EMAIL_FROM: "", EMAIL_TO: "" },
+    env: {
+      ...process.env,
+      MAILLAYER_TELEMETRY: "0",
+      RESEND_API_KEY: "re_private_do_not_log",
+      EMAIL_FROM: "",
+      EMAIL_TO: "",
+    },
     encoding: "utf8",
   });
 
@@ -71,12 +94,20 @@ test("CLI refusal exits 1 without leaking credentials", () => {
 });
 
 test("fixture scope rejects remote origins and real credentials", async () => {
-  for (const baseUrl of ["https://api.resend.com", "http://localhost:1234", "http://127.0.0.1:1234/path", "http://user:pass@127.0.0.1:1234"]) {
+  for (const baseUrl of [
+    "https://api.resend.com",
+    "http://localhost:1234",
+    "http://127.0.0.1:1234/path",
+    "http://user:pass@127.0.0.1:1234",
+  ]) {
     await assert.rejects(run({ env: {}, fixture: { baseUrl } }), /Fixtures require/);
   }
 
   await assert.rejects(
-    run({ env: { RESEND_API_KEY: "re_do_not_forward" }, fixture: { baseUrl: "http://127.0.0.1:1234" } }),
+    run({
+      env: { RESEND_API_KEY: "re_do_not_forward" },
+      fixture: { baseUrl: "http://127.0.0.1:1234" },
+    }),
     /reject real credentials/,
   );
 });
@@ -109,10 +140,21 @@ test("explicit send posts once to the loopback fixture and returns its receipt",
     assert.match(result.receipt, /not confirmed/);
     assert.equal(requests, 1);
 
-    const rejected = { ...fixture, fetch: async () => new Response(JSON.stringify({ message: "domain is not verified" }), { status: 403, headers: { "Content-Type": "application/json" } }) };
+    const rejected = {
+      ...fixture,
+      fetch: async () =>
+        new Response(JSON.stringify({ message: "domain is not verified" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json" },
+        }),
+    };
+
     await assert.rejects(
       run({ args: ["--send"], env, fixture: rejected }),
-      (error) => error.code === "route_error" && error.cause.code === "adapter_error" && error.cause.status === 403,
+      (error) =>
+        error.code === "route_error" &&
+        error.cause.code === "adapter_error" &&
+        error.cause.status === 403,
     );
   } finally {
     await new Promise((done) => server.close(done));

@@ -17,7 +17,7 @@ import { createEmailClient } from "@maillayer/core";
 import { resend } from "@maillayer/core/resend";
 
 const email = createEmailClient({
-  adapters: [resend({ apiKey: process.env.RESEND_API_KEY! })],
+  adapters: [resend({ apiKey: process.env.RESEND_API_KEY })],
 });
 ```
 
@@ -56,4 +56,8 @@ RESEND_API_KEY=re_xxx npx --package @maillayer/core maillayer send \
   --dry-run
 ```
 
-<Card title="Resend adapter" href="/docs/adapters/resend" description="See all options and mapped fields." />
+<Card
+  title="Resend adapter"
+  href="/docs/adapters/resend"
+  description="See all options and mapped fields."
+/>

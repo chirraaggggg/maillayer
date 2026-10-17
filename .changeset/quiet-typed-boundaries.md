@@ -22,5 +22,6 @@ Tighten types at the SDK's input boundaries.
   ```
 
   Hooks and plugins then see `event.metadata?.tenantId` as a `string`.
+
 - Iterable `dataFields` is typed as `EmailMetadataRecord`, and the SMTP `tls` option now uses nodemailer's own TLS options type.
 - Provider responses are now parsed through shared JSON helpers. Malformed or `null` success bodies are treated like empty bodies, and non-string entries in accepted or rejected recipient lists are ignored instead of passed through.

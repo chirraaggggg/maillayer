@@ -20,12 +20,7 @@ npx shadcn@latest add https://maillayer.dev/r/verification-code.json
 Copy this template into your app and customize its props, words, and links.
 
 ```tsx title="src/ui/email/verification-code.tsx"
-import {
-  EmailCard,
-  EmailHeading,
-  EmailText,
-  ShadcnEmail,
-} from "@maillayer/core/react";
+import { EmailCard, EmailHeading, EmailText, ShadcnEmail } from "@maillayer/core/react";
 
 export function VerificationCodeEmail({ code }: { code: string }) {
   return (
@@ -33,16 +28,18 @@ export function VerificationCodeEmail({ code }: { code: string }) {
       <EmailCard>
         <EmailHeading>Verify your email</EmailHeading>
         <EmailText>Enter this code to finish signing in. It expires in 10 minutes.</EmailText>
-        <EmailText style={{
-          backgroundColor: "#f4f4f5",
-          borderRadius: 8,
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: 28,
-          fontWeight: 700,
-          letterSpacing: 8,
-          padding: "18px 20px",
-          textAlign: "center",
-        }}>
+        <EmailText
+          style={{
+            backgroundColor: "#f4f4f5",
+            borderRadius: 8,
+            fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+            fontSize: 28,
+            fontWeight: 700,
+            letterSpacing: 8,
+            padding: "18px 20px",
+            textAlign: "center",
+          }}
+        >
           {code}
         </EmailText>
         <EmailText muted>If you didn’t request this code, ignore this email.</EmailText>

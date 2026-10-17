@@ -25,11 +25,11 @@ const email = createEmailClient({
 
 ## Event types
 
-| Type | Emitted when | Additional fields |
-| --- | --- | --- |
-| `email.sent` | An adapter succeeds. | `responseId?` |
-| `email.retry` | A retry is scheduled. | `nextAttempt`, `delayMs`, `error` |
-| `email.error` | An adapter reaches terminal failure. | `error` |
+| Type          | Emitted when                         | Additional fields                 |
+| ------------- | ------------------------------------ | --------------------------------- |
+| `email.sent`  | An adapter succeeds.                 | `responseId?`                     |
+| `email.retry` | A retry is scheduled.                | `nextAttempt`, `delayMs`, `error` |
+| `email.error` | An adapter reaches terminal failure. | `error`                           |
 
 Every event includes the adapter, attempt, redacted message facts, and optional send metadata.
 
@@ -64,5 +64,13 @@ observabilityPlugin({
 });
 ```
 
-<Card title="Hooks and middleware" href="/docs/concepts/hooks" description="Understand lifecycle ordering and failure isolation." />
-<Card title="Telemetry and privacy" href="/docs/reference/telemetry" description="Separate SDK analytics from your application observability." />
+<Card
+  title="Hooks and middleware"
+  href="/docs/concepts/hooks"
+  description="Understand lifecycle ordering and failure isolation."
+/>
+<Card
+  title="Telemetry and privacy"
+  href="/docs/reference/telemetry"
+  description="Separate SDK analytics from your application observability."
+/>

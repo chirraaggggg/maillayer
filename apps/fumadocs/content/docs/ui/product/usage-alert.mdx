@@ -34,13 +34,15 @@ export function UsageAlertEmail({ percent }: { percent: number }) {
       <EmailCard>
         <EmailHeading>You’re nearing your email limit</EmailHeading>
         <EmailText>Your workspace has used {percent}% of its monthly email volume.</EmailText>
-        <div style={{
-          backgroundColor: "#e4e4e7",
-          borderRadius: 999,
-          height: 8,
-          margin: "24px 0",
-          overflow: "hidden",
-        }}>
+        <div
+          style={{
+            backgroundColor: "#e4e4e7",
+            borderRadius: 999,
+            height: 8,
+            margin: "24px 0",
+            overflow: "hidden",
+          }}
+        >
           <div style={{ backgroundColor: "#18181b", height: "100%", width: `${percent}%` }} />
         </div>
         <EmailText>85,240 of 100,000 emails used</EmailText>

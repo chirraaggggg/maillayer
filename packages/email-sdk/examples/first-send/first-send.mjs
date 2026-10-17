@@ -26,8 +26,14 @@ function fixtureTransport(fixture, env) {
   const url = new URL(fixture.baseUrl);
 
   if (
-    url.protocol !== "http:" || url.hostname !== "127.0.0.1" || !url.port ||
-    url.username || url.password || url.pathname !== "/" || url.search || url.hash
+    url.protocol !== "http:" ||
+    url.hostname !== "127.0.0.1" ||
+    !url.port ||
+    url.username ||
+    url.password ||
+    url.pathname !== "/" ||
+    url.search ||
+    url.hash
   ) {
     throw new Error("Fixtures require an explicit http://127.0.0.1:PORT origin.");
   }
@@ -125,12 +131,18 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     // part of either. A single-adapter send failure arrives as route_error wrapping the
     // adapter_error, so print the cause too. Anything else is reported by type only.
     if (error instanceof EmailSdkError) {
-      const cause = error.cause instanceof EmailSdkError ? ` <- ${error.cause.code}: ${error.cause.message}` : "";
+      const cause =
+        error.cause instanceof EmailSdkError
+          ? ` <- ${error.cause.code}: ${error.cause.message}`
+          : "";
+
       console.error(`${error.code}: ${error.message}${cause}`);
     } else if (error instanceof Error && /^(Usage:|Set |Replace |Fixtures )/.test(error.message)) {
       console.error(error.message);
     } else {
-      console.error(`Unexpected ${error?.constructor?.name ?? "error"}; see the README troubleshooting section.`);
+      console.error(
+        `Unexpected ${error?.constructor?.name ?? "error"}; see the README troubleshooting section.`,
+      );
     }
 
     process.exitCode = 1;

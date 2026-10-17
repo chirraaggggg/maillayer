@@ -161,10 +161,7 @@ function BlogPostPage() {
           </figure>
 
           {html ? (
-            <div
-              className="blog-content mt-10"
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
+            <div className="blog-content mt-10" dangerouslySetInnerHTML={{ __html: html }} />
           ) : (
             <p className="mt-10 text-base leading-8 text-fd-muted-foreground">
               This post does not have any content yet.

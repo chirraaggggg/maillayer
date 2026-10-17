@@ -118,7 +118,9 @@ export async function fetchAttachment(
       // The request asks for identity; node:https would hand compressed bytes straight to the email.
       if (encoding && encoding.toLowerCase() !== "identity") {
         await response.body?.cancel();
-        throw new Error(`Attachment "${filename}" was sent with unsupported content encoding "${encoding}".`);
+        throw new Error(
+          `Attachment "${filename}" was sent with unsupported content encoding "${encoding}".`,
+        );
       }
 
       return await readAttachmentBody(response, filename);

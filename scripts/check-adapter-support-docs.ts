@@ -1,5 +1,11 @@
-import { ADAPTER_SUPPORT_ENTRIES, ADAPTER_SUPPORT_FIELDS } from "../apps/fumadocs/src/lib/adapter-support";
-import { BUILT_IN_ADAPTER_CAPABILITIES, SUPPORTED_MESSAGE_FIELDS } from "../packages/email-sdk/src/utils";
+import {
+  ADAPTER_SUPPORT_ENTRIES,
+  ADAPTER_SUPPORT_FIELDS,
+} from "../apps/fumadocs/src/lib/adapter-support";
+import {
+  BUILT_IN_ADAPTER_CAPABILITIES,
+  SUPPORTED_MESSAGE_FIELDS,
+} from "../packages/email-sdk/src/utils";
 
 type DocsEntry = (typeof ADAPTER_SUPPORT_ENTRIES)[number];
 
@@ -47,8 +53,8 @@ const docsIds = ADAPTER_SUPPORT_ENTRIES.map((adapter) => adapter.id);
 
 const duplicateIds = docsIds.filter((id, index) => docsIds.indexOf(id) !== index);
 
-if (ADAPTER_SUPPORT_ENTRIES.length !== 27) {
-  fail(`Expected 27 adapter docs entries, found ${ADAPTER_SUPPORT_ENTRIES.length}.`);
+if (ADAPTER_SUPPORT_ENTRIES.length !== 31) {
+  fail(`Expected 31 adapter docs entries, found ${ADAPTER_SUPPORT_ENTRIES.length}.`);
 }
 
 if (duplicateIds.length > 0) {
@@ -56,10 +62,21 @@ if (duplicateIds.length > 0) {
 }
 
 if (!sameArray(docsIds, sdkIds)) {
-  fail(`Adapter ordering or membership changed.\nDocs: ${docsIds.join(", ")}\nSDK:  ${sdkIds.join(", ")}`);
+  fail(
+    `Adapter ordering or membership changed.\nDocs: ${docsIds.join(", ")}\nSDK:  ${sdkIds.join(", ")}`,
+  );
 }
 
-const expectedFields = ["cc", "bcc", "replyTo", "headers", "attachments", "tags", "metadata", "sendAt"];
+const expectedFields = [
+  "cc",
+  "bcc",
+  "replyTo",
+  "headers",
+  "attachments",
+  "tags",
+  "metadata",
+  "sendAt",
+];
 
 if (!sameArray(ADAPTER_SUPPORT_FIELDS, expectedFields)) {
   fail(`Field ordering changed. Docs: ${ADAPTER_SUPPORT_FIELDS.join(", ")}`);
@@ -102,13 +119,24 @@ for (const docsEntry of ADAPTER_SUPPORT_ENTRIES) {
   }
 }
 
-const oneReplyTo = ["brevo", "cloudflare", "unosend", "sequenzy", "mailersend", "plunk", "mailtrap", "lettr", "sendheron"];
+const oneReplyTo = [
+  "brevo",
+  "cloudflare",
+  "unosend",
+  "sequenzy",
+  "mailersend",
+  "plunk",
+  "mailtrap",
+  "lettr",
+  "sendheron",
+];
 
 for (const id of oneReplyTo) requireIncludes(entry(id), "one reply-to");
 
 const oneNormalRecipient = ["iterable", "loops", "primitive", "sendheron"];
 
-for (const id of oneNormalRecipient) requireIncludes(entry(id), "Normal send accepts one to recipient");
+for (const id of oneNormalRecipient)
+  requireIncludes(entry(id), "Normal send accepts one to recipient");
 
 requireIncludes(entry("jetemail"), "Requires a from display name");
 
@@ -175,7 +203,9 @@ requireIncludes(entry("mailchimp"), "yyyy-mm-dd HH:MM:ss");
 requireIncludes(entry("sparkpost"), "YYYY-MM-DDTHH:mm:ss±HH:mm");
 
 if (errors.length > 0) {
-  console.error(`Adapter support docs drift check failed with ${errors.length} issue${errors.length === 1 ? "" : "s"}:`);
+  console.error(
+    `Adapter support docs drift check failed with ${errors.length} issue${errors.length === 1 ? "" : "s"}:`,
+  );
 
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);

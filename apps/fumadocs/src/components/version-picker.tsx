@@ -27,11 +27,7 @@ export function VersionPicker({ variant = "nav" }: VersionPickerProps) {
       >
         <PackageCheck className="size-4 text-fd-muted-foreground" strokeWidth={2} />
         <span className="leading-none">{currentVersion.label}</span>
-        {currentVersion.label !== currentVersion.version ? (
-          <span className="rounded-sm bg-fd-muted px-1.5 py-0.5 text-[11px] leading-none text-fd-muted-foreground">
-            {currentVersion.version}
-          </span>
-        ) : null}
+
         <ChevronDown
           className={`size-3.5 text-fd-muted-foreground transition group-data-[state=open]/version:rotate-180 ${
             isSidebar ? "ms-auto" : ""
@@ -57,6 +53,8 @@ export function VersionPicker({ variant = "nav" }: VersionPickerProps) {
                 rememberDocsVersion(version);
                 setOpen(false);
               }}
+              style={version.external ? { pointerEvents: "none", opacity: 0.5 } : undefined}
+              tabIndex={version.external ? -1 : undefined}
             >
               <span className="mt-0.5 grid size-4 place-items-center text-fd-primary">
                 {version === currentVersion ? (
@@ -64,14 +62,7 @@ export function VersionPicker({ variant = "nav" }: VersionPickerProps) {
                 ) : null}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="flex items-center gap-2 font-medium">
-                  {version.label}
-                  {version.label !== version.version ? (
-                    <span className="text-xs font-normal text-fd-muted-foreground">
-                      {version.version}
-                    </span>
-                  ) : null}
-                </span>
+                <span className="flex items-center gap-2 font-medium">{version.label}</span>
                 <span className="block text-xs text-fd-muted-foreground">
                   {version.description}
                 </span>

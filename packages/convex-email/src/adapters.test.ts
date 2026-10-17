@@ -184,7 +184,11 @@ describe("adapter option resolution", () => {
     // A config that bypassed the component validator: Graph has no inline endpoint fields.
     const smuggled = Object.assign(
       { kind: "graph" as const },
-      { baseUrl: "https://attacker.invalid", tokenUrl: "https://attacker.invalid/token", scope: "untrusted" },
+      {
+        baseUrl: "https://attacker.invalid",
+        tokenUrl: "https://attacker.invalid/token",
+        scope: "untrusted",
+      },
     );
 
     const options = resolveAdapterOptions(smuggled);
@@ -213,7 +217,14 @@ describe("adapter option resolution", () => {
       expect(() => resolveAdapterOptions(config)).not.toThrow(graphSecret);
     }
 
-    const graphEnvFields = ["baseUrlEnv", "tokenUrlEnv", "userEnv", "scopeEnv", "tenantIdEnv", "clientIdEnv"] as const;
+    const graphEnvFields = [
+      "baseUrlEnv",
+      "tokenUrlEnv",
+      "userEnv",
+      "scopeEnv",
+      "tenantIdEnv",
+      "clientIdEnv",
+    ] as const;
 
     for (const field of graphEnvFields) {
       for (const source of ["MS_GRAPH_CLIENT_SECRET", "RESEND_API_KEY"] as const) {
@@ -224,8 +235,10 @@ describe("adapter option resolution", () => {
       }
     }
 
-    expect(resolveAdapterOptions({ kind: "graph", clientSecretEnv: "MS_GRAPH_CLIENT_SECRET" })
-      .clientSecret).toBe(process.env.MS_GRAPH_CLIENT_SECRET);
+    expect(
+      resolveAdapterOptions({ kind: "graph", clientSecretEnv: "MS_GRAPH_CLIENT_SECRET" })
+        .clientSecret,
+    ).toBe(process.env.MS_GRAPH_CLIENT_SECRET);
   });
 
   test("omits optional fields that neither config nor environment supplies", () => {
@@ -303,12 +316,18 @@ describe("adapter config wire format", () => {
         adapter: "graph",
       };
 
-      await expect(t.mutation(api.lib.enqueueOwned, {
-        email, ownerId: "authenticated-user",
-      })).rejects.toThrow("Validator error");
-      await expect(t.mutation(api.lib.enqueueOwnedBatch, {
-        messages: [email], ownerId: "authenticated-user",
-      })).rejects.toThrow("Validator error");
+      await expect(
+        t.mutation(api.lib.enqueueOwned, {
+          email,
+          ownerId: "authenticated-user",
+        }),
+      ).rejects.toThrow("Validator error");
+      await expect(
+        t.mutation(api.lib.enqueueOwnedBatch, {
+          messages: [email],
+          ownerId: "authenticated-user",
+        }),
+      ).rejects.toThrow("Validator error");
     }
   });
 
@@ -316,7 +335,11 @@ describe("adapter config wire format", () => {
     const t = convexTest(schema, modules);
 
     await expect(
-      t.mutation(api.lib.enqueue, { ...message, adapters: [{ kind: "owl-post" }], adapter: "owl-post" }),
+      t.mutation(api.lib.enqueue, {
+        ...message,
+        adapters: [{ kind: "owl-post" }],
+        adapter: "owl-post",
+      }),
     ).rejects.toThrow("Validator error");
   });
 

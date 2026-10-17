@@ -75,9 +75,7 @@ describe("smtp error classification", () => {
   });
 
   test("keeps transient TLS failures not sent", () => {
-    expect(smtpDeliveryState({ code: "ETLS", message: "TLS negotiation failed" })).toBe(
-      "not_sent",
-    );
+    expect(smtpDeliveryState({ code: "ETLS", message: "TLS negotiation failed" })).toBe("not_sent");
     expect(isRetryableSmtpError({ code: "ETLS", message: "TLS negotiation failed" })).toBe(true);
   });
 
