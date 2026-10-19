@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, MotionConfig } from "motion/react";
 import * as React from "react";
 
 import { DocsVersionLink } from "@/components/docs-version-link";
@@ -51,19 +51,24 @@ const sectionReveal = {
 
 function Home() {
   return (
-    <main className="ml-landing">
-      <div aria-hidden="true" className="ml-grain" />
+    /* reducedMotion="user" honors prefers-reduced-motion without branching
+       render props on useReducedMotion(), which diverged from the server
+       markup and left sections stuck at opacity 0 after hydration. */
+    <MotionConfig reducedMotion="user">
+      <main className="ml-landing">
+        <div aria-hidden="true" className="ml-grain" />
 
-      <LandingNav />
-      <LandingHero />
-      <ProviderCards />
-      <DiagramSection />
-      <ResultsSection />
-      <FeaturesSection />
-      <PillsRow />
-      <ClosingNote />
-      <LandingFooter />
-    </main>
+        <LandingNav />
+        <LandingHero />
+        <ProviderCards />
+        <DiagramSection />
+        <ResultsSection />
+        <FeaturesSection />
+        <PillsRow />
+        <ClosingNote />
+        <LandingFooter />
+      </main>
+    </MotionConfig>
   );
 }
 
@@ -123,15 +128,12 @@ function LandingNav() {
 
 /* ─── Hero ─── */
 function LandingHero() {
-  const reduce = useReducedMotion();
-  const initial = reduce ? (false as const) : ("hidden" as const);
-
   return (
     <section className="ml-hero" aria-labelledby="landing-heading">
       <div className="ml-container">
         <motion.div
           className="ml-hero-text"
-          initial={initial}
+          initial="hidden"
           animate="show"
           variants={{
             hidden: {},
@@ -157,7 +159,7 @@ function LandingHero() {
                   stroke="currentColor"
                   strokeWidth="2.5"
                   strokeLinecap="round"
-                  initial={reduce ? true : { pathLength: 0 }}
+                  initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
                   transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
                 />
@@ -252,14 +254,12 @@ const providerCards = [
 ] as const;
 
 function ProviderCards() {
-  const reduce = useReducedMotion();
-
   return (
     <section className="ml-cards-section" aria-label="Featured providers">
       <div className="ml-container">
         <motion.p
           className="ml-center-label"
-          initial={reduce ? false : "hidden"}
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           variants={sectionReveal}
@@ -268,7 +268,7 @@ function ProviderCards() {
         </motion.p>
         <motion.div
           className="ml-card-grid"
-          initial={reduce ? false : "hidden"}
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           variants={{
@@ -313,8 +313,6 @@ function ProviderCards() {
 
 /* ─── Architecture diagram ─── */
 function DiagramSection() {
-  const reduce = useReducedMotion();
-
   return (
     <section
       id="how-it-works"
@@ -324,7 +322,7 @@ function DiagramSection() {
       <div className="ml-container">
         <motion.div
           className="ml-diagram-wrap"
-          initial={reduce ? false : "hidden"}
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           variants={sectionReveal}
@@ -381,7 +379,7 @@ function DiagramSection() {
               x1="180" y1="110" x2="248" y2="110"
               stroke="var(--paper-border-strong)" strokeWidth="1.5" strokeLinecap="round"
               markerEnd="url(#arrowhead)"
-              initial={reduce ? true : { pathLength: 0, opacity: 0 }}
+              initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.15, duration: 0.35 }}
@@ -400,7 +398,7 @@ function DiagramSection() {
               x1="400" y1="110" x2="460" y2="60"
               stroke="var(--paper-border-strong)" strokeWidth="1.5" strokeLinecap="round"
               markerEnd="url(#arrowhead)"
-              initial={reduce ? true : { pathLength: 0, opacity: 0 }}
+              initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3, duration: 0.3 }}
@@ -409,7 +407,7 @@ function DiagramSection() {
               x1="400" y1="110" x2="460" y2="110"
               stroke="var(--paper-border-strong)" strokeWidth="1.5" strokeLinecap="round"
               markerEnd="url(#arrowhead)"
-              initial={reduce ? true : { pathLength: 0, opacity: 0 }}
+              initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.35, duration: 0.3 }}
@@ -418,7 +416,7 @@ function DiagramSection() {
               x1="400" y1="110" x2="460" y2="160"
               stroke="var(--paper-border-strong)" strokeWidth="1.5" strokeLinecap="round"
               markerEnd="url(#arrowhead)"
-              initial={reduce ? true : { pathLength: 0, opacity: 0 }}
+              initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.3 }}
@@ -432,7 +430,7 @@ function DiagramSection() {
             ].map(({ y, name }, i) => (
               <motion.g
                 key={name}
-                initial={reduce ? true : { opacity: 0 }}
+                initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.45 + i * 0.08, duration: 0.3 }}
@@ -444,7 +442,7 @@ function DiagramSection() {
             ))}
             <motion.text
               x="518" y="196" textAnchor="middle" className="ml-arch-tiny"
-              initial={reduce ? true : { opacity: 0 }}
+              initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.68, duration: 0.3 }}
@@ -457,7 +455,7 @@ function DiagramSection() {
               x1="572" y1="60" x2="626" y2="100"
               stroke="var(--paper-border-strong)" strokeWidth="1.5" strokeLinecap="round"
               markerEnd="url(#arrowhead)"
-              initial={reduce ? true : { pathLength: 0, opacity: 0 }}
+              initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.55, duration: 0.3 }}
@@ -466,7 +464,7 @@ function DiagramSection() {
               x1="572" y1="110" x2="626" y2="110"
               stroke="var(--paper-border-strong)" strokeWidth="1.5" strokeLinecap="round"
               markerEnd="url(#arrowhead)"
-              initial={reduce ? true : { pathLength: 0, opacity: 0 }}
+              initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6, duration: 0.3 }}
@@ -475,7 +473,7 @@ function DiagramSection() {
               x1="572" y1="160" x2="626" y2="120"
               stroke="var(--paper-border-strong)" strokeWidth="1.5" strokeLinecap="round"
               markerEnd="url(#arrowhead)"
-              initial={reduce ? true : { pathLength: 0, opacity: 0 }}
+              initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.65, duration: 0.3 }}
@@ -483,7 +481,7 @@ function DiagramSection() {
 
             {/* ── SendResult node ── */}
             <motion.g
-              initial={reduce ? true : { opacity: 0 }}
+              initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.75, duration: 0.35 }}
@@ -525,14 +523,12 @@ function DiagramSection() {
 
 /* ─── What you get back ─── */
 function ResultsSection() {
-  const reduce = useReducedMotion();
-
   return (
     <section className="ml-split-section" aria-labelledby="results-heading">
       <div className="ml-container">
         <motion.div
           className="ml-split"
-          initial={reduce ? false : "hidden"}
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
           variants={sectionReveal}
@@ -799,15 +795,13 @@ const features = [
 ] as const;
 
 function FeaturesSection() {
-  const reduce = useReducedMotion();
-
   return (
     <section className="ml-features-section" aria-labelledby="features-heading">
       <div className="ml-container">
         <motion.h2
           id="features-heading"
           className="ml-features-heading"
-          initial={reduce ? false : "hidden"}
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           variants={sectionReveal}
@@ -816,7 +810,7 @@ function FeaturesSection() {
         </motion.h2>
         <motion.div
           className="ml-features-grid"
-          initial={reduce ? false : "hidden"}
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           variants={{
@@ -848,13 +842,11 @@ const pillProviders = [
 ] as const;
 
 function PillsRow() {
-  const reduce = useReducedMotion();
-
   return (
     <section className="ml-pills-section" aria-label="Provider directory">
       <div className="ml-container">
         <motion.div
-          initial={reduce ? false : "hidden"}
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           variants={sectionReveal}
@@ -887,14 +879,12 @@ function PillsRow() {
 
 /* ─── Closing note ─── */
 function ClosingNote() {
-  const reduce = useReducedMotion();
-
   return (
     <section className="ml-closing-section" aria-label="Open source">
       <div className="ml-container">
         <motion.p
           className="ml-closing-note"
-          initial={reduce ? false : "hidden"}
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
           variants={sectionReveal}
