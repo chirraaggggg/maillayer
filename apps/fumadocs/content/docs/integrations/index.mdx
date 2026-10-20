@@ -1,0 +1,26 @@
+---
+title: Integrations
+description: Run MailLayer inside Convex, Chat SDK, and AI SDK products with maintained setup, testing, and webhook guides.
+---
+
+MailLayer runs anywhere Node.js 20+ or Bun runs. These guides cover the frameworks the SDK is verified against, including the components, tests, and webhooks each one needs.
+
+<Card
+  title="Convex"
+  href="/docs/integrations/convex"
+  description="Durable, provider-portable transactional email for Convex applications."
+/>
+
+<Card
+  title="Chat SDK"
+  href="/docs/integrations/chat-sdk"
+  description="Send transactional email from Chat SDK handlers while keeping identity and authorization in application code."
+/>
+
+<Card
+  title="AI SDK"
+  href="/docs/integrations/ai-sdk"
+  description="Add one narrow, approval-gated sendEmail tool to a Vercel AI SDK agent."
+/>
+
+Every integration uses the same `createEmailClient` call and the same adapters as a plain Node.js app, so nothing changes when you move the code between frameworks. Framework-specific behavior lives in the guides above.

@@ -1,5 +1,5 @@
 {
   "title": "Integrations",
   "icon": "Integrations",
-  "pages": ["convex", "chat-sdk", "ai-sdk"]
+  "pages": ["index", "convex", "chat-sdk", "ai-sdk"]
 }

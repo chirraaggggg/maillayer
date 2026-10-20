@@ -1,0 +1,37 @@
+---
+title: Contributing
+description: Report issues, improve the docs, and ship community adapters, plus the checks every MailLayer change must pass.
+---
+
+MailLayer is MIT-licensed and community-driven. Bug reports, docs fixes, adapter updates, and new integrations all land through the same GitHub repository.
+
+## Ways to contribute
+
+- **Report a bug or request a feature** through [GitHub Issues](https://github.com/chirraaggggg/maillayer/issues). Include the adapter, the provider response, and a minimal reproduction.
+- **Fix documentation** directly. Every docs page ships as Markdown in `apps/fumadocs/content/docs`, and the raw source of every page is available as `<page>.md`.
+- **Author an adapter or plugin** following the [community authoring guide](/docs/guides/authoring/publish-community-adapter). Community adapters must pass the same verification gates as built-in ones.
+- **Improve the SDK** in `packages/email-sdk`. Adapters live in `src/`, one file per provider, with a matching test file.
+
+## Local development
+
+```bash
+git clone https://github.com/chirraaggggg/maillayer
+cd maillayer
+bun install
+bun run lint
+bun run check-types
+bun run test
+bun run build
+```
+
+The docs site lives in `apps/fumadocs`; run `bun run dev` inside it to preview content changes on a local server.
+
+## Review expectations
+
+- Every user-visible SDK or CLI change ships with a changeset (`bun run changeset`) and honest bump level: `patch` for fixes, `minor` for features, `major` for breaking changes.
+- Provider adapters must be verified against a live account before they merge, and their verification evidence recorded in `adapter-verification.json`.
+- Breaking changes include migration notes with before/after examples.
+
+## Security
+
+Report security issues privately through the [security policy](https://github.com/chirraaggggg/maillayer/blob/main/SECURITY.md) instead of the public issue tracker. Everyone participating agrees to the [Code of Conduct](https://github.com/chirraaggggg/maillayer/blob/main/CODE_OF_CONDUCT.md).

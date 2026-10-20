@@ -17,8 +17,8 @@ export function ProviderGrid() {
   ).sort(compareProviders);
 
   return (
-    <div className="not-prose border-y border-fd-border">
-      <div className="flex items-center gap-5 border-b border-fd-border py-3 text-xs text-fd-muted-foreground">
+    <div className="not-prose">
+      <div className="flex items-center gap-5 py-2 text-xs text-fd-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
           <ExternalLink
             aria-hidden="true"
@@ -28,7 +28,7 @@ export function ProviderGrid() {
           Live check available
         </span>
       </div>
-      <div className="divide-y divide-fd-border">
+      <div className="flex flex-col">
         {visibleProviders.map((provider) => (
           <ProviderRow key={provider.key} provider={provider} />
         ))}
@@ -45,7 +45,7 @@ export function ProviderBadge({ adapter }: { adapter: string }) {
   }
 
   return (
-    <div className="not-prose mb-8 border-y border-fd-border py-4 text-sm text-fd-foreground">
+    <div className="not-prose my-8 py-1 text-sm text-fd-foreground">
       <div className="flex flex-wrap items-center gap-3">
         <ProviderMark provider={provider} />
         <div className="min-w-0 flex-1">
@@ -73,7 +73,7 @@ export function ProviderBadge({ adapter }: { adapter: string }) {
 
 function ProviderRow({ provider }: { provider: Provider }) {
   return (
-    <article className="grid gap-3 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+    <article className="-mx-3 grid gap-3 rounded-xl px-3 py-4 transition-colors hover:bg-fd-accent sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <div className="flex min-w-0 items-center gap-3">
         <ProviderMark provider={provider} />
         <div className="min-w-0">
@@ -86,7 +86,7 @@ function ProviderRow({ provider }: { provider: Provider }) {
       </div>
       <div className="flex items-center gap-2 pl-11 sm:pl-0">
         <DocsVersionLink
-          className="inline-flex h-8 items-center justify-center rounded-md border border-fd-border px-3 text-xs font-medium transition hover:bg-fd-accent"
+          className="inline-flex h-8 items-center justify-center rounded-md border border-fd-border px-3 text-xs font-medium text-fd-foreground transition hover:border-fd-muted-foreground"
           docsPath={provider.docs}
           forceLatest={"currentOnly" in provider && provider.currentOnly}
         >
@@ -94,7 +94,7 @@ function ProviderRow({ provider }: { provider: Provider }) {
         </DocsVersionLink>
         <a
           aria-label={`Open ${provider.name} website`}
-          className="grid size-8 place-items-center rounded-md border border-fd-border text-fd-muted-foreground transition hover:bg-fd-accent hover:text-fd-foreground"
+          className="grid size-8 place-items-center rounded-md border border-fd-border text-fd-muted-foreground transition hover:border-fd-muted-foreground hover:text-fd-foreground"
           href={provider.website}
           rel="noreferrer"
           target="_blank"

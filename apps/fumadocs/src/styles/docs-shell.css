@@ -8,31 +8,35 @@
  *    paragraph, and code blocks that carry a language header + copy button
  *  - right "On this page" rail with scroll-spy links and page actions
  *
- * Neutral zinc palette (dark-first, like Social SDK) scoped to .ds-shell so
- * the paper-branded landing page keeps its own tokens untouched.
+ * Warm neutral palette shared with the landing page, scoped to .ds-shell so
+ * the paper-branded inner pages keep their own tokens untouched. Headings
+ * use Lora (the landing serif); links are ink-toned with a quiet underline
+ * instead of the old terracotta accent.
  */
 
 .ds-shell {
   --ds-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   --ds-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --ds-serif: "Lora", Charter, Georgia, "Times New Roman", serif;
 
-  /* Light palette */
-  --ds-bg: #ffffff;
-  --ds-border: #e8e8ea;
-  --ds-border-strong: #d6d6d9;
-  --ds-text: #17171a;
-  --ds-text-secondary: #55555c;
-  --ds-muted: #6f6f77;
-  --ds-faint: #a0a0a8;
-  --ds-hover-bg: #f5f5f6;
-  --ds-active-bg: #efeff0;
-  --ds-inline-bg: #f4f4f5;
-  --ds-code-bg: #fafafa;
-  --ds-code-header-bg: #f4f4f6;
-  --ds-badge-bg: #ececee;
-  --ds-accent: #b0562c;
-  --ds-focus: rgba(176, 86, 44, 0.45);
+  /* Light palette (warm paper-white) */
+  --ds-bg: #fbfaf7;
+  --ds-border: #e9e6df;
+  --ds-border-strong: #d8d4c9;
+  --ds-text: #1a1917;
+  --ds-text-secondary: #55524b;
+  --ds-muted: #7b776e;
+  --ds-faint: #a5a196;
+  --ds-hover-bg: #f4f2ec;
+  --ds-active-bg: #ece9e0;
+  --ds-inline-bg: #f1efe7;
+  --ds-code-bg: #f8f7f2;
+  --ds-code-header-bg: #f2f0e9;
+  --ds-badge-bg: #e9e6dc;
+  --ds-accent: #1a1917;
+  --ds-success: #2f7d43;
+  --ds-focus: rgba(26, 25, 23, 0.35);
 
   display: flex;
   flex-direction: column;
@@ -47,21 +51,23 @@
 }
 
 .dark .ds-shell {
-  --ds-bg: #0b0b0c;
-  --ds-border: #262629;
-  --ds-border-strong: #35353a;
-  --ds-text: #f4f4f5;
-  --ds-text-secondary: #a5a5ab;
-  --ds-muted: #8a8a90;
-  --ds-faint: #6b6b71;
-  --ds-hover-bg: #171719;
-  --ds-active-bg: #1e1e21;
-  --ds-inline-bg: #161618;
-  --ds-code-bg: #0d0d0e;
-  --ds-code-header-bg: #131315;
-  --ds-badge-bg: #232326;
-  --ds-accent: #d99562;
-  --ds-focus: rgba(217, 149, 98, 0.5);
+  /* Landing-matched dark: #0b0b0b canvas, warm-white ink, no orange. */
+  --ds-bg: #0b0b0b;
+  --ds-border: #232325;
+  --ds-border-strong: #36363a;
+  --ds-text: #efece4;
+  --ds-text-secondary: #b1b1ae;
+  --ds-muted: #8f8f8c;
+  --ds-faint: #6d6d6a;
+  --ds-hover-bg: #141414;
+  --ds-active-bg: #1b1b1c;
+  --ds-inline-bg: #161615;
+  --ds-code-bg: #0d0d0c;
+  --ds-code-header-bg: #121211;
+  --ds-badge-bg: #222220;
+  --ds-accent: #efece4;
+  --ds-success: #7ce59b;
+  --ds-focus: rgba(239, 236, 228, 0.4);
 }
 
 /* ---------- Top bar ---------- */
@@ -85,9 +91,10 @@
   gap: 0.6rem;
   color: var(--ds-text);
   text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-family: var(--ds-serif);
+  font-size: 1.08rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
   white-space: nowrap;
 }
 
@@ -381,10 +388,11 @@
 .ds-title {
   margin: 0;
   color: var(--ds-text);
-  font-size: 3.15rem;
-  font-weight: 600;
-  line-height: 1.06;
-  letter-spacing: -0.035em;
+  font-family: var(--ds-serif);
+  font-size: 3rem;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 .ds-lead {
@@ -398,10 +406,11 @@
 .ds-article :where(h2) {
   margin: 2.6rem 0 0.8rem;
   color: var(--ds-text);
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-family: var(--ds-serif);
+  font-size: 1.58rem;
+  font-weight: 500;
   line-height: 1.3;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .ds-article :where(h3) {
@@ -425,13 +434,28 @@
   color: var(--ds-text-secondary);
 }
 
+/* Ink-toned links with a quiet underline, like the landing page. */
 .ds-article :where(a) {
-  color: var(--ds-accent);
-  text-decoration: none;
+  color: var(--ds-text);
+  text-decoration: underline;
+  text-decoration-color: var(--ds-border-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .ds-article :where(a:hover) {
-  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+/* Heading text links must read as headings, not links. */
+.ds-article :where(h1, h2, h3, h4, h5, h6) :where(a) {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Component anchors (Setup buttons, provider marks) are controls, not prose. */
+.ds-article .not-prose :where(a) {
+  text-decoration: none;
 }
 
 .ds-article :where(ul, ol) {
@@ -572,7 +596,7 @@
 }
 
 .ds-code__copy--success {
-  color: var(--ds-accent);
+  color: var(--ds-success);
 }
 
 .ds-code__body {
@@ -718,6 +742,7 @@
   border-radius: 10px;
   background: var(--ds-bg);
   padding: 0.9rem 1rem;
+  text-decoration: none;
   transition: border-color 0.12s ease, background 0.12s ease;
 }
 

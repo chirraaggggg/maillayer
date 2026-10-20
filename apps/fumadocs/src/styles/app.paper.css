@@ -3,3 +3,50 @@
 @import "./paper-docs.css";
 @import "./docs-shell.css";
 @import "./landing.css";
+
+/* fumadocs utility palette (text-fd-*, border-fd-*, bg-fd-*).
+ *
+ * The fd-* Tailwind utilities only resolve when the theme names them here;
+ * without this block every `border-fd-border` silently falls back to
+ * currentColor and paints bright-white dividers on the dark docs shell.
+ * Light values serve the paper-branded pages; .dark values follow the
+ * landing palette. */
+@theme {
+  --color-fd-background: #ffffff;
+  --color-fd-foreground: #17171a;
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: #17171a;
+  --color-fd-popover: #ffffff;
+  --color-fd-popover-foreground: #17171a;
+  --color-fd-muted: #f4f4f5;
+  --color-fd-muted-foreground: #6f6f77;
+  --color-fd-border: #e8e8ea;
+  --color-fd-secondary: #f4f4f5;
+  --color-fd-secondary-foreground: #17171a;
+  --color-fd-accent: #f5f5f6;
+  --color-fd-accent-foreground: #17171a;
+  --color-fd-primary: #a45f1b;
+  --color-fd-primary-foreground: #fbf6e6;
+  --color-fd-ring: #a45f1b;
+}
+
+.dark {
+  --color-fd-background: #0b0b0b;
+  --color-fd-foreground: #efece4;
+  --color-fd-card: #101010;
+  --color-fd-card-foreground: #efece4;
+  --color-fd-popover: #101010;
+  --color-fd-popover-foreground: #efece4;
+  --color-fd-muted: #161615;
+  --color-fd-muted-foreground: #8f8f8c;
+  --color-fd-border: #242426;
+  --color-fd-secondary: #161615;
+  --color-fd-secondary-foreground: #efece4;
+  --color-fd-accent: #17171a;
+  --color-fd-accent-foreground: #efece4;
+  /* Dark primary doubles as the docs link color: warm white, like the
+     landing page. Never the old terracotta accent. */
+  --color-fd-primary: #efece4;
+  --color-fd-primary-foreground: #0b0b0b;
+  --color-fd-ring: #efece4;
+}
