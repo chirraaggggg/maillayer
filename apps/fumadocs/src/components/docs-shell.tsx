@@ -18,6 +18,7 @@ import {
   TerminalIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { Link } from "@tanstack/react-router";
 import type { TOCItemType } from "fumadocs-core/toc";
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { useTheme } from "fumadocs-ui/provider/base";
@@ -105,7 +106,6 @@ export function DocsShell({
   useDocsDarkDefault();
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const docsHomeHref = versionDocsHref("/docs", docsBasePath) ?? "/docs";
 
   return (
     <div className="ds-shell">
@@ -119,10 +119,10 @@ export function DocsShell({
         >
           {sectionIcon(Menu02Icon)}
         </button>
-        <a className="ds-brand" href={docsHomeHref}>
+        <Link className="ds-brand" to="/" aria-label={`${appName} home`}>
           <MailMark />
           {appName}
-        </a>
+        </Link>
         <div className="ds-topbar__spacer" />
         <SearchTrigger />
         <ThemeToggle className="ds-theme-toggle" defaultTheme="dark" />
