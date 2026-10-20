@@ -50,16 +50,16 @@ describe("site social metadata", () => {
 describe("homepage product explanation", () => {
   const home = readFileSync(new URL("../routes/index.tsx", import.meta.url), "utf8");
 
-  test("uses one complete send example on desktop and mobile", () => {
-    expect(home).toContain('id="landing-heading">Email, without the lock-in.</h1>');
-    expect(home.match(/aria-label="TypeScript email send example"/g)).toHaveLength(1);
-    // The code panel renders tokens as JSX spans, so match the literals it contains.
-    expect(home).toContain("'@maillayer/core/resend'");
-    expect(home).toMatch(
-      /apiKey: process\.env\.["}]*\s*(<em|<span[^>]*>)RESEND_API_KEY(<\/em>|<\/span>)\s*\{"! \}\)\],"\}/,
-    );
-    expect(home).toContain("'Acme <hello@acme.dev>'");
-    expect(home).toContain("'ada@example.com'");
+  test("shows one send-result example beside the product headline", () => {
+    // The editorial hero keeps one H1 with the product headline.
+    expect(home).toContain('id="landing-heading"');
+    expect(home).toContain("Send emails");
+    expect(home).toContain("from your code.");
+    expect(home.match(/aria-label="MailLayer send result example"/g)).toHaveLength(1);
+    // The result card renders tokens as JSX spans, so match the literals it contains.
+    expect(home).toContain('"adapter"');
+    expect(home).toContain('"resend"');
+    expect(home).toContain('"f1a2b3c4"');
     expect(home).not.toContain("landing-mobile-only");
   });
 

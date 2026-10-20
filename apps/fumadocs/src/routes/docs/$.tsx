@@ -2,6 +2,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { staticFunctionMiddleware } from "@tanstack/start-static-server-functions";
 import browserCollections from "collections/browser";
+import type { TOCItemType } from "fumadocs-core/toc";
 import { useFumadocsLoader } from "fumadocs-core/source/client";
 import type { ReactNode } from "react";
 
@@ -20,12 +21,7 @@ import docsLastmod from "@/lib/docs-lastmod.generated.json";
 import { getAdapterSupportEntry } from "@/lib/adapter-faq";
 import { buildAdapterFaq } from "@/lib/adapter-faq";
 import { getLatestDocsRedirect } from "@/lib/docs-redirects";
-import {
-  BrandHeader,
-  DocsLayout,
-  ReadingColumn,
-  type Breadcrumb,
-} from "@/components/paper-docs-layout";
+import { DocsShell } from "@/components/docs-shell";
 
 export const Route = createFileRoute("/docs/$")({
   loader: async ({ params }) => {
@@ -103,6 +99,12 @@ export const Route = createFileRoute("/docs/$")({
               },
             ]
           : []),
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
+        },
       ],
     };
   },
@@ -169,7 +171,7 @@ function resolveMissingVersionedDocsPage(resolved: ReturnType<typeof resolveDocs
 function createDocsClientLoader(collection: (typeof browserCollections)[DocsVersionCollection]) {
   return collection.createClientLoader({
     component(
-      { frontmatter, default: MDX },
+      { frontmatter, default: MDX, toc },
       // you can define props for the component
       {
         docsBasePath,
@@ -183,19 +185,15 @@ function createDocsClientLoader(collection: (typeof browserCollections)[DocsVers
     ) {
       return (
         <DocsPage
-          breadcrumbs={[]}
           title={frontmatter.title}
           description={frontmatter.description ?? "MailLayer documentation."}
+          toc={toc}
+          markdownUrl={markdownUrl}
+          docsBasePath={docsBasePath}
+          pageHref={pageHrefForDocsPath(docsBasePath, path)}
         >
-          <div className="mb-8 border-b border-[var(--paper-border)] pb-6">
-            <p className="text-sm text-[var(--paper-muted)]">
-              <a href={markdownUrl}>View this page as Markdown</a>
-            </p>
-          </div>
-          <article>
-            <MDX components={useMDXComponents(undefined, { docsBasePath })} />
-            {docsBasePath === "/docs" ? <AdapterFaq path={path} /> : null}
-          </article>
+          <MDX components={useMDXComponents(undefined, { docsBasePath })} />
+          {docsBasePath === "/docs" ? <AdapterFaq path={path} /> : null}
         </DocsPage>
       );
     },
@@ -237,28 +235,50 @@ function Page() {
   return contentLoader.useContent(path, { docsBasePath, markdownUrl, path });
 }
 
+/** Turn a docs content path ("getting-started/quickstart.mdx") into its
+ * version-aware docs URL, used for sidebar and TOC active states. */
+function pageHrefForDocsPath(docsBasePath: string, path: string) {
+  const pageSlug = path.replace(/(?:^|\/)index\.mdx$/, "").replace(/\.mdx$/, "");
+
+  return pageSlug ? `${docsBasePath}/${pageSlug}` : docsBasePath;
+}
+
 interface DocsPageProps {
-  breadcrumbs: Breadcrumb[];
   title: string;
   description: string;
+  toc: TOCItemType[];
+  markdownUrl: string;
+  docsBasePath: string;
+  pageHref: string;
   children: ReactNode;
-  actions?: ReactNode;
 }
 
 /**
  * Central documentation page layout.
  *
- * Wraps the paper-inspired document chrome, breadcrumbs, and reading column
- * around the fumadocs-core MDX content. The per-page loader metadata,
- * Markdown copy button, version control, and structured data remain.
+ * Wraps the fumadocs-core MDX content in the Social SDK-style docs shell:
+ * top bar, icon navigation sidebar, reading column, and "On this page" rail.
+ * The per-page loader metadata, Markdown mirror, and structured data remain.
  */
-export function DocsPage({ breadcrumbs, title, description, children, actions }: DocsPageProps) {
+export function DocsPage({
+  title,
+  description,
+  toc,
+  markdownUrl,
+  docsBasePath,
+  pageHref,
+  children,
+}: DocsPageProps) {
   return (
-    <DocsLayout breadcrumbs={breadcrumbs} title={title} description={description} actions={actions}>
+    <DocsShell
+      title={title}
+      description={description}
+      toc={toc}
+      markdownUrl={markdownUrl}
+      docsBasePath={docsBasePath}
+      pageHref={pageHref}
+    >
       {children}
-    </DocsLayout>
+    </DocsShell>
   );
 }
-
-// Re-export for use in other routes that may want the paper chrome.
-export { BrandHeader, ReadingColumn };

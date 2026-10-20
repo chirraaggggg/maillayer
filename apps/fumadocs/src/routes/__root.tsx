@@ -14,6 +14,7 @@ import { AppErrorPage, NotFoundPage, RootRecoveryShell } from "@/components/reco
 import SearchDialog from "@/components/search";
 import { StaleBuildNotice } from "@/components/stale-build-notice";
 import { chunkLoadGuardScript } from "@/lib/chunk-load-guard";
+import { docsThemeBootstrapScript } from "@/lib/docs-theme-bootstrap";
 import { domMutationGuardScript } from "@/lib/dom-mutation-guard";
 import { siteMeta } from "@/lib/metadata";
 import { initPostHog } from "@/lib/posthog";
@@ -81,6 +82,10 @@ function RootComponent() {
         <script
           // Stale clients can request chunks from a previous deployment; reload once onto current assets.
           dangerouslySetInnerHTML={{ __html: chunkLoadGuardScript }}
+        />
+        <script
+          // Docs open dark (Social SDK look) until the visitor picks a theme; must run before paint.
+          dangerouslySetInnerHTML={{ __html: docsThemeBootstrapScript }}
         />
         <HeadContent />
       </head>

@@ -142,3 +142,18 @@ export function getVersionLinks(version: DocsVersion) {
 }
 
 export const versionLinks = getVersionLinks(latestDocsVersion);
+
+/**
+ * Rewrite a current-version docs href ("/docs/...") onto the base path of the
+ * version being viewed, so navigation stays inside an old version instead of
+ * bouncing the reader back to current docs.
+ */
+export function versionDocsHref(href: string | undefined, docsBasePath: string) {
+  if (href === undefined || docsBasePath === "/docs") return href;
+
+  if (href === "/docs") return docsBasePath;
+
+  if (href.startsWith("/docs/")) return `${docsBasePath}${href.slice("/docs".length)}`;
+
+  return href;
+}

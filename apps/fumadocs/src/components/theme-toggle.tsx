@@ -1,31 +1,41 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "fumadocs-ui/provider/base";
-import type { ComponentProps } from "react";
 
 import { Moon, Sun } from "@/components/icon";
 import { cn } from "@/lib/cn";
 
 type Theme = "light" | "dark";
 
-function getPreferredTheme(): Theme {
-  if (typeof window === "undefined") return "light";
+const themeStorageKey = "maillayer-docs-theme";
 
-  const stored = window.localStorage.getItem("maillayer-docs-theme");
+/** Read the visitor's stored theme choice, or null when they never picked one. */
+export function readStoredTheme(): Theme | null {
+  if (typeof window === "undefined") return null;
 
-  if (stored === "light" || stored === "dark") return stored;
+  const stored = window.localStorage.getItem(themeStorageKey);
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return stored === "light" || stored === "dark" ? stored : null;
 }
 
-function setDocumentTheme(theme: Theme) {
+export function setDocumentTheme(theme: Theme) {
   const isDark = theme === "dark";
   document.documentElement.classList.toggle("dark", isDark);
   document.documentElement.dataset.theme = theme;
 }
 
+function getPreferredTheme(defaultTheme: Theme): Theme {
+  const stored = readStoredTheme();
+
+  if (stored) return stored;
+
+  if (typeof window === "undefined") return defaultTheme;
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : defaultTheme;
+}
+
 let persistedTheme: Theme | null = null;
 
-function ThemeState() {
+function ThemeState({ className }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -43,13 +53,14 @@ function ThemeState() {
       aria-label={`Switch to ${theme} mode`}
       className={cn(
         "inline-flex size-7 items-center justify-center rounded-md transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary",
+        className,
       )}
       onClick={() => {
         const next = theme === "dark" ? "light" : "dark";
         setTheme(next);
 
         try {
-          window.localStorage.setItem("maillayer-docs-theme", next);
+          window.localStorage.setItem(themeStorageKey, next);
         } catch {
           // ignore write failures
         }
@@ -62,11 +73,21 @@ function ThemeState() {
   );
 }
 
-export function ThemeToggle({ className }: Pick<ComponentProps<"button">, "className">) {
+export interface ThemeToggleProps {
+  className?: string;
+  /**
+   * Theme applied when the visitor has never picked one. The docs shell
+   * passes "dark" so documentation opens in dark mode like Social SDK;
+   * the landing page keeps its light default.
+   */
+  defaultTheme?: Theme;
+}
+
+export function ThemeToggle({ className, defaultTheme = "light" }: ThemeToggleProps) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const preferred = getPreferredTheme();
+    const preferred = getPreferredTheme(defaultTheme);
 
     if (persistedTheme === null) {
       persistedTheme = preferred;
@@ -74,11 +95,11 @@ export function ThemeToggle({ className }: Pick<ComponentProps<"button">, "class
 
     setDocumentTheme(persistedTheme);
     setReady(true);
-  }, []);
+  }, [defaultTheme]);
 
   if (!ready) {
     return <span className={cn("inline-block size-7", className)} aria-hidden="true" />;
   }
 
-  return <ThemeState />;
+  return <ThemeState className={className} />;
 }
