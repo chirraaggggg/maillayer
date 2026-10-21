@@ -17,6 +17,10 @@ const findByName = (name: string) =>
 const findByProperty = (property: string) =>
   siteMeta.filter((meta) => "property" in meta && meta.property === property);
 
+const providerNames = providers.map((provider) => provider.name);
+
+const apiProviderCount = providers.filter((provider) => provider.key !== "smtp").length;
+
 describe("site social metadata", () => {
   test("uses the canonical PNG open graph image exactly once", () => {
     const ogImages = findByProperty("og:image");
@@ -90,12 +94,14 @@ describe("homepage product explanation", () => {
       expect(text).not.toMatch(/guarantee[sd]? (inbox )?delivery|99\.\d+%|testimonial/i);
     }
 
+    // Counts derive from the provider registry so a new adapter fails here until
+    // every product surface is updated, instead of silently drifting.
     for (const text of readmes) {
-      expect(text).toContain("30 provider API");
-      expect(text).toContain("31 adapters total");
+      expect(text).toContain(`${apiProviderCount} provider API`);
+      expect(text).toContain(`${providers.length} adapters total`);
     }
 
-    expect(llmsOverview).toContain("31 adapters total");
+    expect(llmsOverview).toContain(`${providers.length} adapters total`);
     const webpage = homeStructuredData["@graph"].find((node) => node["@type"] === "WebPage");
     expect(webpage?.speakable.cssSelector).toEqual(["#landing-heading", "#landing-summary"]);
     const faq = homeStructuredData["@graph"].find((node) => node["@type"] === "FAQPage");
@@ -154,9 +160,6 @@ describe("documentation structured data", () => {
 });
 
 describe("machine-facing agent files", () => {
-  const providerNames = providers.map((provider) => provider.name);
-  const apiProviderCount = providers.filter((provider) => provider.key !== "smtp").length;
-
   const machineFiles = {
     "public/agents.md": readFileSync(new URL("../../public/agents.md", import.meta.url), "utf8"),
     "public/.well-known/agent.json": readFileSync(

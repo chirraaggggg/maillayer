@@ -10,8 +10,13 @@ import {
   type EvidenceRecord,
 } from "./adapter-verification";
 import type { JsonValue } from "./json";
+import { providers } from "./providers";
 
 const now = new Date("2026-08-01T00:00:00Z");
+
+// Snapshot of the registered live auth probes; adapter counts derive from the
+// provider registry so a new adapter cannot silently desynchronize this table.
+const configuredProbes = 7;
 
 const record: EvidenceRecord = {
   adapter: "resend",
@@ -31,10 +36,10 @@ const parse = (input: JsonValue) => parseEvidence(input, undefined, undefined, n
 const empty = { schemaVersion: 1, records: [] };
 
 describe("adapter verification evidence", () => {
-  test("empty evidence covers all 27 adapters without inferred passes", () => {
+  test("empty evidence covers every registered adapter without inferred passes", () => {
     const rows = verificationRows(empty, now);
-    expect(rows).toHaveLength(27);
-    expect(rows.filter((row) => row.check)).toHaveLength(7);
+    expect(rows).toHaveLength(providers.length);
+    expect(rows.filter((row) => row.check)).toHaveLength(configuredProbes);
     expect(rows.every((row) => row.contractTestFiles.length > 0)).toBe(true);
     expect(
       rows.every((row) => Object.values(row.evidence).every((value) => value === undefined)),
@@ -44,11 +49,15 @@ describe("adapter verification evidence", () => {
 
   test("renders the empty state for every adapter and every run column", () => {
     const html = renderToStaticMarkup(createElement(AdapterVerification, { evidence: empty, now }));
-    expect(html.match(/No published run evidence/g)).toHaveLength(27 * EVIDENCE_KINDS.length);
+    expect(html.match(/No published run evidence/g)).toHaveLength(
+      providers.length * EVIDENCE_KINDS.length,
+    );
     expect(html).toContain("0 published run records");
-    expect(html).toContain("7 configured auth probes");
-    expect(html.match(/Live check available/g)).toHaveLength(7);
-    expect(html.match(/No live check configured/g)).toHaveLength(20);
+    expect(html).toContain(`${configuredProbes} configured auth probes`);
+    expect(html.match(/Live check available/g)).toHaveLength(configuredProbes);
+    expect(html.match(/No live check configured/g)).toHaveLength(
+      providers.length - configuredProbes,
+    );
     expect(html).toContain("Configured probe, not a published passing run.");
     expect(html).toContain("overflow-x-auto");
     expect(html).toContain('role="region"');

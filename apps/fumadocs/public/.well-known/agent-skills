@@ -1,6 +1,6 @@
 {
   "name": "MailLayer",
-  "description": "TypeScript SDK that sends transactional email through 26 provider API adapters plus SMTP (Resend, SMTP, Postmark, SendGrid, Mailgun, AWS SES, and more) behind one typed send() call, with retries and compatible fallbacks.",
+  "description": "TypeScript SDK that sends transactional email through 30 provider API adapters plus SMTP (Resend, SMTP, Postmark, SendGrid, Mailgun, AWS SES, and more) behind one typed send() call, with retries and compatible fallbacks.",
   "homepage": "https://maillayer.dev",
   "guide": "https://maillayer.dev/agents.md",
   "docs": "https://maillayer.dev/docs",

@@ -2,7 +2,7 @@
 
 Machine-facing guide for AI agents and coding assistants. MailLayer is an
 open-source **TypeScript SDK** (npm: `@maillayer/core`) that sends
-transactional email through 26 provider API adapters plus SMTP behind one typed
+transactional email through 30 provider API adapters plus SMTP behind one typed
 `send()` call. It is
 a library you install into an app — not a hosted API or a service you sign up
 for. There are no API keys to obtain from us; you bring the provider credentials
@@ -59,7 +59,7 @@ Adapters import from their own entry point (`@maillayer/core/resend`,
 Mailgun, MailerSend, Brevo, Mailchimp Transactional, SparkPost, Mailtrap,
 Cloudflare Email Sending, Unosend, Scaleway, ZeptoMail, MailPace, Iterable,
 Loops, Sequenzy, JetEmail, Primitive, Lettermint, Lettr, Plunk, SMTP, Microsoft
-Graph, SendHeron, and Helo.
+Graph, SendHeron, Helo, Mailjet, SMTP2GO, Elastic Email, and SocketLabs.
 
 ## Give an agent a send tool
 

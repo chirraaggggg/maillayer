@@ -39,7 +39,8 @@ await email.send({
 MailLayer includes adapters for Resend, Postmark, SendGrid, AWS SES, Mailgun,
 Brevo, MailerSend, SparkPost, Mailchimp, Iterable, Loops, Plunk, Mailtrap,
 Cloudflare, Unosend, Scaleway, ZeptoMail, MailPace, Sequenzy, JetEmail,
-Lettermint, Lettr, Primitive, SendHeron, Helo, SMTP, and testing.
+Lettermint, Lettr, Primitive, SendHeron, Helo, Mailjet, SMTP2GO,
+Elastic Email, SocketLabs, SMTP, and testing.
 
 Each adapter is imported from its own `@maillayer/core/<provider>` entry point.
 Provider accounts, API keys, quotas, and delivery policies remain the
@@ -47,7 +48,7 @@ developer's responsibility.
 
 ## Features
 
-- 26 provider API adapters plus SMTP, 27 adapters total
+- 30 provider API adapters plus SMTP, 31 adapters total
 - Normalized messages with HTML, plain text, recipients, headers, and attachments
 - Retry policies and fallback routes across providers
 - Batch and personalized sending
