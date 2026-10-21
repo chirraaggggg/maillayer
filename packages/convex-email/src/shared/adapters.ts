@@ -49,6 +49,10 @@ export const CONVEX_EMAIL_ADAPTERS = {
     accountId: { type: "string", env: "CLOUDFLARE_ACCOUNT_ID", inline: true, required: true },
     baseUrl: BASE_URL,
   },
+  elasticemail: {
+    apiKey: { type: "string", env: "ELASTICEMAIL_API_KEY", required: true },
+    baseUrl: BASE_URL,
+  },
   helo: {
     apiKey: { type: "string", env: "HELO_API_KEY", required: true },
     channelId: { type: "string", env: "HELO_CHANNEL_ID", inline: true },
@@ -96,6 +100,10 @@ export const CONVEX_EMAIL_ADAPTERS = {
   mailgun: {
     apiKey: { type: "string", env: "MAILGUN_API_KEY", required: true },
     domain: { type: "string", env: "MAILGUN_DOMAIN", inline: true, required: true },
+    baseUrl: BASE_URL,
+  },
+  mailjet: {
+    apiKey: { type: "string", env: "MAILJET_API_KEY", required: true },
     baseUrl: BASE_URL,
   },
   mailpace: {
@@ -154,6 +162,14 @@ export const CONVEX_EMAIL_ADAPTERS = {
     secure: { type: "boolean", env: "SMTP_SECURE", inline: true },
     user: { type: "string", env: "SMTP_USER" },
     pass: { type: "string", env: "SMTP_PASS" },
+  },
+  smtp2go: {
+    apiKey: { type: "string", env: "SMTP2GO_API_KEY", required: true },
+    baseUrl: BASE_URL,
+  },
+  socketlabs: {
+    apiKey: { type: "string", env: "SOCKETLABS_API_KEY", required: true },
+    baseUrl: BASE_URL,
   },
   graph: {
     tenantId: { type: "string", env: "MS_GRAPH_TENANT_ID", required: true },

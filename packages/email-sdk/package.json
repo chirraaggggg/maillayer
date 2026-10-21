@@ -212,6 +212,30 @@
       "require": "./dist/smtp.cjs",
       "default": "./dist/smtp.js"
     },
+    "./mailjet": {
+      "types": "./dist/mailjet.d.ts",
+      "import": "./dist/mailjet.js",
+      "require": "./dist/mailjet.cjs",
+      "default": "./dist/mailjet.js"
+    },
+    "./smtp2go": {
+      "types": "./dist/smtp2go.d.ts",
+      "import": "./dist/smtp2go.js",
+      "require": "./dist/smtp2go.cjs",
+      "default": "./dist/smtp2go.js"
+    },
+    "./elasticemail": {
+      "types": "./dist/elasticemail.d.ts",
+      "import": "./dist/elasticemail.js",
+      "require": "./dist/elasticemail.cjs",
+      "default": "./dist/elasticemail.js"
+    },
+    "./socketlabs": {
+      "types": "./dist/socketlabs.d.ts",
+      "import": "./dist/socketlabs.js",
+      "require": "./dist/socketlabs.cjs",
+      "default": "./dist/socketlabs.js"
+    },
     "./webhooks": {
       "types": "./dist/webhooks.d.ts",
       "import": "./dist/webhooks.js",

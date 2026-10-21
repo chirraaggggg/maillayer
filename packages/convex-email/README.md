@@ -113,6 +113,7 @@ Every built-in MailLayer adapter is configurable, plus the in-memory adapter for
 memory
 brevo
 cloudflare
+elasticemail
 helo
 iterable
 jetemail
@@ -122,6 +123,7 @@ loops
 mailchimp
 mailersend
 mailgun
+mailjet
 mailpace
 mailtrap
 plunk
@@ -134,6 +136,8 @@ sendheron
 sequenzy
 ses
 smtp
+smtp2go
+socketlabs
 sparkpost
 unosend
 zeptomail
@@ -151,6 +155,7 @@ AWS_SESSION_TOKEN
 BREVO_API_KEY
 CLOUDFLARE_ACCOUNT_ID
 CLOUDFLARE_API_TOKEN
+ELASTICEMAIL_API_KEY
 HELO_API_KEY
 HELO_CHANNEL_ID
 ITERABLE_API_KEY
@@ -165,6 +170,7 @@ MAILCHIMP_API_KEY
 MAILERSEND_API_KEY
 MAILGUN_API_KEY
 MAILGUN_DOMAIN
+MAILJET_API_KEY
 MAILPACE_API_KEY
 MAILTRAP_API_KEY
 PLUNK_API_KEY
@@ -182,6 +188,8 @@ SMTP_PASS
 SMTP_PORT
 SMTP_SECURE
 SMTP_USER
+SMTP2GO_API_KEY
+SOCKETLABS_API_KEY
 SPARKPOST_API_KEY
 UNOSEND_API_KEY
 ZEPTOMAIL_TOKEN

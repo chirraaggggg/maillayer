@@ -8,6 +8,7 @@ import {
 } from "@maillayer/core";
 import { brevo } from "@maillayer/core/brevo";
 import { cloudflare } from "@maillayer/core/cloudflare";
+import { elasticemail } from "@maillayer/core/elasticemail";
 import { graph } from "@maillayer/core/graph";
 import { iterable } from "@maillayer/core/iterable";
 import { helo } from "@maillayer/core/helo";
@@ -18,6 +19,7 @@ import { loops } from "@maillayer/core/loops";
 import { mailchimp } from "@maillayer/core/mailchimp";
 import { mailersend } from "@maillayer/core/mailersend";
 import { mailgun } from "@maillayer/core/mailgun";
+import { mailjet } from "@maillayer/core/mailjet";
 import { mailpace } from "@maillayer/core/mailpace";
 import { mailtrap } from "@maillayer/core/mailtrap";
 import { plunk } from "@maillayer/core/plunk";
@@ -36,6 +38,8 @@ import { sendgrid } from "@maillayer/core/sendgrid";
 import { sendheron } from "@maillayer/core/sendheron";
 import { ses } from "@maillayer/core/ses";
 import { smtp } from "@maillayer/core/smtp";
+import { smtp2go } from "@maillayer/core/smtp2go";
+import { socketlabs } from "@maillayer/core/socketlabs";
 import { sparkpost } from "@maillayer/core/sparkpost";
 import { unosend } from "@maillayer/core/unosend";
 import { zeptomail } from "@maillayer/core/zeptomail";
@@ -140,6 +144,7 @@ const ADAPTER_FACTORIES: Record<ConvexEmailAdapterKind, AdapterFactory> = {
   memory: (_options, config) => memoryAdapter(config.name ?? "memory"),
   brevo: fromOptions(brevo),
   cloudflare: fromOptions(cloudflare),
+  elasticemail: fromOptions(elasticemail),
   helo: fromOptions(helo),
   iterable: fromOptions(iterable),
   jetemail: fromOptions(jetemail),
@@ -149,6 +154,7 @@ const ADAPTER_FACTORIES: Record<ConvexEmailAdapterKind, AdapterFactory> = {
   mailchimp: fromOptions(mailchimp),
   mailersend: fromOptions(mailersend),
   mailgun: fromOptions(mailgun),
+  mailjet: fromOptions(mailjet),
   mailpace: fromOptions(mailpace),
   mailtrap: fromOptions(mailtrap),
   plunk: fromOptions(plunk),
@@ -173,6 +179,8 @@ const ADAPTER_FACTORIES: Record<ConvexEmailAdapterKind, AdapterFactory> = {
         resolved.user && resolved.pass ? { user: resolved.user, pass: resolved.pass } : undefined,
     });
   },
+  smtp2go: fromOptions(smtp2go),
+  socketlabs: fromOptions(socketlabs),
   graph: fromOptions(graph),
   sparkpost: fromOptions(sparkpost),
   unosend: fromOptions(unosend),

@@ -80,6 +80,34 @@ describe("adapter registry", () => {
     });
   });
 
+  test("includes Elastic Email with its documented environment variables", () => {
+    expect(CONVEX_EMAIL_ADAPTERS.elasticemail).toEqual({
+      apiKey: { type: "string", env: "ELASTICEMAIL_API_KEY", required: true },
+      baseUrl: { type: "string", inline: true },
+    });
+  });
+
+  test("includes Mailjet with its documented environment variables", () => {
+    expect(CONVEX_EMAIL_ADAPTERS.mailjet).toEqual({
+      apiKey: { type: "string", env: "MAILJET_API_KEY", required: true },
+      baseUrl: { type: "string", inline: true },
+    });
+  });
+
+  test("includes SMTP2GO with its documented environment variables", () => {
+    expect(CONVEX_EMAIL_ADAPTERS.smtp2go).toEqual({
+      apiKey: { type: "string", env: "SMTP2GO_API_KEY", required: true },
+      baseUrl: { type: "string", inline: true },
+    });
+  });
+
+  test("includes SocketLabs with its documented environment variables", () => {
+    expect(CONVEX_EMAIL_ADAPTERS.socketlabs).toEqual({
+      apiKey: { type: "string", env: "SOCKETLABS_API_KEY", required: true },
+      baseUrl: { type: "string", inline: true },
+    });
+  });
+
   test("never allows a credential to be stored inline", () => {
     const credentials = /token|key|secret|pass/i;
     const inlineCredentials: string[] = [];

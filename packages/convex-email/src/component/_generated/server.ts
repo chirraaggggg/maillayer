@@ -29,6 +29,7 @@ export type Env = {
   BREVO_API_KEY?: string;
   CLOUDFLARE_ACCOUNT_ID?: string;
   CLOUDFLARE_API_TOKEN?: string;
+  ELASTICEMAIL_API_KEY?: string;
   ITERABLE_API_KEY?: string;
   ITERABLE_CAMPAIGN_ID?: string;
   HELO_API_KEY?: string;
@@ -43,6 +44,7 @@ export type Env = {
   MAILERSEND_API_KEY?: string;
   MAILGUN_API_KEY?: string;
   MAILGUN_DOMAIN?: string;
+  MAILJET_API_KEY?: string;
   MAILPACE_API_KEY?: string;
   MAILTRAP_API_KEY?: string;
   MS_GRAPH_CLIENT_ID?: string;
@@ -68,6 +70,8 @@ export type Env = {
   SMTP_PORT?: string;
   SMTP_SECURE?: string;
   SMTP_USER?: string;
+  SMTP2GO_API_KEY?: string;
+  SOCKETLABS_API_KEY?: string;
   SPARKPOST_API_KEY?: string;
   UNOSEND_API_KEY?: string;
   ZEPTOMAIL_TOKEN?: string;
