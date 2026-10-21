@@ -173,6 +173,14 @@ export function renderMarkdownToSafeHtml(markdown: string): string {
     },
     allowedSchemes: ["http", "https", "mailto"],
     allowedSchemesByTag: { img: ["http", "https", "data"] },
+    // Mirrors sanitize-html's default nonTextTags (which it does not export) plus
+    // "noscript". Browsers parse noscript content as inert raw text when scripting
+    // is enabled (always true for this SPA), so its children must be discarded,
+    // not processed as ordinary markup. Without this, third-party Notra HTML could
+    // smuggle live elements out of a noscript block — the GHSA-x3q4-9hxx-gx8m
+    // class of bug. Supplied a custom nonTextTags replaces the defaults entirely,
+    // so every default entry must be listed here.
+    nonTextTags: ["script", "style", "textarea", "option", "xmp", "noscript"],
     transformTags: {
       a: (tagName, attribs) => {
         const isExternal = /^https?:\/\//i.test(attribs.href ?? "");

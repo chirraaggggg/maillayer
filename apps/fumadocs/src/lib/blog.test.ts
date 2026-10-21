@@ -101,6 +101,79 @@ describe("renderMarkdownToSafeHtml", () => {
     const image = renderMarkdownToSafeHtml("![cat](https://example.com/cat.png)");
     expect(image).toContain('loading="lazy"');
   });
+
+  // Regression coverage for the sanitize-html >= 2.18.1 upgrade (GHSA-374f-7chj-9948,
+  // GHSA-x3q4-9hxx-gx8m, GHSA-cv27-6wvh-8x7j). Notra HTML is third-party content,
+  // so every advisory vector for that version range is pinned here.
+  test("strips javascript:, vbscript:, and data:text/html URLs from links", () => {
+    const vectors = [
+      "[click me](javascript:alert(1))",
+      '<a href="javascript:alert(1)">click me</a>',
+      '<a href="JaVaScRiPt:alert(1)">click me</a>',
+      '<a href="vbscript:msgbox(1)">click me</a>',
+      "[click me](data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==)",
+    ];
+
+    for (const vector of vectors) {
+      const html = renderMarkdownToSafeHtml(vector);
+      expect(html).not.toContain("javascript:");
+      expect(html).not.toContain("vbscript:");
+      expect(html).not.toContain("data:text/html");
+    }
+  });
+
+  test("strips event-handler and style attributes from otherwise-allowed tags", () => {
+    const image = renderMarkdownToSafeHtml('<img src="https://example.com/x.png" onerror="alert(1)">');
+    expect(image).toContain("<img");
+    expect(image).not.toContain("onerror");
+    expect(image).not.toContain("alert");
+
+    const styled = renderMarkdownToSafeHtml('<p style="background:url(javascript:alert(1))">text</p>');
+    expect(styled).not.toContain("style");
+    expect(styled).not.toContain("javascript:");
+    expect(styled).toContain("text");
+  });
+
+  test("discards meta refresh redirects carrying javascript: or data: URLs", () => {
+    const html = renderMarkdownToSafeHtml(
+      '<meta http-equiv="refresh" content="0;url=javascript:alert(1)">',
+    );
+
+    expect(html).not.toContain("<meta");
+    expect(html).not.toContain("http-equiv");
+    expect(html).not.toContain("javascript:");
+  });
+
+  test("does not leak markup hidden behind implied-close noscript breakouts", () => {
+    // GHSA-x3q4-9hxx-gx8m (fixed in 2.18.0): an implied close ended the noscript
+    // discard region early and smuggled the trailing markup out as live HTML.
+    // Verified: on 2.17.7 this exact input emits the <img> below.
+    const html = renderMarkdownToSafeHtml(
+      '<p>Hi</p><div><noscript></div><img src="https://beacon.example/t.gif"></noscript>',
+    );
+
+    expect(html).toContain("<p>Hi</p>");
+    expect(html).toContain("<div></div>");
+    expect(html).not.toContain("<noscript");
+    expect(html).not.toContain("<img");
+    expect(html).not.toContain("beacon.example");
+  });
+
+  test("does not resurrect javascript: URLs through namespaced SMIL animation elements", () => {
+    // GHSA-374f-7chj-9948 (fixed in 2.18.0): a namespace-prefixed svg:animate
+    // evaded the SMIL animation protection. This allowlist already drops svg
+    // entirely, so the vector is pinned here as defense in depth.
+    // Wrapped in a block-level tag so marked passes the raw HTML through and the
+    // sanitizer, not Markdown escaping, is what neutralizes the vector.
+    const html = renderMarkdownToSafeHtml(
+      '<div><svg><a href="#safe"><svg:animate attributeName="href" values="#safe;javascript:alert(1)" dur=".01s" fill="freeze"></svg:animate><text>Click</text></a></svg></div>',
+    );
+
+    expect(html).not.toContain("<svg");
+    expect(html).not.toContain("animate");
+    expect(html).not.toContain("javascript:");
+    expect(html).not.toContain("svg:animate");
+  });
 });
 
 describe("mapNotraPost", () => {
