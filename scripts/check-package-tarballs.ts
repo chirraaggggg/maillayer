@@ -319,6 +319,9 @@ void registered;
 }
 
 function commonJsSmokeProgram(): string {
+  // Export getters only evaluate on property access, so a bare require() passes even when a
+  // bundle references undefined module bindings (this shipped a root entrypoint that threw
+  // ReferenceError on first use). Read every export of every subpath to force evaluation.
   return String.raw`
 const { readFileSync } = require("node:fs");
 const { join } = require("node:path");
@@ -327,7 +330,11 @@ const coreDir = join(__dirname, "node_modules/@maillayer/core");
 const manifest = JSON.parse(readFileSync(join(coreDir, "package.json"), "utf8"));
 
 for (const subpath of Object.keys(manifest.exports ?? {})) {
-  require(subpath === "." ? manifest.name : manifest.name + subpath.slice(1));
+  const subpathModule = require(subpath === "." ? manifest.name : manifest.name + subpath.slice(1));
+
+  for (const exportName of Object.keys(subpathModule)) {
+    void subpathModule[exportName];
+  }
 }
 `;
 }
