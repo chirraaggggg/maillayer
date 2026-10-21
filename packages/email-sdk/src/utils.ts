@@ -440,7 +440,7 @@ export const SUPPORTED_MESSAGE_FIELDS = {
   },
   cloudflare: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true },
   unosend: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true, tags: true },
-  ses: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true },
+  ses: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true, tags: true },
   mailgun: {
     cc: true,
     bcc: true,

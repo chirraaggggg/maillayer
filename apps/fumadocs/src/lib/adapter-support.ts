@@ -143,7 +143,7 @@ export const ADAPTER_SUPPORT_ENTRIES = [
     id: "ses",
     label: "AWS SES",
     setupHref: "/docs/adapters/ses",
-    fields: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true },
+    fields: { cc: true, bcc: true, replyTo: true, headers: true, attachments: true, tags: true },
     capabilities: {
       repeatedHeaders: true,
       idempotency: "none",
