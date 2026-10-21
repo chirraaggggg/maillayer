@@ -51,7 +51,8 @@ if (!latest) {
   if (latest.version !== currentDocsVersion) {
     fail(
       `Current docs version must be ${currentDocsVersion}, got ${latest.version}. ` +
-        "Active docs track the v1 docs line while patch releases live in content/docs-v archives.",
+        `Active docs track the ${currentDocsVersion} line; archived lines live in ` +
+        "content/docs-v/<slug> and must be declared in docsVersions.",
     );
   }
 
@@ -150,11 +151,17 @@ for (const version of docsVersions) {
 
 const archiveDir = join(fumadocsRoot, "content/docs-v");
 
-for (const dirent of readdirSync(archiveDir, { withFileTypes: true })) {
-  if (!dirent.isDirectory()) continue;
+// The current configuration tracks only the current docs line, so content/docs-v exists only
+// when archived lines are declared in docsVersions. Both directions stay enforced: a declared
+// archive must exist on disk (checked per version above), and any folder that does exist must
+// be a declared version.
+if (existsSync(archiveDir)) {
+  for (const dirent of readdirSync(archiveDir, { withFileTypes: true })) {
+    if (!dirent.isDirectory()) continue;
 
-  if (!versionsBySlug.has(dirent.name)) {
-    fail(`Archived docs folder ${dirent.name} is not listed in docsVersions.`);
+    if (!versionsBySlug.has(dirent.name)) {
+      fail(`Archived docs folder ${dirent.name} is not listed in docsVersions.`);
+    }
   }
 }
 
@@ -166,11 +173,23 @@ const changelogVersions = Array.from(changelog.matchAll(/^##\s+(\d+\.\d+\.\d+)/g
   return version;
 });
 
-for (const version of changelogVersions) {
-  if (version === latestPublishedVersion) continue;
+// Release history and docs archives point at each other: the published package version must
+// carry release notes, and every archived docs line must correspond to a released version.
+// Older releases no longer keep per-release archives — the current configuration tracks only
+// the current docs line — so a changelog entry on its own does not require an archive.
+if (!changelogVersions.includes(latestPublishedVersion)) {
+  fail(
+    `packages/email-sdk/package.json is ${latestPublishedVersion}, but CHANGELOG.md has no matching release entry.`,
+  );
+}
 
-  if (!versionsBySlug.has(version)) {
-    fail(`CHANGELOG.md includes ${version}, but docsVersions has no v${version} archive.`);
+for (const version of docsVersions) {
+  if (version.current) continue;
+
+  const slug = version.version.replace(/^v/, "");
+
+  if (!changelogVersions.includes(slug)) {
+    fail(`${version.version} docs archive has no matching CHANGELOG.md release entry.`);
   }
 }
 
