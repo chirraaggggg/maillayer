@@ -7,6 +7,7 @@ import {
   builtInAdapterDefinition,
   arrayify,
   assertMaxItems,
+  assertRequiredOption,
   attachmentToBytes,
   formatAddress,
   formatAddresses,
@@ -27,6 +28,9 @@ export type MailgunAdapterOptions = {
 export function mailgun(
   options: MailgunAdapterOptions,
 ): EmailAdapter<"mailgun", { baseUrl: string }> {
+  assertRequiredOption("mailgun", "apiKey", options.apiKey);
+  assertRequiredOption("mailgun", "domain", options.domain);
+
   const baseUrl = options.baseUrl ?? "https://api.mailgun.net";
 
   const send: EmailAdapter<"mailgun">["send"] = async (message, context) => {

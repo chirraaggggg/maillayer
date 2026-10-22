@@ -6,6 +6,7 @@ import { apiAddresses, emailParts, optionalApiAddresses } from "./payloads.js";
 import {
   builtInAdapterDefinition,
   attachmentToBase64,
+  assertRequiredOption,
   headersToObject,
   httpErrorMessage,
   isRetryableStatus,
@@ -29,6 +30,8 @@ export type HeloAdapterOptions = {
 const MAX_IDEMPOTENCY_KEY_LENGTH = 36;
 
 export function helo(options: HeloAdapterOptions): EmailAdapter<"helo", { baseUrl: string }> {
+  assertRequiredOption("helo", "apiKey", options.apiKey);
+
   const baseUrl = options.baseUrl ?? "https://api.helohq.com";
   const fetcher = options.fetch ?? fetch;
 

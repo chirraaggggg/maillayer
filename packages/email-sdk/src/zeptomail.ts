@@ -1,7 +1,7 @@
 import { firstString, jsonProvider } from "./http.js";
 import { base64Attachments, emailParts } from "./payloads.js";
 import type { EmailAddress, EmailAdapter, OneOrMany } from "./types.js";
-import { SUPPORTED_MESSAGE_FIELDS, assertSupportedMessageFields } from "./utils.js";
+import { SUPPORTED_MESSAGE_FIELDS, assertRequiredOption, assertSupportedMessageFields } from "./utils.js";
 
 export type ZeptoMailAdapterOptions = {
   token: string;
@@ -12,6 +12,8 @@ export type ZeptoMailAdapterOptions = {
 export function zeptomail(
   options: ZeptoMailAdapterOptions,
 ): EmailAdapter<"zeptomail", { baseUrl: string }> {
+  assertRequiredOption("zeptomail", "token", options.token);
+
   return jsonProvider({
     name: "zeptomail",
     baseUrl: options.baseUrl ?? "https://api.zeptomail.com",

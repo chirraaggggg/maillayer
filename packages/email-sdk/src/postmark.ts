@@ -11,6 +11,7 @@ import {
   isRetryableStatus,
   readErrorBody,
   assertMaxItems,
+  assertRequiredOption,
   assertSupportedMessageFields,
   SUPPORTED_MESSAGE_FIELDS,
 } from "./utils.js";
@@ -26,6 +27,8 @@ export type PostmarkAdapterOptions = {
 export function postmark(
   options: PostmarkAdapterOptions,
 ): EmailAdapter<"postmark", { baseUrl: string }> {
+  assertRequiredOption("postmark", "serverToken", options.serverToken);
+
   const baseUrl = options.baseUrl ?? "https://api.postmarkapp.com";
   const fetcher = options.fetch ?? fetch;
 

@@ -9,6 +9,7 @@ import {
   sendAtIso,
 } from "./payloads.js";
 import type { EmailAdapter } from "./types.js";
+import { assertRequiredOption } from "./utils.js";
 
 export type MailjetAdapterOptions = {
   apiKey: string;
@@ -17,6 +18,8 @@ export type MailjetAdapterOptions = {
 };
 
 export function mailjet(options: MailjetAdapterOptions): EmailAdapter<"mailjet", { baseUrl: string }> {
+  assertRequiredOption("mailjet", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "mailjet",
     baseUrl: options.baseUrl ?? "https://api.mailjet.com",

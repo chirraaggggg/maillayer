@@ -9,7 +9,7 @@ import {
   optionalSingleApiAddress,
 } from "./payloads.js";
 import type { EmailAdapter } from "./types.js";
-import { SUPPORTED_MESSAGE_FIELDS, assertSupportedMessageFields } from "./utils.js";
+import { SUPPORTED_MESSAGE_FIELDS, assertRequiredOption, assertSupportedMessageFields } from "./utils.js";
 
 export type PlunkAdapterOptions = {
   apiKey: string;
@@ -18,6 +18,8 @@ export type PlunkAdapterOptions = {
 };
 
 export function plunk(options: PlunkAdapterOptions): EmailAdapter<"plunk", { baseUrl: string }> {
+  assertRequiredOption("plunk", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "plunk",
     baseUrl: options.baseUrl ?? "https://next-api.useplunk.com",

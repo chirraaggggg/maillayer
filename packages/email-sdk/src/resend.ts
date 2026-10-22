@@ -11,6 +11,7 @@ import {
   httpErrorMessage,
   isRetryableStatus,
   readErrorBody,
+  assertRequiredOption,
   assertSupportedMessageFields,
   SUPPORTED_MESSAGE_FIELDS,
 } from "./utils.js";
@@ -23,6 +24,8 @@ export type ResendAdapterOptions = {
 };
 
 export function resend(options: ResendAdapterOptions): EmailAdapter<"resend", { baseUrl: string }> {
+  assertRequiredOption("resend", "apiKey", options.apiKey);
+
   const baseUrl = options.baseUrl ?? "https://api.resend.com";
   const fetcher = options.fetch ?? fetch;
 

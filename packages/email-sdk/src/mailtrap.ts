@@ -9,7 +9,12 @@ import {
   optionalSingleApiAddress,
 } from "./payloads.js";
 import type { EmailMessage, EmailAdapter } from "./types.js";
-import { SUPPORTED_MESSAGE_FIELDS, assertMaxItems, assertSupportedMessageFields } from "./utils.js";
+import {
+  SUPPORTED_MESSAGE_FIELDS,
+  assertMaxItems,
+  assertRequiredOption,
+  assertSupportedMessageFields,
+} from "./utils.js";
 
 export type MailtrapAdapterOptions = {
   apiKey: string;
@@ -20,6 +25,8 @@ export type MailtrapAdapterOptions = {
 export function mailtrap(
   options: MailtrapAdapterOptions,
 ): EmailAdapter<"mailtrap", { baseUrl: string }> {
+  assertRequiredOption("mailtrap", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "mailtrap",
     baseUrl: options.baseUrl ?? "https://send.api.mailtrap.io",

@@ -7,6 +7,7 @@ import type { EmailAttachment, EmailMessage, EmailAdapter } from "./types.js";
 import {
   SUPPORTED_MESSAGE_FIELDS,
   assertMaxItems,
+  assertRequiredOption,
   assertSupportedMessageFields,
   attachmentToBase64,
 } from "./utils.js";
@@ -27,6 +28,8 @@ const reservedMetadataKeys = new Set([
 export function sequenzy(
   options: SequenzyAdapterOptions,
 ): EmailAdapter<"sequenzy", { baseUrl: string }> {
+  assertRequiredOption("sequenzy", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "sequenzy",
     baseUrl: options.baseUrl ?? "https://api.sequenzy.com/api/v1",

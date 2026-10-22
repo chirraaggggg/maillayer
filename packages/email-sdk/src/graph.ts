@@ -9,6 +9,7 @@ import {
   httpErrorMessage,
   isRetryableStatus,
   readErrorBody,
+  assertRequiredOption,
   toProviderError,
   validateBuiltInAdapter,
 } from "./utils.js";
@@ -56,6 +57,14 @@ type TokenProvider = {
 };
 
 export function graph(options: GraphAdapterOptions): EmailAdapter<"graph", { baseUrl: string }> {
+  assertRequiredOption("graph", "user", options.user);
+
+  if (!options.getAccessToken) {
+    assertRequiredOption("graph", "tenantId", options.tenantId);
+    assertRequiredOption("graph", "clientId", options.clientId);
+    assertRequiredOption("graph", "clientSecret", options.clientSecret);
+  }
+
   const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
   const fetcher = options.fetch ?? fetch;
   const accessToken = createTokenProvider(options, fetcher);

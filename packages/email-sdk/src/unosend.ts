@@ -11,7 +11,7 @@ import {
   optionalStringAddresses,
 } from "./payloads.js";
 import type { EmailMessage, EmailAdapter } from "./types.js";
-import { SUPPORTED_MESSAGE_FIELDS, assertSupportedMessageFields } from "./utils.js";
+import { SUPPORTED_MESSAGE_FIELDS, assertRequiredOption, assertSupportedMessageFields } from "./utils.js";
 
 export type UnosendAdapterOptions = {
   apiKey: string;
@@ -22,6 +22,8 @@ export type UnosendAdapterOptions = {
 export function unosend(
   options: UnosendAdapterOptions,
 ): EmailAdapter<"unosend", { baseUrl: string }> {
+  assertRequiredOption("unosend", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "unosend",
     baseUrl: options.baseUrl ?? "https://api.unosend.co",

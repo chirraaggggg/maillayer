@@ -120,6 +120,107 @@ export function headersToArray(headers: HeaderInput): EmailHeader[] | undefined 
   return [...headers];
 }
 
+/**
+ * Adapter factories reject a missing, empty, or non-string credential (or other required
+ * option) at construction time, so a misconfigured adapter fails before the first send
+ * instead of issuing a request with an "undefined" header. The error names the adapter and
+ * the option but never echoes the supplied value, so secrets cannot leak into errors or logs.
+ * JavaScript callers can still pass any runtime value; the string check rejects it here.
+ */
+export function assertRequiredOption(
+  adapter: string,
+  field: string,
+  value: string | null | undefined,
+) {
+  if (!isStringMember(value) || value.trim().length === 0) {
+    throw new EmailValidationError(`${adapter} requires a non-empty ${field}.`);
+  }
+}
+
+// Practical typo guard for deliverability, not an RFC 5321/5322 parser: it rejects
+// addresses no transactional provider accepts (no "@", empty local or domain part, whitespace
+// or control characters, a domain without a dot, consecutive or edge dots/hyphens, overlong
+// parts) while leaving uncommon but deliverable forms intact: plus addressing, subdomains,
+// display-name strings ("Name <user@example.com>"), { email, name } objects, and non-ASCII
+// (SMTPUTF8) characters.
+const MAX_EMAIL_ADDRESS_LENGTH = 254;
+
+const MAX_LOCAL_PART_LENGTH = 64;
+
+const MAX_DOMAIN_LABEL_LENGTH = 63;
+
+// The RFC 5322 specials that are never valid in an unquoted addr-spec. Quoted local parts
+// ("john doe"@example.com) are rejected on purpose: the transactional providers behind
+// these adapters do not accept them in practice.
+const INVALID_ADDR_SPEC_CHARACTERS = /[\][()<>(),;:"]|\\/;
+
+function hasInvalidAddrSpecCharacters(email: string) {
+  return [...email].some((character) => {
+    const codePoint = character.codePointAt(0) ?? 0;
+
+    return codePoint <= 0x20 || codePoint === 0x7f || INVALID_ADDR_SPEC_CHARACTERS.test(character);
+  });
+}
+
+function isPlausibleEmailAddress(email: string) {
+  if (email.length === 0 || email.length > MAX_EMAIL_ADDRESS_LENGTH) {
+    return false;
+  }
+
+  if (hasInvalidAddrSpecCharacters(email)) {
+    return false;
+  }
+
+  const separator = email.indexOf("@");
+
+  if (separator < 1 || separator !== email.lastIndexOf("@")) {
+    return false;
+  }
+
+  const local = email.slice(0, separator);
+  const domain = email.slice(separator + 1);
+
+  if (
+    local.length > MAX_LOCAL_PART_LENGTH ||
+    local.startsWith(".") ||
+    local.endsWith(".") ||
+    local.includes("..")
+  ) {
+    return false;
+  }
+
+  if (
+    !domain.includes(".") ||
+    domain.startsWith(".") ||
+    domain.endsWith(".") ||
+    domain.includes("..")
+  ) {
+    return false;
+  }
+
+  return domain
+    .split(".")
+    .every(
+      (label) =>
+        label.length > 0 &&
+        label.length <= MAX_DOMAIN_LABEL_LENGTH &&
+        !label.startsWith("-") &&
+        !label.endsWith("-"),
+    );
+}
+
+function assertEmailAddresses(field: string, addresses: readonly EmailAddress[]) {
+  for (const address of addresses) {
+    const email = emailAddressOf(address);
+
+    if (!isPlausibleEmailAddress(email)) {
+      throw new EmailValidationError(
+        `Email message ${field} address ${JSON.stringify(email)} is not a valid email address.`,
+      );
+    }
+  }
+}
+
 export function assertMessage(message: EmailMessage) {
   if (!message.from) {
     throw new EmailValidationError("Email message requires a from address.");
@@ -136,6 +237,12 @@ export function assertMessage(message: EmailMessage) {
   if (!message.html && !message.text) {
     throw new EmailValidationError("Email message requires either html or text content.");
   }
+
+  assertEmailAddresses("from", [message.from]);
+  assertEmailAddresses("to", arrayify(message.to));
+  assertEmailAddresses("cc", arrayify(message.cc));
+  assertEmailAddresses("bcc", arrayify(message.bcc));
+  assertEmailAddresses("replyTo", arrayify(message.replyTo));
 
   for (const attachment of message.attachments ?? []) {
     const hasContent = attachment.content !== undefined;

@@ -3,7 +3,7 @@ import { jsonProvider } from "./http.js";
 import { apiAddresses, formatAddress } from "./payloads.js";
 import { isFunctionMember } from "./internal/decode.js";
 import type { EmailAdapter, EmailMessage, EmailMetadataRecord } from "./types.js";
-import { SUPPORTED_MESSAGE_FIELDS, assertMaxItems, assertSupportedMessageFields } from "./utils.js";
+import { SUPPORTED_MESSAGE_FIELDS, assertMaxItems, assertRequiredOption, assertSupportedMessageFields } from "./utils.js";
 
 export type IterableDataFields =
   | EmailMetadataRecord
@@ -22,6 +22,8 @@ export type IterableAdapterOptions = {
 export function iterable(
   options: IterableAdapterOptions,
 ): EmailAdapter<"iterable", { baseUrl: string }> {
+  assertRequiredOption("iterable", "apiKey", options.apiKey);
+
   if (!Number.isFinite(options.campaignId)) {
     throw new EmailValidationError("iterable requires a numeric campaignId.");
   }

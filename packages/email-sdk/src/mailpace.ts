@@ -1,7 +1,7 @@
 import { firstString, jsonProvider } from "./http.js";
 import { formatAddress, formatAddresses, optionalStringAddresses } from "./payloads.js";
 import type { EmailAdapter } from "./types.js";
-import { SUPPORTED_MESSAGE_FIELDS, assertSupportedMessageFields } from "./utils.js";
+import { SUPPORTED_MESSAGE_FIELDS, assertRequiredOption, assertSupportedMessageFields } from "./utils.js";
 
 export type MailPaceAdapterOptions = {
   apiKey: string;
@@ -12,6 +12,8 @@ export type MailPaceAdapterOptions = {
 export function mailpace(
   options: MailPaceAdapterOptions,
 ): EmailAdapter<"mailpace", { baseUrl: string }> {
+  assertRequiredOption("mailpace", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "mailpace",
     baseUrl: options.baseUrl ?? "https://app.mailpace.com/api/v1",

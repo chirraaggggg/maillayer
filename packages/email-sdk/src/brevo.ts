@@ -9,6 +9,7 @@ import {
   sendAtIso,
 } from "./payloads.js";
 import type { EmailAdapter } from "./types.js";
+import { assertRequiredOption } from "./utils.js";
 
 export type BrevoAdapterOptions = {
   apiKey: string;
@@ -17,6 +18,8 @@ export type BrevoAdapterOptions = {
 };
 
 export function brevo(options: BrevoAdapterOptions): EmailAdapter<"brevo", { baseUrl: string }> {
+  assertRequiredOption("brevo", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "brevo",
     baseUrl: options.baseUrl ?? "https://api.brevo.com",

@@ -1,7 +1,7 @@
 import { firstString, jsonProvider } from "./http.js";
 import { formatAddress, formatAddresses } from "./payloads.js";
 import type { EmailAdapter } from "./types.js";
-import { attachmentToBase64 } from "./utils.js";
+import { attachmentToBase64, assertRequiredOption } from "./utils.js";
 
 export type SocketLabsAdapterOptions = {
   apiKey: string;
@@ -10,6 +10,8 @@ export type SocketLabsAdapterOptions = {
 };
 
 export function socketlabs(options: SocketLabsAdapterOptions): EmailAdapter<"socketlabs", { baseUrl: string }> {
+  assertRequiredOption("socketlabs", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "socketlabs",
     baseUrl: options.baseUrl ?? "https://api.socketlabs.com",

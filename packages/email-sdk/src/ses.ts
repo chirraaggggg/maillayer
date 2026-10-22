@@ -11,6 +11,7 @@ import type { EmailMessage, EmailAdapter } from "./types.js";
 import {
   builtInAdapterDefinition,
   SUPPORTED_MESSAGE_FIELDS,
+  assertRequiredOption,
   assertSupportedMessageFields,
   httpErrorMessage,
   isRetryableStatus,
@@ -31,6 +32,10 @@ export type SesAdapterOptions = {
 export function ses(
   options: SesAdapterOptions,
 ): EmailAdapter<"ses", { baseUrl: string; region: string }> {
+  assertRequiredOption("ses", "accessKeyId", options.accessKeyId);
+  assertRequiredOption("ses", "secretAccessKey", options.secretAccessKey);
+  assertRequiredOption("ses", "region", options.region);
+
   const baseUrl = options.baseUrl ?? `https://email.${options.region}.amazonaws.com`;
 
   return {

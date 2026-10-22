@@ -6,6 +6,7 @@ import { emailParts, sendAtIso } from "./payloads.js";
 import {
   arrayify,
   builtInAdapterDefinition,
+  assertRequiredOption,
   attachmentToBase64,
   emailAddressOf,
   headersToObject,
@@ -25,6 +26,8 @@ export type SendheronAdapterOptions = {
 export function sendheron(
   options: SendheronAdapterOptions,
 ): EmailAdapter<"sendheron", { baseUrl: string }> {
+  assertRequiredOption("sendheron", "apiKey", options.apiKey);
+
   const baseUrl = options.baseUrl ?? "https://api.sendheron.com/api/v1";
   const fetcher = options.fetch ?? fetch;
 

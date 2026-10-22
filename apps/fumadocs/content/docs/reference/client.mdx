@@ -42,6 +42,8 @@ readonly defaultAdapter: RouteName;
 
 Runs common message, route, capability, adapter-specific, schedule, and personalized checks without calling an adapter's send method.
 
+Common message validation includes email address syntax: every `from`, `to`, `cc`, `bcc`, and `replyTo` address must have one `@`, non-empty local and domain parts, a domain with at least one dot, and no whitespace, control characters, or unquoted RFC 5322 specials. This is a practical typo guard rather than a full RFC 5322 parser; display-name strings (`"Name <user@example.com>"`) and `{ email, name }` objects are validated by their extracted address.
+
 ```ts title="types.ts"
 type EmailValidationResult<Name extends string> = {
   adapter: Name;

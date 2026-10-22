@@ -1,7 +1,7 @@
 import { firstString, jsonProvider } from "./http.js";
 import { base64Attachments, formatAddress, formatAddresses } from "./payloads.js";
 import type { EmailAdapter } from "./types.js";
-import { SUPPORTED_MESSAGE_FIELDS, assertSupportedMessageFields } from "./utils.js";
+import { SUPPORTED_MESSAGE_FIELDS, assertRequiredOption, assertSupportedMessageFields } from "./utils.js";
 
 export type LoopsAdapterOptions = {
   apiKey: string;
@@ -11,6 +11,8 @@ export type LoopsAdapterOptions = {
 };
 
 export function loops(options: LoopsAdapterOptions): EmailAdapter<"loops", { baseUrl: string }> {
+  assertRequiredOption("loops", "apiKey", options.apiKey);
+
   if (!options.transactionalId) {
     throw new Error("loops requires a transactionalId.");
   }

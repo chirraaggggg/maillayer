@@ -8,6 +8,7 @@ import {
   SUPPORTED_MESSAGE_FIELDS,
   arrayify,
   assertMaxItems,
+  assertRequiredOption,
   assertSupportedMessageFields,
   builtInAdapterDefinition,
 } from "./utils.js";
@@ -164,6 +165,9 @@ function fromBinding(
 function fromHttp(
   options: CloudflareHttpAdapterOptions,
 ): EmailAdapter<"cloudflare", { baseUrl: string; accountId: string }> {
+  assertRequiredOption("cloudflare", "apiToken", options.apiToken);
+  assertRequiredOption("cloudflare", "accountId", options.accountId);
+
   const baseUrl = options.baseUrl ?? "https://api.cloudflare.com/client/v4";
 
   return {

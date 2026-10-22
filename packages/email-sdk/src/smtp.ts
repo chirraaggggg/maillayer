@@ -12,6 +12,7 @@ import {
   formatAddress,
   formatAddresses,
   headersToArray,
+  assertRequiredOption,
   validateBuiltInAdapter,
 } from "./utils.js";
 
@@ -38,6 +39,12 @@ export type SmtpAdapterOptions = {
 export function smtp<const Name extends string = "smtp">(
   options: SmtpAdapterOptions & { name?: Name },
 ): EmailAdapter<Name, { host: string; port: number }> {
+  assertRequiredOption("smtp", "host", options.host);
+
+  if (options.auth) {
+    assertRequiredOption("smtp", "auth.user", options.auth.user);
+  }
+
   // SAFETY: Name defaults to "smtp", so the fallback matches Name whenever options.name is absent.
   const name = (options.name ?? "smtp") as Name;
   const port = options.port ?? (options.secure ? 465 : 587);

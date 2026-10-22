@@ -10,6 +10,7 @@ import {
 import type { EmailAdapter } from "./types.js";
 import {
   SUPPORTED_MESSAGE_FIELDS,
+  assertRequiredOption,
   assertSupportedMessageFields,
   headersToObject,
 } from "./utils.js";
@@ -24,6 +25,8 @@ export type SparkPostAdapterOptions = {
 export function sparkpost(
   options: SparkPostAdapterOptions,
 ): EmailAdapter<"sparkpost", { baseUrl: string }> {
+  assertRequiredOption("sparkpost", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "sparkpost",
     baseUrl: options.baseUrl ?? "https://api.sparkpost.com/api/v1",

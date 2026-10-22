@@ -9,7 +9,11 @@ import {
   sendAtUnixSeconds,
 } from "./payloads.js";
 import type { EmailAdapter } from "./types.js";
-import { SUPPORTED_MESSAGE_FIELDS, assertSupportedMessageFields } from "./utils.js";
+import {
+  SUPPORTED_MESSAGE_FIELDS,
+  assertRequiredOption,
+  assertSupportedMessageFields,
+} from "./utils.js";
 
 export type MailerSendAdapterOptions = {
   apiKey: string;
@@ -20,6 +24,8 @@ export type MailerSendAdapterOptions = {
 export function mailersend(
   options: MailerSendAdapterOptions,
 ): EmailAdapter<"mailersend", { baseUrl: string }> {
+  assertRequiredOption("mailersend", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "mailersend",
     baseUrl: options.baseUrl ?? "https://api.mailersend.com",

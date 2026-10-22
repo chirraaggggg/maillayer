@@ -9,7 +9,13 @@ import {
   sendgridAttachments,
 } from "./payloads.js";
 import type { EmailMessage, EmailAdapter } from "./types.js";
-import { arrayify, assertMaxItems, emailAddressOf, hasRecipientVariables } from "./utils.js";
+import {
+  arrayify,
+  assertMaxItems,
+  assertRequiredOption,
+  emailAddressOf,
+  hasRecipientVariables,
+} from "./utils.js";
 
 export type SendGridAdapterOptions = {
   apiKey: string;
@@ -20,6 +26,8 @@ export type SendGridAdapterOptions = {
 export function sendgrid(
   options: SendGridAdapterOptions,
 ): EmailAdapter<"sendgrid", { baseUrl: string }> {
+  assertRequiredOption("sendgrid", "apiKey", options.apiKey);
+
   const provider = jsonProvider({
     name: "sendgrid",
     baseUrl: options.baseUrl ?? "https://api.sendgrid.com",

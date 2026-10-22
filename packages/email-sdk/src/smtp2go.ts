@@ -8,6 +8,7 @@ import {
   sendAtIso,
 } from "./payloads.js";
 import type { EmailAdapter } from "./types.js";
+import { assertRequiredOption } from "./utils.js";
 
 export type Smtp2goAdapterOptions = {
   apiKey: string;
@@ -16,6 +17,8 @@ export type Smtp2goAdapterOptions = {
 };
 
 export function smtp2go(options: Smtp2goAdapterOptions): EmailAdapter<"smtp2go", { baseUrl: string }> {
+  assertRequiredOption("smtp2go", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "smtp2go",
     baseUrl: options.baseUrl ?? "https://api.smtp2go.com",

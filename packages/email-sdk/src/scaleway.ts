@@ -4,6 +4,7 @@ import { apiAddress, apiAddresses, base64Attachments, optionalApiAddresses } fro
 import type { EmailMessage, EmailAdapter } from "./types.js";
 import {
   SUPPORTED_MESSAGE_FIELDS,
+  assertRequiredOption,
   assertSupportedMessageFields,
   formatAddresses,
   headersToArray,
@@ -20,6 +21,9 @@ export type ScalewayAdapterOptions = {
 export function scaleway(
   options: ScalewayAdapterOptions,
 ): EmailAdapter<"scaleway", { baseUrl: string }> {
+  assertRequiredOption("scaleway", "secretKey", options.secretKey);
+  assertRequiredOption("scaleway", "projectId", options.projectId);
+
   const region = options.region ?? "fr-par";
 
   return jsonProvider({

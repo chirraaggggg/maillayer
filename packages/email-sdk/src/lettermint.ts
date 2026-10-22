@@ -5,6 +5,7 @@ import {
   builtInAdapterDefinition,
   SUPPORTED_MESSAGE_FIELDS,
   assertMaxItems,
+  assertRequiredOption,
   assertSupportedMessageFields,
   attachmentToBase64,
   formatAddress,
@@ -27,6 +28,8 @@ export type LettermintAdapterOptions = {
 export function lettermint(
   options: LettermintAdapterOptions,
 ): EmailAdapter<"lettermint", { baseUrl: string }> {
+  assertRequiredOption("lettermint", "apiToken", options.apiToken);
+
   const baseUrl = options.baseUrl ?? "https://api.lettermint.co/v1";
   const fetcher = options.fetch ?? fetch;
 

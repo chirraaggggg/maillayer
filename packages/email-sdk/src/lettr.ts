@@ -12,6 +12,7 @@ import type { EmailAttachment, EmailMessage, EmailAdapter } from "./types.js";
 import {
   arrayify,
   assertMaxItems,
+  assertRequiredOption,
   attachmentToBase64,
   builtInAdapterDefinition,
   emailAddressOf,
@@ -58,6 +59,8 @@ const BLOCKED_HEADER_NAMES = new Set([
 ]);
 
 export function lettr(options: LettrAdapterOptions): EmailAdapter<"lettr", { baseUrl: string }> {
+  assertRequiredOption("lettr", "apiKey", options.apiKey);
+
   const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
   const fetcher = options.fetch ?? fetch;
   const definition = builtInAdapterDefinition("lettr");

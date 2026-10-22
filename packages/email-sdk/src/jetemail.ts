@@ -5,6 +5,7 @@ import {
   builtInAdapterDefinition,
   SUPPORTED_MESSAGE_FIELDS,
   assertMaxItems,
+  assertRequiredOption,
   assertSupportedMessageFields,
   attachmentToBase64,
   formatAddress,
@@ -25,6 +26,8 @@ export type JetemailAdapterOptions = {
 export function jetemail(
   options: JetemailAdapterOptions,
 ): EmailAdapter<"jetemail", { baseUrl: string }> {
+  assertRequiredOption("jetemail", "apiKey", options.apiKey);
+
   const baseUrl = options.baseUrl ?? "https://api.jetemail.com";
   const fetcher = options.fetch ?? fetch;
 

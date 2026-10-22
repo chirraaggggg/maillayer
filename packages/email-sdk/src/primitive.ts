@@ -6,6 +6,7 @@ import {
   builtInAdapterDefinition,
   SUPPORTED_MESSAGE_FIELDS,
   assertMaxItems,
+  assertRequiredOption,
   assertSupportedMessageFields,
   attachmentToBase64,
   formatAddress,
@@ -25,6 +26,8 @@ export type PrimitiveAdapterOptions = {
 export function primitive(
   options: PrimitiveAdapterOptions,
 ): EmailAdapter<"primitive", { baseUrl: string }> {
+  assertRequiredOption("primitive", "apiKey", options.apiKey);
+
   const baseUrl = options.baseUrl ?? "https://api.primitive.dev/v1";
   const fetcher = options.fetch ?? fetch;
 

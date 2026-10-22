@@ -9,6 +9,7 @@ import {
   sendAtIso,
 } from "./payloads.js";
 import type { EmailAdapter } from "./types.js";
+import { assertRequiredOption } from "./utils.js";
 
 export type ElasticEmailAdapterOptions = {
   apiKey: string;
@@ -17,6 +18,8 @@ export type ElasticEmailAdapterOptions = {
 };
 
 export function elasticemail(options: ElasticEmailAdapterOptions): EmailAdapter<"elasticemail", { baseUrl: string }> {
+  assertRequiredOption("elasticemail", "apiKey", options.apiKey);
+
   return jsonProvider({
     name: "elasticemail",
     baseUrl: options.baseUrl ?? "https://api.elasticemail.com",
