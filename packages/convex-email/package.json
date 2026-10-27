@@ -105,6 +105,9 @@
     "convex": "^1.45.0",
     "convex-test": "0.0.53"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@maillayer/core": "^2.0.0",
     "convex": "^1.36.1"

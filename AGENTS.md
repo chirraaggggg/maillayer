@@ -226,6 +226,24 @@ point Homebrew at the new release.
   Verify edges with `bunx turbo run test --dry=json`.
 - Release publishing lives in `.github/workflows/release.yml`.
 - npm publishing uses GitHub-hosted Actions for Trusted Publishing/OIDC.
+- `release.yml`'s changesets action authenticates with the job's short-lived
+  `github.token` (`contents` + `pull-requests` write), never a PAT secret: an
+  invalid `CHANGESETS_TOKEN` secret once blocked every Release run at
+  "Create release PR or publish" (the branch push succeeded, the PR creation
+  401'd). Version PRs opened with `github.token` do not trigger `pull_request`
+  CI, which is why `release:ci` runs inside the Release job before any publish.
+- First-publish bootstrap (one-time, until both packages exist on npm): OIDC
+  cannot create a package that does not exist yet, because npm only lets you
+  configure a trusted publisher on an existing package. Publish the first
+  version from a workstation instead: `npm login`, then in the package
+  directory `npm publish --access public --tag next` (needs 2FA on the account
+  or a granular token with 2FA bypass). After that placeholder exists, add a
+  Trusted Publisher on npmjs.com for each package — owner `chirraaggggg`, repo
+  `maillayer`, workflow `release.yml`, and explicitly allow **npm publish**
+  (configurations created after 2026-09-03 default to stage-publish only) —
+  then merge the "Version packages" PR so CI publishes via OIDC with
+  provenance. A new trusted publisher must complete its first publish within
+  2 days or it expires, so configure it right before the release.
 - After a publish, `release.yml` posts a non-blocking PostHog release
   annotation; it needs the `POSTHOG_PERSONAL_API_KEY` secret and is skipped
   with a notice when the secret is absent.

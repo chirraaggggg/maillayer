@@ -59,7 +59,12 @@ jobs:
           title: "Version packages"
           commit: "Version packages"
         env:
-          GITHUB_TOKEN: ${{ secrets.CHANGESETS_TOKEN }}
+          # The job's own short-lived token (permissions above are the minimum the
+          # changesets action needs: push the version branch, open the release PR,
+          # tag and release on publish). A long-lived PAT is deliberately not used;
+          # pushes and PRs made with this token do not re-trigger workflows, which is
+          # why "Build and validate" runs in this job before any publish happens.
+          GITHUB_TOKEN: ${{ github.token }}
           MAILLAYER_RELEASE_PREBUILT: "1"
 
       - name: Annotate release in PostHog
