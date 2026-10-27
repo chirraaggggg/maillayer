@@ -1,6 +1,6 @@
 {
   "name": "@maillayer/convex-email",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Provider-portable transactional email for Convex with durable queues, retries, fallback adapters, idempotency, webhooks, and reactive status.",
   "keywords": [
     "brevo",
@@ -109,7 +109,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@maillayer/core": "^2.0.0",
+    "@maillayer/core": "^2.1.0",
     "convex": "^1.36.1"
   },
   "engines": {
