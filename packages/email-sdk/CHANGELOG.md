@@ -1,5 +1,58 @@
 # @maillayer/core
 
+## 2.1.0
+
+### Minor Changes
+
+- f534bbf: Bring the Convex component's adapter registry to parity with the core SDK by adding `elasticemail`, `mailjet`, `smtp2go`, and `socketlabs`. Each is configured with its documented `*_API_KEY` environment variable plus an optional inline `baseUrl`, declared in the component contract, and constructible through the component exactly like the other built-in adapters.
+
+  `@maillayer/core` also gains the matching `./mailjet`, `./smtp2go`, `./elasticemail`, and `./socketlabs` subpath exports that the documentation already referenced but the package did not export.
+
+- 62ddb2f: Make telemetry easier to opt out of. `maillayer telemetry disable` saves a machine-wide opt-out (`status` and `enable` are also available), `disableTelemetry()` turns telemetry off for every client in the process, and `getTelemetryStatus()` reports which setting decided the current state.
+- 62ddb2f: Add a Helo adapter (`@maillayer/core/helo`) with native idempotency keys, an optional `channelId` for all-Channel credentials, attachments, tags, metadata, and a `doctor --live` check that authenticates without sending. Sends Helo reports as failed are non-retryable errors. The Convex component accepts `adapter: "helo"` with `HELO_API_KEY` and an optional `HELO_CHANNEL_ID`.
+- 62ddb2f: Tighten types at the SDK's input boundaries.
+
+  - `createEmailAgentTools` now returns a named `EmailAgentTools` type. `sendEmail.parameters` is typed as a JSON object, and `sendEmail.execute` resolves to `EmailSendResult` instead of `unknown`.
+  - `NormalizedWebhookEvent.payload` is typed as a parsed JSON object instead of `Record<string, unknown>`.
+  - `JsonObject` and `JsonValue` are exported from the `webhooks` and `agent-tools` entry points so these types can be named.
+  - The compat `EmailRetryConfig.delay` and `shouldRetry` callbacks now receive the `EmailSdkError` the client already passed them at runtime.
+  - Send-option `metadata` (on `send()` options, hook events, adapter contexts, and the capture and observability plugins) is now typed as `EmailSendMetadata`. By default that is `EmailMetadataRecord`: strings, numbers, booleans, `null`, `undefined`, `Date`, and arrays or plain objects of those. Metadata that holds class instances, functions, or values typed by an `interface` no longer type-checks; spread it into a plain object or register your own shape.
+  - To give metadata your own shape, augment `EmailMetadataRegister`:
+
+    ```ts
+    import "@maillayer/core";
+
+    declare module "@maillayer/core" {
+      interface EmailMetadataRegister {
+        metadata: { tenantId: string };
+      }
+    }
+    ```
+
+    Hooks and plugins then see `event.metadata?.tenantId` as a `string`.
+
+  - Iterable `dataFields` is typed as `EmailMetadataRecord`, and the SMTP `tls` option now uses nodemailer's own TLS options type.
+  - Provider responses are now parsed through shared JSON helpers. Malformed or `null` success bodies are treated like empty bodies, and non-string entries in accepted or rejected recipient lists are ignored instead of passed through.
+
+- 62ddb2f: Add a SendHeron adapter (`@maillayer/core/sendheron`) with native idempotency keys, `sendAt` scheduling, attachments, and a `doctor --live` check that authenticates without sending. Suppressed sends are reported as non-retryable errors. The Convex component accepts `adapter: "sendheron"` with `SENDHERON_API_KEY`.
+
+### Patch Changes
+
+- 2a8eebf: Correct the adapter counts in the package README: the SDK ships 30 provider API adapters plus SMTP, 31 adapters total (previously stated as 26 + SMTP, 27 total, which predated the Mailjet, SMTP2GO, Elastic Email, and SocketLabs adapters).
+- fb730fb: Fix the CommonJS root entrypoint. `require("@maillayer/core")` previously loaded a bundle whose exports referenced undefined module bindings and threw `ReferenceError` on the first property access; every export now resolves correctly. The build bundles re-export barrels through a shim and loads each emitted `.cjs` with every export touched, and the tarball smoke test now reads every export of every subpath instead of only calling `require()`.
+- 4a82595: Fix the SES adapter's field-support registry entry to include `tags`. The adapter already mapped `message.tags` to SES `EmailTags` and the docs documented it, but `SUPPORTED_MESSAGE_FIELDS.ses` omitted `tags`, so `validate` and `send` rejected messages with tags before the provider call. Messages with tags now validate and send on SES, while unsupported fields (such as `metadata` and `sendAt`) are still rejected.
+- 7a68a0a: Reject missing or empty adapter credentials at construction and validate email address syntax in the shared message layer.
+
+  Every built-in adapter factory now throws `EmailValidationError` when a required credential (or required option such as Mailgun's `domain` or SES's `region`) is missing, empty, or whitespace-only, naming the adapter and option without echoing the value. `client.validate()` and every send now also reject malformed `from`, `to`, `cc`, `bcc`, and `replyTo` addresses with a practical syntax check before any provider request. The address check is a typo guard, not a full RFC 5322 parser: display-name strings and `{ email, name }` objects are validated by their extracted address.
+
+- af857eb: Fix dependency vulnerabilities reported by `bun audit`.
+
+  - Bump `oxfmt` to `^0.67.0` (pulls patched `tinypool@2.1.2+`, clearing two critical advisories).
+  - Bump `vite` to `^8.2.2` in the docs app, clearing five Vite/launch-editor advisories.
+  - Override `fast-uri` to `3.1.9`, `compression` to `1.8.2`, and `source-map-js` to `1.2.2`
+    (patch releases that satisfy their parents' existing ranges).
+  - No runtime dependencies change; this is a dev/tooling-only security fix.
+
 ## 2.0.0
 
 ### Major Changes
@@ -53,6 +106,7 @@
 - 86d54a4: Ship the v1 adapter-first SDK and CLI contract.
 
   Breaking changes:
+
   - Provider terminology is now adapter-first across the public SDK: configure `adapters`, `defaultAdapter`, and `fallback.adapters`; select routes with `adapter` / `withAdapter`; and implement `EmailAdapter` with a literal `name` and capability metadata. Legacy provider aliases live in the one-major `/compat` bridge for migration.
   - Adapter subpath option types now use `*AdapterOptions`, and the testing entry point exports `memoryAdapter`, `failingAdapter`, and `MemoryAdapter`.
   - Message-level `idempotencyKey` moves into send options, retry configuration uses `retry.maxAttempts`, fallback is explicit and stops on unknown delivery by default, and provider failures are normalized into structured `EmailSdkError` subclasses.
@@ -60,6 +114,7 @@
   - Per-recipient template values now use `sendPersonalized({ message, recipients })`; adapters can declare native, expanded, or unsupported personalized capability and implement optional `sendPersonalized` for provider-native fanout.
 
   Also included in v1:
+
   - Shared no-network validation, explicit adapter capabilities, install-safe declaration maps, plugin and middleware hooks, and adapter-scoped helpers. Direct built-in adapter sends now enforce the same validation as `validate()` before provider calls, empty optional recipient arrays are treated as absent for narrow adapters, and SMTP preserves repeated custom headers while rejecting custom `Bcc` headers so blind-copy recipients stay RCPT-only.
   - Built-in routing and whole-send timeout plugins alongside defaults, capture, and observability.
   - Optional `sendAt` scheduling for adapters with native provider scheduling; invalid timestamps fail validation, unsupported adapters reject scheduling instead of queueing or sending immediately, and the CLI keeps message-level `--send-at` separate from Iterable's `--iterable-send-at` adapter option.
